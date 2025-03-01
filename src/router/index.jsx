@@ -10,6 +10,7 @@ import OverView from "../Components/Settings/OverView";
 import SubUnion from "../Components/Settings/SubUnion";
 import Union from "../Components/Settings/Union";
 import Unit from "../Components/Settings/Unit";
+import LoginForm from "../Components/LoginForm";
 
 
 const router = createBrowserRouter([
@@ -57,9 +58,14 @@ const router = createBrowserRouter([
                 path:"/setting/unit",
                 element:<Unit/>
             },
+            
 
         ]
-    }
+    },
+    {
+        path:"/login",
+        element:<LoginForm/>
+    },
 
 ])
 
