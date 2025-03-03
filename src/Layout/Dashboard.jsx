@@ -6,7 +6,7 @@ import logo from "../assets/logo.png";
 import { MdOutlineDashboard } from "react-icons/md";
 import { MdOutlineCoPresent } from "react-icons/md";
 import { BsFillPeopleFill } from "react-icons/bs";
-import { FaPersonCircleMinus } from "react-icons/fa6";
+
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaClipboard } from "react-icons/fa";
 import { Dropdown } from "react-bootstrap"; // Import the Dropdown component from react-bootstrap

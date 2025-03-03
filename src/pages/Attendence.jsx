@@ -129,9 +129,7 @@ const Attendence = () => {
     padding: "10px",
   };
 
-  const tableStyle = {
-    width: "100%",
-  };
+  
 
   const badgeSuccessStyle = {
     backgroundColor: "#CEFFEA",
