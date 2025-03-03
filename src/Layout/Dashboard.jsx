@@ -8,19 +8,24 @@ import { MdOutlineCoPresent } from "react-icons/md";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { FaPersonCircleMinus } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
+import { FaClipboard } from "react-icons/fa";
 import { Dropdown } from "react-bootstrap"; // Import the Dropdown component from react-bootstrap
 
 const Dashboard = () => {
   return (
     <div>
       {/* Main Container */}
-      <Container fluid style={{backgroundColor:"#F6F6F6"}}>
+      <Container fluid style={{ backgroundColor: "#F6F6F6" }}>
         <Row>
           {/* Sidebar */}
           <Col
             xs={3}
             className="bg-[#FFFFFF] p-3"
-            style={{ height: "100vh", width: "17%" ,backgroundColor:"#FFFFFF"}}
+            style={{
+              height: "100vh",
+              width: "17%",
+              backgroundColor: "#FFFFFF",
+            }}
           >
             <div className="container-fluid d-flex  align-items-center justify-content-center py-3 ">
               <div className="logo w">
@@ -41,7 +46,11 @@ const Dashboard = () => {
             <Nav defaultActiveKey="/" className="flex-column">
               <NavLink
                 to="/"
-                className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 rounded-lg  text-center p-2 transition-transform transform  text-black ms-5 gap-3"
+                className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 rounded-lg  text-center p-2 transition-transform transform  text-black ps-5 ms-1 gap-3"
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? '#D5D1E8' : 'transparent',
+                  color: isActive ? "#13007D" : "inherit"
+                })}
               >
                 <div>
                   <MdOutlineDashboard
@@ -58,7 +67,11 @@ const Dashboard = () => {
               </NavLink>
               <NavLink
                 to="/attendence"
-                className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg  text-center p-2 transition-transform transform  text-black ms-5 gap-3"
+                className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg  text-center p-2 transition-transform transform  text-black ps-5 gap-3"
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? '#D5D1E8' : 'transparent',
+                  color: isActive ? "#13007D" : "inherit"
+                })}
               >
                 <div>
                   <MdOutlineCoPresent
@@ -75,7 +88,15 @@ const Dashboard = () => {
               </NavLink>
               <NavLink
                 to="/peopleInformation"
-                className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg  text-center p-2 transition-transform transform  text-black ms-5 gap-3"
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link active d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg text-center p-2 transition-transform transform text-black ps-5 gap-3"
+                    : "nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg text-center p-2 transition-transform transform text-black ms-5 gap-3"
+                }
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? "#D5D1E8" : "transparent",
+                  color: isActive ? "#13007D" : "inherit",
+                })}
               >
                 <div>
                   <BsFillPeopleFill
@@ -90,12 +111,17 @@ const Dashboard = () => {
                   কর্মকর্তার তথ্য
                 </span>
               </NavLink>
+
               <NavLink
-                to="/leave"
-                className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg  text-center p-2 transition-transform transform  text-black ms-5 gap-3"
+                to="/notice"
+                className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg  text-center p-2 transition-transform transform  text-black ps-5 gap-3"
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? "#D5D1E8" : "transparent",
+                  color: isActive ? "#13007D" : "inherit",
+                })}
               >
                 <div>
-                  <FaPersonCircleMinus
+                  <FaClipboard
                     className="mb-2"
                     style={{ fontSize: "1.5rem" }}
                   />
@@ -104,7 +130,7 @@ const Dashboard = () => {
                   className="d-none d-lg-block text-xs lg:text-lg font-weight-semibold bg-transparent"
                   style={{ fontSize: "18px" }}
                 >
-                  ছুটি
+                  নোটিশ
                 </span>
               </NavLink>
 
@@ -115,6 +141,7 @@ const Dashboard = () => {
                   variant="link"
                   id="dropdownMenuButton"
                   className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 rounded-lg text-center p-2 transition-transform transform text-black mb-3 border-0 " // Added `border-0` class
+                  
                 >
                   {/* Icon for dropdown */}
                   <div>
@@ -126,6 +153,7 @@ const Dashboard = () => {
                   <span
                     className="d-none d-lg-block text-xs lg:text-lg font-weight-semibold bg-transparent"
                     style={{ fontSize: "18px" }}
+                    
                   >
                     সেটিংস
                   </span>

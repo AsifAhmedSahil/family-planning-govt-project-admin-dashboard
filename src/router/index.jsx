@@ -3,7 +3,7 @@ import Dashboard from "../Layout/Dashboard";
 import HomePage from "../pages/HomePage";
 import Attendence from "../pages/Attendence";
 import PeopleInformation from "../pages/PeopleInformation";
-import Leave from "../pages/Leave";
+
 import SettingsPage from "../pages/SettingsPage";
 import Designation from "../Components/Settings/Designation";
 import OverView from "../Components/Settings/OverView";
@@ -11,6 +11,9 @@ import SubUnion from "../Components/Settings/SubUnion";
 import Union from "../Components/Settings/Union";
 import Unit from "../Components/Settings/Unit";
 import LoginForm from "../Components/LoginForm";
+import PersonDetails from "../pages/PersonDetails";
+import Notice from "../pages/Notice";
+
 
 
 const router = createBrowserRouter([
@@ -31,8 +34,8 @@ const router = createBrowserRouter([
                 element:<PeopleInformation/>
             },
             {
-                path:"/leave",
-                element:<Leave/>
+                path:"/notice",
+                element:<Notice/>
             },
             {
                 path:"/setting",
@@ -57,6 +60,10 @@ const router = createBrowserRouter([
             {
                 path:"/setting/unit",
                 element:<Unit/>
+            },
+            {
+                path:"/person/:id",
+                element:<PersonDetails/>
             },
             
 
