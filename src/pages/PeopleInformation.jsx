@@ -149,12 +149,13 @@ const PeopleInformation = () => {
       [id]: files[0], // Store the selected file (if any)
     });
   };
+  console.log(user)
   
   return (
     <div>
       <Header title={"কর্মকর্তার তথ্য"} />
       <div className="dashboard p-3 " style={{ backgroundColor: "#FFFFFF" }}>
-       
+      
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <div className="row g-6 ">
             {" "}
