@@ -1,5 +1,7 @@
 import  { useState } from "react";
 import logo from "../assets/logo.png";
+import { useUser } from "../context/UserProvider";
+import { jwtDecode } from "jwt-decode";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +9,7 @@ const LoginForm = () => {
     password: "",
   });
 
+  const {setUser} = useUser()
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -19,7 +22,7 @@ const LoginForm = () => {
     e.preventDefault();
     console.log("Form Data:", formData);
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login",{
+      const response = await fetch("http://localhost:5001/api/auth/login",{
         method:"POST",
         headers:{
           "Content-Type":"application/json"
@@ -32,6 +35,8 @@ const LoginForm = () => {
         const data = await response.json()
         console.log("token",data.token)
         localStorage.setItem("authToken",data.token)
+        const decodeToken = jwtDecode(data.token)
+        setUser(decodeToken)
       }
       else{
         console.error("Login Failed",response.statusText)

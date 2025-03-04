@@ -7,9 +7,11 @@ import officer from "../assets/officer.png";
 import { FaRegEye } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserProvider";
 
 const PeopleInformation = () => {
   const navigate = useNavigate();
+  const {user} = useUser()
 
   const handleRowClick = (id) => {
     // Navigate to the individual person's details page
@@ -152,6 +154,7 @@ const PeopleInformation = () => {
     <div>
       <Header title={"কর্মকর্তার তথ্য"} />
       <div className="dashboard p-3 " style={{ backgroundColor: "#FFFFFF" }}>
+       
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <div className="row g-6 ">
             {" "}
