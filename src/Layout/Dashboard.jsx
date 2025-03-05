@@ -1,5 +1,5 @@
 import { Container, Row, Col, Nav } from "react-bootstrap";
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
 import logo from "../assets/logo.png";
 // import SettingsPage from "../pages/SettingsPage";
@@ -12,6 +12,9 @@ import { FaClipboard } from "react-icons/fa";
 import { Dropdown } from "react-bootstrap"; // Import the Dropdown component from react-bootstrap
 
 const Dashboard = () => {
+  const handleMenuItemClick = (event) => {
+    event.stopPropagation(); // Stop the event from propagating
+  };
   return (
     <div>
       {/* Main Container */}
@@ -162,19 +165,19 @@ const Dashboard = () => {
                 <Dropdown.Menu className="border-0  ms-5">
                   {" "}
                   {/* Added `border-0` class */}
-                  <Dropdown.Item href="/setting/overview">
+                  <Dropdown.Item as={Link} to="/setting/overview" onClick={handleMenuItemClick}>
                     ওভারভিউ
                   </Dropdown.Item>
-                  <Dropdown.Item href="/setting/subunion" className="mt-2">
+                  <Dropdown.Item as={Link} to="/setting/subunion" onClick={handleMenuItemClick} className="mt-2">
                     উপজেলা
                   </Dropdown.Item>
-                  <Dropdown.Item href="/setting/union" className="mt-2">
+                  <Dropdown.Item as={Link} to="/setting/union" onClick={handleMenuItemClick} className="mt-2">
                     ইউনিয়ন
                   </Dropdown.Item>
-                  <Dropdown.Item href="/setting/unit" className="mt-2">
+                  <Dropdown.Item as={Link} to="/setting/unit" onClick={handleMenuItemClick} className="mt-2">
                     ইউনিট
                   </Dropdown.Item>
-                  <Dropdown.Item href="/setting/designation" className="mt-2">
+                  <Dropdown.Item as={Link} to="/setting/designation" onClick={handleMenuItemClick} className="mt-2">
                     পদবী
                   </Dropdown.Item>
                 </Dropdown.Menu>
