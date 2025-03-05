@@ -1,164 +1,132 @@
 import Header from "../Header";
-import { useState, useEffect } from "react";
-import Swal from 'sweetalert2';
-import { Modal, Button } from 'react-bootstrap';
+import { useEffect, useState } from "react";
+import Select from 'react-select';
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
-import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { RiDeleteBin6Line } from "react-icons/ri";
+import 'react-select/dist/styles.css';
 
-const SubUnion = () => {
-  const [data, setData] = useState([]);
-  const [formData, setFormData] = useState({ upazila: '' });
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [upazilaToDelete, setUpazilaToDelete] = useState(null);
-  const [upazilaToUpdate, setUpazilaToUpdate] = useState({ id: null, name: '' });
+const Union = () => {
+  const [upazilas, setUpazilas] = useState([]);
+  const [unions, setUnions] = useState([]);
+  const [data, setData] = useState([
+    { union_name: "শাকচর", officers: "২৩ জন" },
+    { union_name: "হাজিরপারা", officers: "২৩ জন" },
+    { union_name: "কুশাখালি", officers: "২৩ জন" },
+    { union_name: "দালাল বাজার", officers: "২৩ জন" },
+    { union_name: "উত্তর হামছাদী", officers: "২৩ জন" },
+  ]);
 
-  // Fetch upazilas from the API
+  const [formData, setFormData] = useState({
+    upazila: null,
+    union: "",
+  });
+
   const fetchUpazilas = async () => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("authToken");
     try {
-      const response = await fetch('http://localhost:5001/api/setup/get-upazilas', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+      const response = await fetch(
+        "http://localhost:5001/api/setup/get-upazilas",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       if (response.ok) {
         const result = await response.json();
-        setData(result); // Update the state with fetched data
+        setUpazilas(result); // Update the state with fetched data
       } else {
         const errorResult = await response.json();
-        console.error('Error fetching upazilas:', errorResult);
+        console.error("Error fetching upazilas:", errorResult);
       }
     } catch (error) {
-      console.error('Error fetching upazilas:', error);
+      console.error("Error fetching upazilas:", error);
     }
   };
 
-  // Fetch upazilas when the component mounts
+  const fetchUnions = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/setup/get-unions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setUnions(result); // Update the state with fetched data
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching unions:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching unions:", error);
+    }
+  };
+
+  // Fetch upazilas and unions when the component mounts
   useEffect(() => {
     fetchUpazilas();
+    fetchUnions();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('authToken');
+    console.log("Form Data:", formData);
+    const token = localStorage.getItem("authToken");
 
     try {
-      const response = await fetch('http://localhost:5001/api/setup/add-upazila', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ name: formData.upazila })
-      });
+      const response = await fetch(
+        "http://localhost:5001/api/setup/add-union",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: formData.union,
+            upazila_id: formData.upazila ? formData.upazila.value : null,
+          }),
+        }
+      );
 
       if (response.ok) {
-        console.log('Upazila added successfully');
-        await fetchUpazilas(); // Fetch the updated list of upazilas
-        setFormData({ upazila: '' }); // Clear the input field
+        const result = await response.json();
+        console.log("Success:", result);
+        await fetchUnions();
+        setFormData({ upazila: null, union: "" });
       } else {
         const errorResult = await response.json();
-        console.error('Error adding upazila:', errorResult);
+        console.error("Error:", errorResult);
       }
     } catch (error) {
-      console.error('Error adding upazila:', error);
+      console.error("Error:", error);
     }
   };
 
-  const handleDelete = async (id) => {
-    const token = localStorage.getItem('authToken');
-    try {
-      const response = await fetch('http://localhost:5001/api/setup/delete-upazila', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ id })
-      });
-
-      if (response.ok) {
-        console.log('Upazila deleted successfully');
-        await fetchUpazilas(); // Fetch the updated list of upazilas
-        setShowDeleteModal(false); // Close the modal
-      } else {
-        const errorResult = await response.json();
-        console.error('Error deleting upazila:', errorResult);
-      }
-    } catch (error) {
-      console.error('Error deleting upazila:', error);
-    }
-  };
-
-  const handleUpdate = async () => {
-    const token = localStorage.getItem('authToken');
-    try {
-      const response = await fetch('http://localhost:5001/api/setup/update-upazila', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(upazilaToUpdate)
-      });
-
-      if (response.ok) {
-        console.log('Upazila updated successfully');
-        await fetchUpazilas(); // Fetch the updated list of upazilas
-        setShowUpdateModal(false); // Close the modal
-      } else {
-        const errorResult = await response.json();
-        console.error('Error updating upazila:', errorResult);
-      }
-    } catch (error) {
-      console.error('Error updating upazila:', error);
-    }
-  };
-
-  const handleDeleteConfirmation = (id) => {
-    setUpazilaToDelete(id);
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleDelete(id);
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your upazila has been deleted.",
-          icon: "success"
-        });
-      }
-    });
-  };
-
-  const handleUpdateConfirmation = (id, name) => {
-    setUpazilaToUpdate({ id, name });
-    setShowUpdateModal(true);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleUpazilaChange = (selectedOption) => {
     setFormData({
       ...formData,
-      [name]: value
+      upazila: selectedOption,
     });
   };
 
-  const handleUpdateChange = (e) => {
-    const { value } = e.target;
-    setUpazilaToUpdate({ ...upazilaToUpdate, name: value });
+  const handleUnionChange = (e) => {
+    setFormData({
+      ...formData,
+      union: e.target.value,
+    });
   };
 
   const convertToBangla = (number) => {
@@ -170,34 +138,50 @@ const SubUnion = () => {
       .join("");
   };
 
+  const upazilaOptions = upazilas.map((upazila) => ({
+    value: upazila.id,
+    label: upazila.name,
+  }));
+
   return (
     <div>
-      <Header title={"উপজেলার তথ্য"} />
+      <Header title={"ইউনিয়নের তথ্য"} />
       <div className="dashboard p-3" style={{ backgroundColor: "#FFFFFF" }}>
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <form onSubmit={handleSubmit}>
             <div className="row g-6">
               <div className="col-md-2 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: '#323232' }}>
+                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
                   জেলা
                 </label>
                 <input
                   type="text"
-                  name="district"
                   value={"চট্টগ্রাম"}
                   className="form-control"
                   readOnly
                 />
               </div>
               <div className="col-md-2 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: '#323232' }}>
+                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
                   উপজেলা
+                </label>
+                <Select
+                  options={upazilaOptions}
+                  value={formData.upazila}
+                  onChange={handleUpazilaChange}
+                  isClearable
+                  placeholder="Select an Upazila"
+                />
+              </div>
+              <div className="col-md-2 d-flex flex-column mb-3">
+                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
+                  ইউনিয়ন
                 </label>
                 <input
                   type="text"
-                  name="upazila"
-                  value={formData.upazila}
-                  onChange={handleChange}
+                  name="union"
+                  value={formData.union}
+                  onChange={handleUnionChange}
                   className="form-control"
                 />
               </div>
@@ -206,7 +190,7 @@ const SubUnion = () => {
                 <button
                   type="submit"
                   className="btn w-100 text-white mt-4"
-                  style={{ backgroundColor: '#13007D' }}
+                  style={{ backgroundColor: "#13007D" }}
                 >
                   যোগ করুন
                 </button>
@@ -214,8 +198,6 @@ const SubUnion = () => {
             </div>
           </form>
         </div>
-
-        <hr style={{ color: "gray" }} />
 
         <div className="table-container" style={{ margin: "26px" }}>
           <div
@@ -228,7 +210,6 @@ const SubUnion = () => {
                   position: "sticky",
                   top: 0,
                   backgroundColor: "#fff",
-                  zIndex: 1,
                 }}
               >
                 <tr>
@@ -250,7 +231,7 @@ const SubUnion = () => {
                       backgroundColor: "#fff",
                     }}
                   >
-                    জেলা
+                    ইউনিয়ন
                   </th>
                   <th
                     style={{
@@ -269,9 +250,7 @@ const SubUnion = () => {
                       top: 0,
                       backgroundColor: "#fff",
                     }}
-                  >
-                    অ্যাকশন
-                  </th>
+                  ></th>
                 </tr>
               </thead>
               <tbody>
@@ -285,13 +264,7 @@ const SubUnion = () => {
                     <td>
                       <RiDeleteBin6Line
                         size={30}
-                        style={{ color: "red", cursor: "pointer", marginRight: '10px' }}
-                        onClick={() => handleDeleteConfirmation(item.id)}
-                      />
-                      <RiEdit2Line
-                        size={30}
-                        style={{ color: "blue", cursor: "pointer" }}
-                        onClick={() => handleUpdateConfirmation(item.id, item.union_name)}
+                        style={{ color: "red", cursor: "pointer" }}
                       />
                     </td>
                   </tr>
@@ -301,31 +274,8 @@ const SubUnion = () => {
           </div>
         </div>
       </div>
-
-      {/* Update Confirmation Modal */}
-      <Modal show={showUpdateModal} onHide={() => setShowUpdateModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update Upazila</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <input
-            type="text"
-            value={upazilaToUpdate.name}
-            onChange={handleUpdateChange}
-            className="form-control"
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleUpdate}>
-            Update
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };
 
-export default SubUnion;
+export default Union;
