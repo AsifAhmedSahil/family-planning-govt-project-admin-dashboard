@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 
@@ -7,96 +7,88 @@ import officer from "../assets/officer.png";
 import { FaRegEye } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserProvider";
+// import { useUser } from "../context/UserProvider";
+import Select from "react-select";
 
 const PeopleInformation = () => {
   const navigate = useNavigate();
-  const {user} = useUser()
+  // const { user } = useUser();
 
   const handleRowClick = (id) => {
-    // Navigate to the individual person's details page
     navigate(`/person/${id}`);
   };
+
+  const [designation, setDesignation] = useState([]);
+  const [upazilas, setUpazilas] = useState([]);
+  const [unions, setUnions] = useState([]);
+
+  const [units, setUnits] = useState([]);
   const [data, setData] = useState([
     {
-      id:"001",
+      id: "001",
       name: "সাব্বির আহমেদ",
       mobile: "০১৮২৯৩৩৭৫৯৯",
       nid: "২৯৩৩৭৫৯৯",
       address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
     },
     {
-      id:"002",
+      id: "002",
       name: "সাব্বির আহমেদ",
       mobile: "০১৮২৯৩৩৭৫৯৯",
       nid: "২৯৩৩৭৫৯৯",
       address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
     },
     {
-      id:"003",
+      id: "003",
       name: "সাব্বির আহমেদ",
       mobile: "০১৮২৯৩৩৭৫৯৯",
       nid: "২৯৩৩৭৫৯৯",
       address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
     },
     {
-      id:"004",
+      id: "004",
       name: "সাব্বির আহমেদ",
       mobile: "০১৮২৯৩৩৭৫৯৯",
       nid: "২৯৩৩৭৫৯৯",
       address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
     },
     {
-      id:"005",
+      id: "005",
       name: "সাব্বির আহমেদ",
       mobile: "০১৮২৯৩৩৭৫৯৯",
       nid: "২৯৩৩৭৫৯৯",
       address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
     },
     {
-      id:"005",
+      id: "006",
       name: "সাব্বির আহমেদ",
       mobile: "০১৮২৯৩৩৭৫৯৯",
       nid: "২৯৩৩৭৫৯৯",
       address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
     },
     {
-      id:"006",
+      id: "007",
       name: "সাব্বির আহমেদ",
       mobile: "০১৮২৯৩৩৭৫৯৯",
       nid: "২৯৩৩৭৫৯৯",
       address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
     },
     {
-      id:"006",
+      id: "008",
       name: "সাব্বির আহমেদ",
       mobile: "০১৮২৯৩৩৭৫৯৯",
       nid: "২৯৩৩৭৫৯৯",
       address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
     },
     {
-      id:"007",
+      id: "009",
       name: "সাব্বির আহমেদ",
       mobile: "০১৮২৯৩৩৭৫৯৯",
       nid: "২৯৩৩৭৫৯৯",
       address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
     },
     {
-      id:"008",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id:"009",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id:"0010",
+      id: "0010",
       name: "সাব্বির আহমেদ",
       mobile: "০১৮২৯৩৩৭৫৯৯",
       nid: "২৯৩৩৭৫৯৯",
@@ -113,25 +105,231 @@ const PeopleInformation = () => {
       .join("");
   };
 
-  const initialFormData = {
-    title: "পদবী",
-    district: "জেলা",
-    upazila: "উপজেলা",
-    union: "ইউনিয়ন",
-    unit: "ইউনিট",
-    officerName: "",
-    officerId: "",
-    officerEmail: "",
-    address: "",
-    image: null,
+  const fetchDesignation = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/setup/get-designations",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setDesignation(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching designation:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching designation:", error);
+    }
   };
 
-  const [formData, setFormData] = useState(initialFormData);
+  const fetchUpazilas = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/setup/get-upazilas",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-  const handleFormSubmit = (e) => {
+      if (response.ok) {
+        const result = await response.json();
+        setUpazilas(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching upazilas:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching upazilas:", error);
+    }
+  };
+
+  const fetchUnions = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/setup/get-unions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setUnions(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching unions:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching unions:", error);
+    }
+  };
+
+  const fetchUnits = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/setup/get-units",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setUnits(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching units:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching units:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDesignation();
+    fetchUpazilas();
+    fetchUnions();
+    fetchUnits();
+  }, []);
+
+  const designationOptions = designation.map((desig) => ({
+    id: desig.id,
+    label: desig.name,
+  }));
+
+  const upazilaOptions = upazilas.map((upazila) => ({
+    id: upazila.id,
+    label: upazila.name,
+  }));
+
+  const unionOptions = unions.map((union) => ({
+    id: union.id,
+    label: union.name,
+  }));
+
+  const unitOptions = units.map((unit) => ({
+    id: unit.id,
+    label: unit.name,
+  }));
+
+  const [formData, setFormData] = useState({
+    emp_id: "",
+    designation_id: "",
+    district: "",
+    upazila_id: "",
+    union_id: "",
+    unit_id: "",
+    name: "",
+    mobile: "",
+    nid: "",
+    address: "",
+    image: null,
+  });
+
+  const handleDesignationChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      designation_id: selectedOption ? selectedOption.id : null,
+    });
+  };
+
+  const handleUpazilaChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      upazila_id: selectedOption ? selectedOption.id : null,
+    });
+  };
+
+  const handleUnionChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      union_id: selectedOption ? selectedOption.id : null,
+    });
+  };
+
+  const handleUnitChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      unit_id: selectedOption ? selectedOption.id : null,
+    });
+  };
+  const handleIdChange = (e) => {
+    setFormData({
+      ...formData,
+      emp_id: e.target.value,
+    });
+  };
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data: ", formData);
-    setFormData(initialFormData);
+
+    const token = localStorage.getItem("authToken");
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("emp_id", formData.emp_id);
+    formDataToSend.append("designation_id", formData.designation_id);
+    formDataToSend.append("district", formData.district);
+    formDataToSend.append("upazila_id", formData.upazila_id);
+    formDataToSend.append("union_id", formData.union_id);
+    formDataToSend.append("unit_id", formData.unit_id);
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("mobile", formData.mobile);
+    formDataToSend.append("nid", formData.nid);
+    formDataToSend.append("address", formData.address);
+    if (formData.image) {
+      formDataToSend.append("image", formData.image);
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/employee/add-employee",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formDataToSend,
+        }
+      );
+      console.log(response);
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        console.log("Employee registered successfully:", result);
+        // Optionally, reset the form or update the UI
+      } else {
+        const errorResult = await response.json();
+        console.error("Error:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -146,20 +344,16 @@ const PeopleInformation = () => {
     const { id, files } = e.target;
     setFormData({
       ...formData,
-      [id]: files[0], // Store the selected file (if any)
+      [id]: files[0],
     });
   };
-  console.log(user)
-  
+
   return (
     <div>
       <Header title={"কর্মকর্তার তথ্য"} />
       <div className="dashboard p-3 " style={{ backgroundColor: "#FFFFFF" }}>
-      
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <div className="row g-6 ">
-            {" "}
-            {/* g-6 adds gap between columns */}
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px] " style={{ color: "#323232" }}>
                 পদবী
@@ -310,7 +504,6 @@ const PeopleInformation = () => {
                   >
                     ছবি
                   </th>
-
                   <th
                     style={{
                       color: "#323232",
@@ -331,8 +524,7 @@ const PeopleInformation = () => {
               </thead>
               <tbody>
                 {data.map((item, index) => (
-                  <tr key={index}   >
-                    
+                  <tr key={index}>
                     <td style={{ color: "#6C6C6C" }}>
                       {convertToBangla(item.id)}
                     </td>
@@ -347,7 +539,6 @@ const PeopleInformation = () => {
                         style={{ width: "50px", height: "50px" }}
                       />
                     </td>
-
                     <td>
                       <FaRegEye
                         size={20}
@@ -363,7 +554,6 @@ const PeopleInformation = () => {
                     </td>
                   </tr>
                 ))}
-                
               </tbody>
             </table>
           </div>
@@ -379,12 +569,12 @@ const PeopleInformation = () => {
         <div
           className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
           style={{
-            width: "90%", // Set the width of the modal to 70%
-            height: "70%", // Set the height of the modal to 70%
-            maxHeight: "90vh", // Ensure the modal's height doesn't exceed 90% of the viewport
-            maxWidth: "70vw", // Ensure the modal's height doesn't exceed 90% of the viewport
-            marginLeft: "auto", // Center the modal horizontally
-            marginRight: "auto", // Center the modal horizontally
+            width: "90%",
+            height: "70%",
+            maxHeight: "90vh",
+            maxWidth: "70vw",
+            marginLeft: "auto",
+            marginRight: "auto",
           }}
         >
           <div className="modal-content" style={{ padding: "30px" }}>
@@ -392,7 +582,6 @@ const PeopleInformation = () => {
               <h5 className="modal-title" id="officerModalLabel">
                 কর্মকর্তা তথ্য যোগ করুন
               </h5>
-
               <button
                 type="button"
                 className="btn-close"
@@ -408,17 +597,33 @@ const PeopleInformation = () => {
                     className="mb-2 text-[16px] "
                     style={{ color: "#323232" }}
                   >
+                    আইডি
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.emp_id}
+                    onChange={handleIdChange}
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-md-2 d-flex flex-column mb-3">
+                  <label
+                    className="mb-2 text-[16px] "
+                    style={{ color: "#323232" }}
+                  >
                     পদবী
                   </label>
-                  <select
-                    name="title"
-                    className="form-select"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                  >
-                    <option value="পদবী">পদবী</option>
-                    <option value="এফডব্লিউএ">এফডব্লিউএ</option>
-                  </select>
+                  <Select
+                    options={designationOptions}
+                    value={designationOptions.find(
+                      (option) => option.id === formData.title
+                    )}
+                    onChange={handleDesignationChange}
+                    isClearable
+                    placeholder="Select"
+                    getOptionValue={(option) => option.id}
+                    getOptionLabel={(option) => option.label}
+                  />
                 </div>
                 <div className="col-md-2 d-flex flex-column mb-3">
                   <label
@@ -433,7 +638,6 @@ const PeopleInformation = () => {
                     value={formData.district}
                     onChange={handleInputChange}
                   >
-                    <option value="জেলা">জেলা</option>
                     <option value="চট্টগ্রাম">চট্টগ্রাম</option>
                   </select>
                 </div>
@@ -444,15 +648,17 @@ const PeopleInformation = () => {
                   >
                     উপজেলা
                   </label>
-                  <select
-                    name="upazila"
-                    className="form-select"
-                    value={formData.upazila}
-                    onChange={handleInputChange}
-                  >
-                    <option value="উপজেলা">উপজেলা</option>
-                    <option value="আনোয়ারা">আনোয়ারা</option>
-                  </select>
+                  <Select
+                    options={upazilaOptions}
+                    value={upazilaOptions.find(
+                      (option) => option.id === formData.upazila
+                    )}
+                    onChange={handleUpazilaChange}
+                    isClearable
+                    placeholder="Select upazila"
+                    getOptionValue={(option) => option.id}
+                    getOptionLabel={(option) => option.label}
+                  />
                 </div>
                 <div className="col-md-2 d-flex flex-column mb-3">
                   <label
@@ -461,15 +667,17 @@ const PeopleInformation = () => {
                   >
                     ইউনিয়ন
                   </label>
-                  <select
-                    name="union"
-                    className="form-select"
-                    value={formData.union}
-                    onChange={handleInputChange}
-                  >
-                    <option value="ইউনিয়ন">ইউনিয়ন</option>
-                    <option value="কুশাখালি">কুশাখালি</option>
-                  </select>
+                  <Select
+                    options={unionOptions}
+                    value={unionOptions.find(
+                      (option) => option.id === formData.union
+                    )}
+                    onChange={handleUnionChange}
+                    isClearable
+                    placeholder="Select Union"
+                    getOptionValue={(option) => option.id}
+                    getOptionLabel={(option) => option.label}
+                  />
                 </div>
                 <div className="col-md-2 d-flex flex-column mb-3">
                   <label
@@ -478,15 +686,17 @@ const PeopleInformation = () => {
                   >
                     ইউনিট
                   </label>
-                  <select
-                    name="unit"
-                    className="form-select"
-                    value={formData.unit}
-                    onChange={handleInputChange}
-                  >
-                    <option value="ইউনিট"> ইউনিট</option>
-                    <option value="১ক">১ক</option>
-                  </select>
+                  <Select
+                    options={unitOptions}
+                    value={unitOptions.find(
+                      (option) => option.id === formData.unit
+                    )}
+                    onChange={handleUnitChange}
+                    isClearable
+                    placeholder="Select unit"
+                    getOptionValue={(option) => option.id}
+                    getOptionLabel={(option) => option.label}
+                  />
                 </div>
               </div>
             </div>
@@ -494,49 +704,48 @@ const PeopleInformation = () => {
             <div
               className="modal-body"
               style={{
-                maxHeight: "60vh", // Set max-height of the modal body to 60% of the viewport
-                overflowY: "auto", // Make the content scrollable if it exceeds the max height
+                maxHeight: "60vh",
+                overflowY: "auto",
               }}
             >
-              {/* Form or content here */}
               <form onSubmit={handleFormSubmit}>
                 <div className="row mb-3">
                   <div className="col-md-4">
-                    <label htmlFor="officerName" className="form-label">
+                    <label htmlFor="name" className="form-label">
                       কর্মকর্তা নাম
                     </label>
                     <input
                       type="text"
                       className="form-control"
-                      id="officerName"
+                      id="name"
                       placeholder="কর্মকর্তার নাম লিখুন"
-                      value={formData.officerName}
+                      value={formData.name}
                       onChange={handleInputChange}
                     />
                   </div>
                   <div className="col-md-4">
-                    <label htmlFor="officerId" className="form-label">
+                    <label htmlFor="mobile" className="form-label">
                       মোবাইল
                     </label>
                     <input
                       type="text"
                       className="form-control"
-                      id="officerId"
+                      id="mobile"
                       placeholder="কর্মকর্তার মোবাইল"
-                      value={formData.officerId}
+                      value={formData.mobile}
                       onChange={handleInputChange}
                     />
                   </div>
                   <div className="col-md-4">
-                    <label htmlFor="officerEmail" className="form-label">
+                    <label htmlFor="nid" className="form-label">
                       জাতীয় পরিচয়পত্র
                     </label>
                     <input
                       type="text"
                       className="form-control"
-                      id="officerEmail"
+                      id="nid"
                       placeholder="কর্মকর্তার জাতীয় পরিচয়পত্র"
-                      value={formData.officerEmail}
+                      value={formData.nid}
                       onChange={handleInputChange}
                     />
                   </div>
@@ -568,7 +777,6 @@ const PeopleInformation = () => {
                     />
                   </div>
                 </div>
-
                 <div className="modal-footer">
                   <button
                     type="submit"
@@ -588,5 +796,3 @@ const PeopleInformation = () => {
 };
 
 export default PeopleInformation;
-
-
