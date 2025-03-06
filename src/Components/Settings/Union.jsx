@@ -1,6 +1,6 @@
 import Header from "../Header";
 import { useEffect, useState } from "react";
-import Select from 'react-select';
+import Select from "react-select";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
 import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
@@ -9,10 +9,13 @@ import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 const Union = () => {
   const [upazilas, setUpazilas] = useState([]);
   const [unions, setUnions] = useState([]);
-  console.log(unions)
+  console.log(unions);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [unionToUpdate, setUnionToUpdate] = useState({ id: null, name: "",upazila_id:"" });
-  
+  const [unionToUpdate, setUnionToUpdate] = useState({
+    id: null,
+    name: "",
+    upazila_id: "",
+  });
 
   const [formData, setFormData] = useState({
     upazila: null,
@@ -140,19 +143,20 @@ const Union = () => {
 
   const handleDeleteConfirmation = (id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "আপনি কি নিশ্চিত?",
+      // text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "হ্যাঁ, নিশ্চিত",
+      cancelButtonText: "না",
     }).then((result) => {
       if (result.isConfirmed) {
         handleDelete(id);
         Swal.fire({
-          title: "Deleted!",
-          text: "Your union has been deleted.",
+          title: "ডিলিট করা হয়েছে",
+          text: "উপজেলা ডিলিট সম্পন্ন",
           icon: "success",
         });
       }
@@ -166,16 +170,18 @@ const Union = () => {
     });
   };
 
-  const handleUpdateConfirmation = (id, name,upazila_id) => {
-    setUnionToUpdate({ id, name,upazila_id });
-    setShowUpdateModal(true);
-  };
+  
 
   const handleUnionChange = (e) => {
     setFormData({
       ...formData,
       union: e.target.value,
     });
+  };
+
+  const handleUpdateConfirmation = (id, name, upazila_id) => {
+    setUnionToUpdate({ id, name, upazila_id });
+    setShowUpdateModal(true);
   };
 
   const handleUpdate = async () => {
@@ -192,7 +198,7 @@ const Union = () => {
           body: JSON.stringify({
             id: unionToUpdate.id,
             name: unionToUpdate.name,
-            upazila_id: unionToUpdate.upazila_id
+            upazila_id: unionToUpdate.upazila_id,
           }),
         }
       );
@@ -237,7 +243,10 @@ const Union = () => {
           <form onSubmit={handleSubmit}>
             <div className="row g-6">
               <div className="col-md-2 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
+                <label
+                  className="mb-2 text-[16px]"
+                  style={{ color: "#323232" }}
+                >
                   জেলা
                 </label>
                 <input
@@ -248,7 +257,10 @@ const Union = () => {
                 />
               </div>
               <div className="col-md-2 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
+                <label
+                  className="mb-2 text-[16px]"
+                  style={{ color: "#323232" }}
+                >
                   উপজেলা
                 </label>
                 <Select
@@ -260,7 +272,10 @@ const Union = () => {
                 />
               </div>
               <div className="col-md-2 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
+                <label
+                  className="mb-2 text-[16px]"
+                  style={{ color: "#323232" }}
+                >
                   ইউনিয়ন
                 </label>
                 <input
@@ -372,7 +387,11 @@ const Union = () => {
                         size={30}
                         style={{ color: "blue", cursor: "pointer" }}
                         onClick={() =>
-                          handleUpdateConfirmation(item.id, item.name,item.upazila_id)
+                          handleUpdateConfirmation(
+                            item.id,
+                            item.name,
+                            item.upazila_id
+                          )
                         }
                       />
                     </td>
