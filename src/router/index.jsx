@@ -62,7 +62,7 @@ const router = createBrowserRouter([
                 element:<Unit/>
             },
             {
-                path:"/person/:id",
+                path:"/person/:emp_id",
                 element:<PersonDetails/>
             },
             

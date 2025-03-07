@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../Components/Header";
 import DatePicker from "react-datepicker"; // Import DatePicker component
 import "react-datepicker/dist/react-datepicker.css";
 import { SlLocationPin } from "react-icons/sl";
 import { FaRegTrashAlt } from "react-icons/fa";
 import officer from "../assets/officer.png";
+import { useParams } from "react-router-dom";
 
 const PersonDetails = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const {emp_id} = useParams()
+  console.log(emp_id)
 
   const presenlist = [
     {
@@ -68,6 +71,8 @@ const PersonDetails = () => {
     { location: "বাজার মোড়", time: "১০:০০" },
     { location: "নতুন পাড়া", time: "১১:৩০" },
   ];
+
+  const [employee ,setEmployee] = useState([])
 
   const containerStyle = {
     height: "100%",
@@ -160,6 +165,39 @@ const PersonDetails = () => {
       .map((digit) => banglaDigits[parseInt(digit)])
       .join("");
   };
+  const fetchEmployee = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/employee/get-employee-by-id",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+           id:emp_id
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setEmployee(result); // Assuming you have a state variable `employees` to store the result
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching employees:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
+
+  useEffect(()=>{
+    fetchEmployee()
+  },[])
+  console.log(employee)
 
   return (
     <div>
@@ -174,7 +212,7 @@ const PersonDetails = () => {
               paddingBottom: "20px",
             }}
           >
-            সাব্বির আহমেদ
+            {employee.name}
           </h3>
           <div
             className="col-md-4 d-flex flex-column mb-3"

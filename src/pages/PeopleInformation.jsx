@@ -3,7 +3,7 @@ import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 
 import Header from "../Components/Header";
-import officer from "../assets/officer.png";
+
 import { FaRegEye } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -21,80 +21,9 @@ const PeopleInformation = () => {
   const [designation, setDesignation] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   const [unions, setUnions] = useState([]);
+  const [employees, setEmployees] = useState([]);
 
   const [units, setUnits] = useState([]);
-  const [data, setData] = useState([
-    {
-      id: "001",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id: "002",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id: "003",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id: "004",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id: "005",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id: "006",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id: "007",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id: "008",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id: "009",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-    {
-      id: "0010",
-      name: "সাব্বির আহমেদ",
-      mobile: "০১৮২৯৩৩৭৫৯৯",
-      nid: "২৯৩৩৭৫৯৯",
-      address: "শাকপাড়া, পূর্ব হাটহাজারী, ফতেয়াবাদ, চট্টগ্রাম",
-    },
-  ]);
 
   const convertToBangla = (number) => {
     const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -209,11 +138,42 @@ const PeopleInformation = () => {
     }
   };
 
+  const fetchEmployees = async (designation = "", search = "") => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/employee/get-employee",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            designation: designation,
+            search: search,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setEmployees(result); // Assuming you have a state variable `employees` to store the result
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching employees:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
+
   useEffect(() => {
     fetchDesignation();
     fetchUpazilas();
     fetchUnions();
     fetchUnits();
+    fetchEmployees();
   }, []);
 
   const designationOptions = designation.map((desig) => ({
@@ -322,6 +282,7 @@ const PeopleInformation = () => {
         const result = await response.json();
         console.log(result);
         console.log("Employee registered successfully:", result);
+        fetchEmployees();
         // Optionally, reset the form or update the UI
       } else {
         const errorResult = await response.json();
@@ -347,6 +308,8 @@ const PeopleInformation = () => {
       [id]: files[0],
     });
   };
+
+  // console.log(employees)
 
   return (
     <div>
@@ -523,10 +486,10 @@ const PeopleInformation = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item, index) => (
+                {employees.map((item, index) => (
                   <tr key={index}>
                     <td style={{ color: "#6C6C6C" }}>
-                      {convertToBangla(item.id)}
+                      {convertToBangla(item.emp_id)}
                     </td>
                     <td style={{ color: "#6C6C6C" }}>{item.name}</td>
                     <td style={{ color: "#6C6C6C" }}>{item.mobile}</td>
@@ -534,7 +497,7 @@ const PeopleInformation = () => {
                     <td style={{ color: "#6C6C6C" }}>{item.address}</td>
                     <td>
                       <img
-                        src={officer}
+                        src={item.image}
                         alt="officer"
                         style={{ width: "50px", height: "50px" }}
                       />
@@ -542,7 +505,7 @@ const PeopleInformation = () => {
                     <td>
                       <FaRegEye
                         size={20}
-                        onClick={() => handleRowClick(item.id)}
+                        onClick={() => handleRowClick(item.emp_id)}
                         style={{ color: "gray", cursor: "pointer" }}
                       />
                     </td>
