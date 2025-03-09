@@ -4,7 +4,7 @@ import profile from "../assets/profile.png";
 
 const Header = ({ title }) => {
   return (
-    <div className="header d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
+    <div className="header d-flex justify-content-between align-items-center p-3 bg-light ">
       <div>
         <h1 className="h3 mb-2">{title}</h1>
         <span style={{ color: "#565656" }}>

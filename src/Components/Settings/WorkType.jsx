@@ -180,7 +180,7 @@ const WorkType = () => {
   return (
     <div>
       <Header title={"কাজের ক্ষেত্র"} />
-      <div className="dashboard p-3" style={{ backgroundColor: "#FFFFFF" }}>
+      <div className="dashboard p-3" style={{ backgroundColor: "#FFFFFF",borderRadius:"15px" }}>
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <form onSubmit={handleSubmit}>
             <div className="row">
@@ -313,10 +313,11 @@ const WorkType = () => {
         <Modal.Header closeButton>
           <Modal.Title>কাজের ক্ষেত্র আপডেট করুন</Modal.Title>
         </Modal.Header>
+          
         <Modal.Body>
           <input
             type="text"
-            value={workTypeToUpdate.name}
+            value={workTypeToUpdate.field}
             onChange={handleUpdateChange}
             className="form-control"
           />

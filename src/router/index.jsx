@@ -14,6 +14,7 @@ import LoginForm from "../Components/LoginForm";
 import PersonDetails from "../pages/PersonDetails";
 import Notice from "../pages/Notice";
 import WorkType from "../Components/Settings/WorkType";
+import WorkTypeDetails from "../Components/Settings/WorkTypeDetails";
 
 
 
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
             {
                 path:"/setting/worktype",
                 element:<WorkType/>
+            },
+            {
+                path:"/setting/worktypedetails",
+                element:<WorkTypeDetails/>
             },
             {
                 path:"/person/:emp_id",
