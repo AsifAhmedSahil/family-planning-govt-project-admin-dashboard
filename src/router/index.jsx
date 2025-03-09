@@ -13,6 +13,7 @@ import Unit from "../Components/Settings/Unit";
 import LoginForm from "../Components/LoginForm";
 import PersonDetails from "../pages/PersonDetails";
 import Notice from "../pages/Notice";
+import WorkType from "../Components/Settings/WorkType";
 
 
 
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
             {
                 path:"/setting/unit",
                 element:<Unit/>
+            },
+            {
+                path:"/setting/worktype",
+                element:<WorkType/>
             },
             {
                 path:"/person/:emp_id",

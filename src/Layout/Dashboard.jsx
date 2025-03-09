@@ -180,6 +180,9 @@ const Dashboard = () => {
                   <Dropdown.Item as={Link} to="/setting/designation" onClick={handleMenuItemClick} className="mt-2">
                     পদবী
                   </Dropdown.Item>
+                  <Dropdown.Item as={Link} to="/setting/worktype" onClick={handleMenuItemClick} className="mt-2">
+                  কাজের ক্ষেত্র
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Nav>
