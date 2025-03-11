@@ -249,7 +249,7 @@ const SubUnion = () => {
                 style={{
                   position: "sticky",
                   top: 0,
-                  backgroundColor: "#fff",
+                  backgroundColor: "#D9D9D9",
                   zIndex: 1,
                 }}
               >
@@ -259,7 +259,7 @@ const SubUnion = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     ক্রমিক
@@ -269,7 +269,7 @@ const SubUnion = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     জেলা
@@ -279,7 +279,7 @@ const SubUnion = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     কর্মকর্তা
@@ -290,7 +290,7 @@ const SubUnion = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >ডিলিট</th>
                   <th
@@ -298,7 +298,7 @@ const SubUnion = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >আপডেট</th>
                 </tr>

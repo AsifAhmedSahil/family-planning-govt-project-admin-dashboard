@@ -1,8 +1,12 @@
+import { useEffect, useState } from "react";
 import Header from "../Components/Header";
 
 const HomePage = () => {
+  const [unions, setUnions] = useState([]);
+  const [units, setUnits] = useState([]);
+  const [upazilas, setUpazila] = useState([]);
   const glassmorphism = {
-    background: "rgba(255, 255, 255, 0.25)",
+    background: "rgba(70, 42, 42, 0.25)",
     height: "125px",
     backdropFilter: "blur(10px)",
     WebkitBackdropFilter: "blur(10px)",
@@ -12,21 +16,113 @@ const HomePage = () => {
   };
 
   const attendanceData = [
-    { title: 'পরিচালক', percentage: 70, date: '০১/০১' },
-    { title: 'পরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'উপপরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'উপপরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'পরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'পরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'উপপরিচালক', percentage: 50, date: '০১/০১' },
-    { title: 'উপপরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'পরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'পরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'উপপরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'উপপরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'উপপরিচালক', percentage: 100, date: '০১/০১' },
-    { title: 'উপপরিচালক', percentage: 100, date: '০১/০১' },
+    { title: "পরিচালক", percentage: 70, date: "০১/০১" },
+    { title: "পরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "পরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "পরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "উপপরিচালক", percentage: 50, date: "০১/০১" },
+    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "পরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "পরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
+    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
   ];
+  const fetchUnions = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/setup/get-unions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setUnions(result); // Update the state with fetched data
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching unions:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching unions:", error);
+    }
+  };
+
+  const fetchUnits = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/setup/get-units",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setUnits(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching units:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching units:", error);
+    }
+  };
+  const fetchUpazilas = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/setup/get-upazilas",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result, "****");
+        setUpazila(result); // Update the state with fetched data
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching upazilas:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching upazilas:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUnions();
+    fetchUnits()
+    fetchUpazilas()
+  }, []);
+
+  const convertToBangla = (number) => {
+    const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+    return number
+      .toString()
+      .split("")
+      .map((digit) => banglaDigits[parseInt(digit)])
+      .join("");
+  };
 
   return (
     <div>
@@ -77,23 +173,23 @@ const HomePage = () => {
         <div className="col-md-4">
           <div className="p-3 card" style={{ height: "105px" }}>
             <div className="d-flex justify-content-evenly mb-3">
-              <div className="d-flex" >
+              <div className="d-flex">
                 <p className="me-2 mb-1">জেলা</p>
                 <h5 className="mb-1">০১</h5>
               </div>
               <div className="d-flex">
                 <p className="me-2 mb-1">ইউনিয়ন</p>
-                <h5 className="mb-1">১০১</h5>
+                <h5 className="mb-1">{convertToBangla(unions.length)}</h5>
               </div>
             </div>
             <div className="d-flex justify-content-evenly">
               <div className="d-flex">
                 <p className="me-2 mb-0">উপজেলা</p>
-                <h5 className="mb-0">১৫</h5>
+                <h5 className="mb-0">{convertToBangla(upazilas.length)}</h5>
               </div>
               <div className="d-flex">
                 <p className="me-2 mb-0">ইউনিট</p>
-                <h5 className="mb-0">৩১৫</h5>
+                <h5 className="mb-0">{convertToBangla(units.length)}</h5>
               </div>
             </div>
           </div>
@@ -103,13 +199,12 @@ const HomePage = () => {
       {/* Lower Section - Two Parts */}
       <div className="row">
         {/* Left Part - Attendance List */}
-        <div
-          className="col-md-8 mb-3"
-         
-        >
-            <h5 className="mb-4">সর্বশেষের উপস্থিতি তালিকা</h5>
-          <div className="p-4"  style={{ height: "530px", backgroundColor: "white" }}>
-
+        <div className="col-md-8 mb-3">
+          <h5 className="mb-4">সর্বশেষের উপস্থিতি তালিকা</h5>
+          <div
+            className="p-4"
+            style={{ height: "530px", backgroundColor: "white" }}
+          >
             <div className="row mb-3">
               <div className="col-md-6">
                 <p className="mb-1">পরিচালক</p>
@@ -430,9 +525,8 @@ const HomePage = () => {
 
         {/* Right Part - Scrollable Notices */}
         <div className="col-md-4">
-            <h5 className="mb-4">সর্বশেষ নোটিশ</h5>
+          <h5 className="mb-4">সর্বশেষ নোটিশ</h5>
           <div style={{ ...glassmorphism, padding: "20px" }}>
-
             <div className="mb-3 ">
               <p className="mb-1 fw-bold">পরিচালক</p>
               <p className="text-muted small">
@@ -441,10 +535,9 @@ const HomePage = () => {
                 স্বাস্থ্যকেন্দ্রে যোগাযোগ করুন
               </p>
             </div>
-            </div>
-            <h5 className="mb-4 mt-4">সর্বশেষ কাজের বিবরণ</h5>
-            <div style={{backgroundColor:"white"}}>
-
+          </div>
+          <h5 className="mb-4 mt-4">সর্বশেষ কাজের বিবরণ</h5>
+          <div style={{ backgroundColor: "white" }}>
             {/* Scrollable Area */}
             <div
               style={{

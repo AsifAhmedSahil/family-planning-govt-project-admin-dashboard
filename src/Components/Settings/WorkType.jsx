@@ -227,7 +227,7 @@ const WorkType = () => {
                 style={{
                   position: "sticky",
                   top: 0,
-                  backgroundColor: "#fff",
+                  backgroundColor: "#D9D9D9",
                   zIndex: 1,
                 }}
               >
@@ -237,7 +237,7 @@ const WorkType = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                       width: "80%", // Adjust width as needed
                     }}
                   >
@@ -249,7 +249,7 @@ const WorkType = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                       textAlign: "center",
                       width: "10%", // Adjust width as needed
                     }}
@@ -262,7 +262,7 @@ const WorkType = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                       textAlign: "center",
                       width: "10%", // Adjust width as needed
                     }}

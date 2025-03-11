@@ -353,12 +353,12 @@ const WorkTypeDetails = () => {
         <div className="table-container" style={{ margin: "26px" }}>
           <div className="table-responsive" style={{ maxHeight: "500px", overflowY: "auto" }}>
             <table className="table" style={{ width: "100%" }}>
-              <thead style={{ position: "sticky", top: 0, backgroundColor: "#fff" }}>
+              <thead style={{ position: "sticky", top: 0, backgroundColor: "#D9D9D9" }}>
                 <tr>
-                  <th style={{ color: "#323232", width: "40%" }}>কাজের ক্ষেত্রের বিবরনী</th>
-                  <th style={{ color: "#323232", width: "40%" }}>টাইপ</th>
-                  <th style={{ color: "#323232", textAlign: "center", width: "10%" }}>ডিলিট</th>
-                  <th style={{ color: "#323232", textAlign: "center", width: "10%" }}>আপডেট</th>
+                  <th style={{ color: "#323232", width: "40%",backgroundColor: "#D9D9D9" }}>কাজের ক্ষেত্রের বিবরনী</th>
+                  <th style={{ color: "#323232", width: "40%" ,backgroundColor: "#D9D9D9"}}>টাইপ</th>
+                  <th style={{ color: "#323232", textAlign: "center", width: "10%",backgroundColor: "#D9D9D9" }}>ডিলিট</th>
+                  <th style={{ color: "#323232", textAlign: "center", width: "10%",backgroundColor: "#D9D9D9" }}>আপডেট</th>
                 </tr>
               </thead>
               <tbody>

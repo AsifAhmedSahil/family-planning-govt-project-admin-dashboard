@@ -4,42 +4,34 @@ import { useEffect, useState } from "react";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
-// Function to convert Bengali digits to Arabic numerals
-
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const Designation = () => {
   const [attendancePeriods, setAttendancePeriods] = useState([]);
-    const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate()
 
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "অফিস স্টাফ",
-      in_time: "০৯:০০", // Bengali time
-      out_time: "০৫:০০", // Bengali time
-      leaveBalance: "20 দিন",
-    },
-    {
-      id: 2,
-      name: "ফার্মাসিস্ট",
-      in_time: "০৯:০০", // Bengali time
-      out_time: "০৫:০০", // Bengali time
-      leaveBalance: "10 দিন",
-    },
-    // Add more data objects as needed
-  ]);
+  const handleNavigate = () =>{
+    navigate("/setting/workassign")
+  }
+
+ 
 
   const [formData, setFormData] = useState({
     designationName: "", // Designation name
-    inTime: "09:00", // Start time
-    outTime: "05:00", // End time
+    inTime: "09:00 AM", // Start time
+    outTime: "05:00 PM", // End time
     leaveBalance: "", // Leave balance
   });
 
-  // Track which field is being edited
-  const [editingField, setEditingField] = useState(null);
-  const [editingValue, setEditingValue] = useState("");
+  const convertTo12HourFormat = (time24) => {
+    const [hours, minutes] = time24.split(":").map(Number);
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const hours12 = hours % 12 || 12; // Convert hour 0 to 12 for AM
+    const minutesFormatted = minutes < 10 ? `0${minutes}` : minutes; // Add leading 0 for minutes if necessary
+    return `${hours12}:${minutesFormatted} ${ampm}`;
+  };
 
   // Handle input change for the form
   const handleInputChange = (e) => {
@@ -52,7 +44,7 @@ const Designation = () => {
 
   // Handle time changes (start time, end time)
   const handleTimeChange = (field, value) => {
-    setEditingValue(value);  // Update the editing value
+    setEditingValue(value); // Update the editing value
     setFormData({
       ...formData,
       [field]: value, // Update the specific field (inTime or outTime)
@@ -63,6 +55,7 @@ const Designation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("authToken");
+    console.log(formData)
 
     // Step 1: Add Designation
     const designationResponse = await fetch(
@@ -114,7 +107,7 @@ const Designation = () => {
 
     const attendanceResult = await attendanceResponse.json();
     console.log("Attendance Period Added successfully:", attendanceResult);
-    await fetchAttendancePeriods()
+    await fetchAttendancePeriods();
 
     // Optionally, reset the form or handle success feedback
     setFormData({
@@ -126,58 +119,85 @@ const Designation = () => {
   };
 
   // Fetch attendance periods from the API
-    const fetchAttendancePeriods = async () => {
-      const token = localStorage.getItem("authToken"); // Assuming you use a token for authorization
-  
-      try {
-        const response = await fetch("http://localhost:5001/api/attendance/get-attendance-period", {
+  const fetchAttendancePeriods = async () => {
+    const token = localStorage.getItem("authToken"); // Assuming you use a token for authorization
+
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/attendance/get-attendance-period",
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        });
-  
-        if (!response.ok) {
-          throw new Error("Failed to fetch attendance periods");
         }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch attendance periods");
+      }
+
+      const data = await response.json();
+      setAttendancePeriods(data); // Update state with fetched data
+    } catch (error) {
+      setError(error.message); // Set error state if fetch fails
+    }
+  };
+
+  // Call fetchAttendancePeriods when the component mounts
+  useEffect(() => {
+    fetchAttendancePeriods();
+  }, []); // Empty dependency array ensures it runs only once after the initial render
+
+   const handleDelete = async (id) => {
+      const token = localStorage.getItem("authToken");
+      try {
+        const response = await fetch(
+          "http://localhost:5001/api/attendance/delete-attendance-period",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ id }),
+          }
+        );
   
-        const data = await response.json();
-        setAttendancePeriods(data); // Update state with fetched data
-  
+        if (response.ok) {
+          console.log("attendence period deleted successfully");
+          await fetchAttendancePeriods(); // Fetch the updated list of unions
+        } else {
+          const errorResult = await response.json();
+          console.error("Error deleting attendence period:", errorResult);
+        }
       } catch (error) {
-        setError(error.message); // Set error state if fetch fails
+        console.error("Error deleting attendence period:", error);
       }
     };
-    // console.log(attendancePeriods)
   
-    // Call fetchAttendancePeriods when the component mounts
-    useEffect(() => {
-      fetchAttendancePeriods();
-    }, []); // Empty dependency array ensures it runs only once after the initial render
-  
-
-  // Edit table fields when clicked
-  const handleEditField = (field, value, id) => {
-    setEditingField({ field, id });
-    setEditingValue(value);
-  };
-
-  const handleBlur = (id) => {
-    // Save the changes when the input field loses focus
-    const updatedData = data.map((item) => {
-      if (item.id === id) {
-        return { ...item, [editingField.field]: editingValue };
-      }
-      return item;
-    });
-    setData(updatedData);
-    setEditingField(null);
-  };
-
-  const handleChange = (e) => {
-    setEditingValue(e.target.value);
-  };
+    const handleDeleteConfirmation = (id) => {
+      Swal.fire({
+        title: "আপনি কি নিশ্চিত?",
+        // text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "হ্যাঁ, নিশ্চিত",
+        cancelButtonText: "না",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleDelete(id);
+          Swal.fire({
+            title: "ডিলিট করা হয়েছে",
+            text: "",
+            icon: "success",
+          });
+        }
+      });
+    };
 
   return (
     <div>
@@ -189,7 +209,10 @@ const Designation = () => {
             <div className="row g-6">
               {/* Designation Name */}
               <div className="col-md-2 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
+                <label
+                  className="mb-2 text-[16px]"
+                  style={{ color: "#323232" }}
+                >
                   পদবীর নাম
                 </label>
                 <input
@@ -204,7 +227,10 @@ const Designation = () => {
 
               {/* In Time */}
               <div className="col-md-2 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
+                <label
+                  className="mb-2 text-[16px]"
+                  style={{ color: "#323232" }}
+                >
                   উপস্থিতির সময়
                 </label>
                 <TimePicker
@@ -216,7 +242,10 @@ const Designation = () => {
 
               {/* Out Time */}
               <div className="col-md-2 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
+                <label
+                  className="mb-2 text-[16px]"
+                  style={{ color: "#323232" }}
+                >
                   প্রস্থানের সময়
                 </label>
                 <TimePicker
@@ -229,7 +258,10 @@ const Designation = () => {
 
               {/* Leave Balance */}
               <div className="col-md-2 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
+                <label
+                  className="mb-2 text-[16px]"
+                  style={{ color: "#323232" }}
+                >
                   মোট ছুটি
                 </label>
                 <input
@@ -258,8 +290,18 @@ const Designation = () => {
           </form>
         </div>
 
+        
+
         {/* Data Table */}
         <div className="table-container" style={{ margin: "26px" }}>
+        <div className="d-flex justify-content-between align-items-center " style={{marginBottom:"15px"}}>
+          <div>
+            <h1 style={{fontSize:"16px",fontWeight:"500",color:"#323232"}}>পদবী সমূহ</h1>
+          </div>
+          <div >
+            <button onClick={handleNavigate} style={{backgroundColor:"#fff",border:"0px",color:"#13007D"}}>কাজ এসাইন করুন</button>
+          </div>
+        </div>
           <div
             className="table-responsive"
             style={{ maxHeight: "500px", overflowY: "auto" }}
@@ -269,8 +311,8 @@ const Designation = () => {
                 style={{
                   position: "sticky",
                   top: 0,
-                  backgroundColor: "#fff",
-                  zIndex: 1,
+                  backgroundColor: "#D9D9D9",
+                  // zIndex: 1,
                 }}
               >
                 <tr>
@@ -279,7 +321,7 @@ const Designation = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     পদবী
@@ -289,7 +331,7 @@ const Designation = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     উপস্থিতির সময়
@@ -299,7 +341,7 @@ const Designation = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     প্রস্থানের সময়
@@ -309,7 +351,7 @@ const Designation = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     মোট ছুটি
@@ -319,7 +361,7 @@ const Designation = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   ></th>
                 </tr>
@@ -327,56 +369,15 @@ const Designation = () => {
               <tbody>
                 {attendancePeriods.map((item) => (
                   <tr key={item.id}>
-                    <td onClick={() => handleEditField("name", item.name, item.id)}>
-                      {editingField && editingField.id === item.id && editingField.field === "name" ? (
-                        <input
-                          type="text"
-                          value={editingValue}
-                          onChange={handleChange}
-                          onBlur={() => handleBlur(item.id)}
-                          autoFocus
-                        />
-                      ) : (
-                        item.name
-                      )}
-                    </td>
-                    <td onClick={() => handleEditField("in_time", item.in_time, item.id)}>
-                      {editingField && editingField.id === item.id && editingField.field === "in_time" ? (
-                        <TimePicker
-                          onChange={(value) => handleTimeChange("in_time", value)}
-                          value={editingValue} // Convert Bengali digits to Arabic digits
-                          onBlur={() => handleBlur(item.id)}
-                        />
-                      ) : (
-                        item.in_time
-                      )}
-                    </td>
-                    <td onClick={() => handleEditField("out_time", item.out_time, item.id)}>
-                      {editingField && editingField.id === item.id && editingField.field === "out_time" ? (
-                        <TimePicker
-                          onChange={(value) => handleTimeChange("out_time", value)}
-                          value={editingValue} // Convert Bengali digits to Arabic digits
-                          onBlur={() => handleBlur(item.id)}
-                        />
-                      ) : (
-                        item.out_time
-                      )}
-                    </td>
-                    <td onClick={() => handleEditField("leaveBalance", item.leaveBalance, item.id)}>
-                      {editingField && editingField.id === item.id && editingField.field === "leaveBalance" ? (
-                        <input
-                          type="text"
-                          value={editingValue}
-                          onChange={handleChange}
-                          onBlur={() => handleBlur(item.id)}
-                          autoFocus
-                        />
-                      ) : (
-                        item.leaveBalance
-                      )}
-                    </td>
+                    <td>{item.name}</td>
+                    <td>{convertTo12HourFormat(item.in_time)}</td>{" "}
+                    {/* Convert in_time to 12-hour format */}
+                    <td>{item.out_time}</td>{" "}
+                    {/* Convert out_time to 12-hour format */}
+                    <td>{item.leaveBalance}</td>
                     <td>
                       <RiDeleteBin6Line
+                        onClick={() => handleDeleteConfirmation(item.id)}
                         size={30}
                         style={{ color: "red", cursor: "pointer" }}
                       />
@@ -391,6 +392,5 @@ const Designation = () => {
     </div>
   );
 };
-
 
 export default Designation;

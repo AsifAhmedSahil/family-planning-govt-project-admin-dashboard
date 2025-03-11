@@ -16,75 +16,131 @@ import Notice from "../pages/Notice";
 import WorkType from "../Components/Settings/WorkType";
 import WorkTypeDetails from "../Components/Settings/WorkTypeDetails";
 import ProtectedRoute from "../Components/ProtectedRoute";
-
-
+import WorkAssign from "../Components/Settings/WorkAssign";
 
 const router = createBrowserRouter([
-    {
-        path:"/",
-        element: <Dashboard/>,
-        children:[
-            {
-                path:"/",
-                element:<ProtectedRoute><HomePage/></ProtectedRoute>
-            },
-            {
-                path:"/attendence",
-                element:<ProtectedRoute><Attendence/></ProtectedRoute>
-            },
-            {
-                path:"/peopleInformation",
-                element:<ProtectedRoute><PeopleInformation/></ProtectedRoute>
-            },
-            {
-                path:"/notice",
-                element:<ProtectedRoute><Notice/></ProtectedRoute>
-            },
-            {
-                path:"/setting",
-                element:<ProtectedRoute><SettingsPage/></ProtectedRoute>
-            },
-            {
-                path:"/setting/designation",
-                element:<ProtectedRoute><Designation/></ProtectedRoute>
-            },
-            {
-                path:"/setting/overview",
-                element:<ProtectedRoute><OverView/></ProtectedRoute>
-            },
-            {
-                path:"/setting/subunion",
-                element:<ProtectedRoute><SubUnion/></ProtectedRoute>
-            },
-            {
-                path:"/setting/union",
-                element:<ProtectedRoute><Union/></ProtectedRoute>
-            },
-            {
-                path:"/setting/unit",
-                element:<ProtectedRoute><Unit/></ProtectedRoute>
-            },
-            {
-                path:"/setting/worktype",
-                element:<ProtectedRoute><WorkType/></ProtectedRoute>
-            },
-            {
-                path:"/setting/worktypedetails",
-                element:<ProtectedRoute><WorkTypeDetails/></ProtectedRoute>
-            },
-            {
-                path:"/person/:emp_id",
-                element:<ProtectedRoute><PersonDetails/></ProtectedRoute>
-            },
-            
+  {
+    path: "/",
+    element: <Dashboard />,
+    children: [
+      {
+        path: "/",
+        element: (
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/attendence",
+        element: (
+          <ProtectedRoute>
+            <Attendence />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/peopleInformation",
+        element: (
+          <ProtectedRoute>
+            <PeopleInformation />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/notice",
+        element: (
+          <ProtectedRoute>
+            <Notice />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting",
+        element: (
+          <ProtectedRoute>
+            <SettingsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/designation",
+        element: (
+          <ProtectedRoute>
+            <Designation />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/overview",
+        element: (
+          <ProtectedRoute>
+            <OverView />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/subunion",
+        element: (
+          <ProtectedRoute>
+            <SubUnion />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/union",
+        element: (
+          <ProtectedRoute>
+            <Union />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/unit",
+        element: (
+          <ProtectedRoute>
+            <Unit />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/worktype",
+        element: (
+          <ProtectedRoute>
+            <WorkType />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/worktypedetails",
+        element: (
+          <ProtectedRoute>
+            <WorkTypeDetails />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/workassign",
+        element: (
+          <ProtectedRoute>
+            <WorkAssign />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/person/:emp_id",
+        element: (
+          <ProtectedRoute>
+            <PersonDetails />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/login",
+    element: <LoginForm />,
+  },
+]);
 
-        ]
-    },
-    {
-        path:"/login",
-        element:<LoginForm/>
-    },
-
-])
-
-export default router
+export default router;

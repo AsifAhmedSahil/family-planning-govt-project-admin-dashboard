@@ -374,7 +374,7 @@ const Unit = () => {
                 style={{
                   position: "sticky",
                   top: 0,
-                  backgroundColor: "#fff",
+                  backgroundColor: "#D9D9D9",
                   // zIndex: 1,
                 }}
               >
@@ -384,7 +384,7 @@ const Unit = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     ক্রমিক
@@ -394,7 +394,7 @@ const Unit = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     ইউনিট
@@ -404,7 +404,7 @@ const Unit = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     কর্মকর্তা
@@ -415,7 +415,7 @@ const Unit = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     ডিলিট
@@ -425,7 +425,7 @@ const Unit = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     আপডেট

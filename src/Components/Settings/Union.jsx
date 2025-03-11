@@ -320,7 +320,7 @@ const Union = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     ক্রমিক
@@ -330,7 +330,7 @@ const Union = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     ইউনিয়ন
@@ -340,7 +340,7 @@ const Union = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     কর্মকর্তা
@@ -350,7 +350,7 @@ const Union = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     ডিলিট
@@ -360,7 +360,7 @@ const Union = () => {
                       color: "#323232",
                       position: "sticky",
                       top: 0,
-                      backgroundColor: "#fff",
+                      backgroundColor: "#D9D9D9",
                     }}
                   >
                     আপডেট
