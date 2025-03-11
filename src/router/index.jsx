@@ -15,6 +15,7 @@ import PersonDetails from "../pages/PersonDetails";
 import Notice from "../pages/Notice";
 import WorkType from "../Components/Settings/WorkType";
 import WorkTypeDetails from "../Components/Settings/WorkTypeDetails";
+import ProtectedRoute from "../Components/ProtectedRoute";
 
 
 
@@ -25,55 +26,55 @@ const router = createBrowserRouter([
         children:[
             {
                 path:"/",
-                element:<HomePage/>
+                element:<ProtectedRoute><HomePage/></ProtectedRoute>
             },
             {
                 path:"/attendence",
-                element:<Attendence/>
+                element:<ProtectedRoute><Attendence/></ProtectedRoute>
             },
             {
                 path:"/peopleInformation",
-                element:<PeopleInformation/>
+                element:<ProtectedRoute><PeopleInformation/></ProtectedRoute>
             },
             {
                 path:"/notice",
-                element:<Notice/>
+                element:<ProtectedRoute><Notice/></ProtectedRoute>
             },
             {
                 path:"/setting",
-                element:<SettingsPage/>
+                element:<ProtectedRoute><SettingsPage/></ProtectedRoute>
             },
             {
                 path:"/setting/designation",
-                element:<Designation/>
+                element:<ProtectedRoute><Designation/></ProtectedRoute>
             },
             {
                 path:"/setting/overview",
-                element:<OverView/>
+                element:<ProtectedRoute><OverView/></ProtectedRoute>
             },
             {
                 path:"/setting/subunion",
-                element:<SubUnion/>
+                element:<ProtectedRoute><SubUnion/></ProtectedRoute>
             },
             {
                 path:"/setting/union",
-                element:<Union/>
+                element:<ProtectedRoute><Union/></ProtectedRoute>
             },
             {
                 path:"/setting/unit",
-                element:<Unit/>
+                element:<ProtectedRoute><Unit/></ProtectedRoute>
             },
             {
                 path:"/setting/worktype",
-                element:<WorkType/>
+                element:<ProtectedRoute><WorkType/></ProtectedRoute>
             },
             {
                 path:"/setting/worktypedetails",
-                element:<WorkTypeDetails/>
+                element:<ProtectedRoute><WorkTypeDetails/></ProtectedRoute>
             },
             {
                 path:"/person/:emp_id",
-                element:<PersonDetails/>
+                element:<ProtectedRoute><PersonDetails/></ProtectedRoute>
             },
             
 

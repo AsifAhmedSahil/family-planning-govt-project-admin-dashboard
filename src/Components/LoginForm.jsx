@@ -1,5 +1,6 @@
 import  { useState } from "react";
 import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 // import { useUser } from "../context/UserProvider";
 // import { jwtDecode } from "jwt-decode";
 
@@ -8,6 +9,8 @@ const LoginForm = () => {
     emp_id: "",
     password: "",
   });
+
+  const navigate = useNavigate()
 
   // const {setUser} = useUser()
   const handleChange = (e) => {
@@ -35,8 +38,7 @@ const LoginForm = () => {
         const data = await response.json()
         console.log("token",data.token)
         localStorage.setItem("authToken",data.token)
-        // const decodeToken = jwtDecode(data.token)
-        // setUser(decodeToken)
+        navigate("/")
       }
       else{
         console.error("Login Failed",response.statusText)
