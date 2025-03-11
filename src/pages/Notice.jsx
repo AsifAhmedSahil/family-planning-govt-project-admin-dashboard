@@ -1,17 +1,11 @@
-import Header from "../Components/Header";
+import { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
-import { FaClipboardList } from "react-icons/fa";
-import { FaEdit } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { FaClipboardList, FaEdit } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { Modal, Button } from "react-bootstrap";
+import Header from "../Components/Header";
 
 const Notice = () => {
-  const [dropdownIndex, setDropdownIndex] = useState(null);
-
-  const handleToggleDropdown = (index) => {
-    // If clicking the same item, toggle the dropdown, else open the clicked one
-    setDropdownIndex(dropdownIndex === index ? null : index);
-  };
-
   const [formData, setFormData] = useState({
     date: "",
     noticeName: "",
@@ -19,6 +13,8 @@ const Notice = () => {
   });
 
   const [notices, setNotices] = useState([]);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [noticeToUpdate, setNoticeToUpdate] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -30,11 +26,9 @@ const Notice = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Assuming you have a state object `formData` with the necessary fields
-    const { date, noticeName, notice } = formData;
     console.log(formData);
 
+    const { date, noticeName, notice } = formData;
     const token = localStorage.getItem("authToken");
 
     try {
@@ -47,18 +41,17 @@ const Notice = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            publish_date: date, // from the form
-            notice_name: noticeName, // from the form
-            notice_description: notice, // from the form
+            publish_date: date,
+            notice_name: noticeName,
+            notice_description: notice,
           }),
         }
       );
 
-      console.log(response);
       if (response.ok) {
         const result = await response.json();
         console.log("Success:", result);
-        // Optionally, reset the form or perform other actions
+        fetchNotices();
         setFormData({
           date: "",
           noticeName: "",
@@ -89,7 +82,6 @@ const Notice = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log(result);
         setNotices(result.notices);
       } else {
         const errorResult = await response.json();
@@ -104,68 +96,106 @@ const Notice = () => {
     fetchNotices();
   }, []);
 
-  const formatDate = (dateString) => {
-    const options = {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    };
+  const handleDelete = async (id) => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/other/delete-notice",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ id }),
+        }
+      );
 
-    // Create a new Date object from the string
-    const date = new Date(dateString);
-
-    // Format the date to Bengali (Bangladesh locale)
-    const formatter = new Intl.DateTimeFormat("bn-BD", options);
-
-    // Format and return the date as a string
-    return formatter.format(date);
+      if (response.ok) {
+        console.log("Notice deleted successfully");
+        await fetchNotices();
+      } else {
+        const errorResult = await response.json();
+        console.error("Error deleting notice:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error deleting notice:", error);
+    }
   };
 
-  const leftSectionStyle = {
-    width: "30%",
-    height: "700px",
-    // backgroundColor: '#f9f9f9',
-    padding: "20px",
-    // boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    borderRight: "1px solid #ddd",
+  const handleDeleteConfirmation = (id) => {
+    Swal.fire({
+      title: "আপনি কি নিশ্চিত?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "হ্যাঁ, নিশ্চিত",
+      cancelButtonText: "না",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(id);
+        Swal.fire({
+          title: "ডিলিট করা হয়েছে",
+          text: "নোটিশ ডিলিট সম্পন্ন",
+          icon: "success",
+        });
+      }
+    });
   };
 
-  const rightSectionStyle = {
-    width: "70%",
-    height: "700px",
-    // backgroundColor: '#ffffff',
-    padding: "20px",
-    overflowY: "auto",
-    maxHeight: "80vh", // Adjust based on your layout needs
+  const handleUpdate = async () => {
+    const token = localStorage.getItem("authToken");
+    const { id, publish_date, notice_name, notice_description } =
+      noticeToUpdate;
+
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/other/update-notice",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            id,
+            publish_date,
+            notice_name,
+            notice_description,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Updated notice:", result);
+        fetchNotices(); // Fetch updated notices
+        setShowUpdateModal(false); // Close the modal
+      } else {
+        const errorResult = await response.json();
+        console.error("Error updating notice:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error updating notice:", error);
+    }
   };
 
-  const cardStyle = {
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-    marginBottom: "10px",
-    // padding: "15px",
-    backgroundColor: "#e9ecef",
-  };
-
-  const iconStyle = {
-    backgroundColor: "#E7E6F2",
-    color: "#857CBC",
-    width: "120px",
-    height: "155px",
-    display: "flex",
-    // alignItems: "center",
-    paddingTop: "10px",
-    justifyContent: "center",
-  };
-
-  console.log(notices);
-
+  console.log(noticeToUpdate);
   return (
     <div>
       <Header title={"নোটিশ"} />
       <div style={{ display: "flex", marginTop: "50px" }}>
         {/* Left Section */}
-        <form onSubmit={handleSubmit} style={leftSectionStyle}>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            width: "30%",
+            height: "700px",
+            padding: "20px",
+            borderRight: "1px solid #ddd",
+          }}
+        >
           <div className="col-md-12 d-flex flex-column mb-3">
             <label className="mb-2 text-[16px]">তারিখ</label>
             <input
@@ -230,24 +260,48 @@ const Notice = () => {
         </form>
 
         {/* Right Section */}
-        <div style={rightSectionStyle}>
+        <div
+          style={{
+            width: "70%",
+            height: "700px",
+            padding: "20px",
+            overflowY: "auto",
+            maxHeight: "80vh",
+          }}
+        >
           <h4 style={{ marginBottom: "20px" }}>পূর্বের নোটিশ</h4>
           {notices.map((card, index) => (
             <div
               key={index}
               style={{
-                padding: "10px",
-                border: "1px solid #ccc",
+                border: "1px solid #ddd",
+                borderRadius: "5px",
                 marginBottom: "10px",
+                backgroundColor: "#fff",
               }}
             >
               <div style={{ display: "flex" }}>
-                <div style={{ marginRight: "10px" }}>
+                <div
+                  style={{
+                    backgroundColor: "#E7E6F2",
+                    color: "#857CBC",
+                    paddingTop: "10px",
+                    paddingRight: "15px",
+                    paddingLeft: "15px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    display: "flex",
+                  }}
+                >
                   <FaClipboardList size={25} fill="#13007D" />
                 </div>
-                <div style={{ padding: "10px", position: "relative" }}>
-                  {" "}
-                  {/* This makes sure the dropdown is positioned relative to this container */}
+                <div
+                  style={{
+                    padding: "10px",
+                    position: "relative",
+                    width: "100%",
+                  }}
+                >
                   <div
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
@@ -258,17 +312,25 @@ const Notice = () => {
                         year: "numeric",
                       })}
                     </p>
-                   <div >
-                   <span style={{ cursor: "pointer",marginRight:"10px" }}>
-                      <MdDelete size={20} />
-                    </span>
-                    <span style={{ cursor: "pointer" }}>
-                      <FaEdit size={20} />
-                    </span>
-                   </div>
+                    <div>
+                      <span style={{ cursor: "pointer", marginRight: "10px" }}>
+                        <MdDelete
+                          size={20}
+                          onClick={() => handleDeleteConfirmation(card.id)}
+                        />
+                      </span>
+                      <span style={{ cursor: "pointer" }}>
+                        <FaEdit
+                          size={20}
+                          onClick={() => {
+                            setNoticeToUpdate(card);
+                            setShowUpdateModal(true);
+                          }}
+                        />
+                      </span>
+                    </div>
                   </div>
-                  
-                  <p style={{fontWeight:"600"}}>{card.notice_name}</p>
+                  <p style={{ fontWeight: "600" }}>{card.notice_name}</p>
                   <p>{card.notice_description}</p>
                 </div>
               </div>
@@ -276,6 +338,74 @@ const Notice = () => {
           ))}
         </div>
       </div>
+
+      {/* Update Modal */}
+      <Modal show={showUpdateModal} onHide={() => setShowUpdateModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>নোটিশ আপডেট করুন</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="mb-3">
+            <label className="form-label">তারিখ</label>
+            <input
+              type="date"
+              className="form-control"
+              name="date"
+              value={
+                noticeToUpdate?.publish_date
+                  ? noticeToUpdate?.publish_date.split("T")[0]
+                  : ""
+              }
+              onChange={(e) =>
+                setNoticeToUpdate({
+                  ...noticeToUpdate,
+                  publish_date: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">নোটিশের নাম</label>
+            <input
+              type="text"
+              className="form-control"
+              name="noticeName"
+              value={noticeToUpdate?.notice_name}
+              onChange={(e) =>
+                setNoticeToUpdate({
+                  ...noticeToUpdate,
+                  notice_name: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">নোটিশ</label>
+            <textarea
+              className="form-control"
+              style={{ height: "300px" }}
+              name="notice"
+              value={noticeToUpdate?.notice_description}
+              onChange={(e) =>
+                setNoticeToUpdate({
+                  ...noticeToUpdate,
+                  notice_description: e.target.value,
+                })
+              }
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleUpdate}>
+            Update
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
