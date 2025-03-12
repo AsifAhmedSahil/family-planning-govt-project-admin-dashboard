@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import Header from "../Header";
-import Select from "react-select"; // Import react-select
 
 const WorkAssign = () => {
-  // State for form data
+  // State for the form data (for Designation and Work Types with checkboxes)
   const [formData, setFormData] = useState({
-    designation: null, // For Designation (with react-select)
-    workTypes: [],      // For Work Types (Multi-select)
+    designation: null, // For Designation (react-select or select)
+    workTypes: [],     // For selected work types (checkboxes)
   });
   const [message, setMessage] = useState(""); // For showing response message
   const [loading, setLoading] = useState(false); // To show loading state
   const [designations, setDesignations] = useState([]); // For storing designations fetched from API
-  const [allWorkTypes, setAllWorkType] = useState([]); // For storing work types fetched from API
+  const [workTypes, setWorkTypes] = useState([]); // For storing work types
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -19,14 +18,15 @@ const WorkAssign = () => {
 
     // Validate the form data before making the API call
     if (!formData.designation || formData.workTypes.length === 0) {
-      setMessage("Please select both a designation and at least one work type.");
+      setMessage("Please select a designation and at least one work type.");
       return;
+      
     }
 
     // Prepare the request body based on the API documentation
     const assignData = formData.workTypes.map((workTypeId) => ({
       designation_id: formData.designation.value,
-      work_type_id: workTypeId.value,
+      work_type_id: workTypeId,
     }));
 
     const requestBody = {
@@ -38,7 +38,7 @@ const WorkAssign = () => {
     setLoading(true);
     setMessage(""); // Reset message before submitting
 
-    // try the API call (commented out for now)
+    // Try API call (commented out for now)
     // try {
     //   const response = await fetch("/api/work/assign-workType", {
     //     method: "POST",
@@ -64,20 +64,27 @@ const WorkAssign = () => {
     // }
   };
 
-  // Handle change for Designation (using react-select)
+  // Handle change for Designation
   const handleDesignationChange = (selectedOption) => {
     setFormData({
       ...formData,
-      designation: selectedOption, // Update the designation field in formData
+      designation: selectedOption, // Update the designation field
     });
   };
 
-  // Handle change for multi-select dropdown with react-select for Work Types
-  const handleWorkTypesChange = (selectedOptions) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      workTypes: selectedOptions || [], // Update the workTypes field with selected work types
-    }));
+  // Handle change for multi-select checkboxes for Work Types
+  const handleWorkTypeChange = (e) => {
+    const value = parseInt(e.target.value);
+    setFormData((prevFormData) => {
+      const newWorkTypes = prevFormData.workTypes.includes(value)
+        ? prevFormData.workTypes.filter((item) => item !== value)
+        : [...prevFormData.workTypes, value];
+
+      return {
+        ...prevFormData,
+        workTypes: newWorkTypes,
+      };
+    });
   };
 
   // Fetch designations from API
@@ -100,12 +107,14 @@ const WorkAssign = () => {
         setDesignations(result);
       } else {
         const errorResult = await response.json();
-        console.error("Error fetching designation:", errorResult);
+        console.error("Error fetching designations:", errorResult);
       }
     } catch (error) {
-      console.error("Error fetching designation:", error);
+      console.error("Error fetching designations:", error);
     }
   };
+
+  console.log(workTypes)
 
   // Fetch work types from API
   const fetchWorkTypes = async () => {
@@ -124,13 +133,13 @@ const WorkAssign = () => {
 
       if (response.ok) {
         const result = await response.json();
-        setAllWorkType(result);
+        setWorkTypes(result); // Store the work types
       } else {
         const errorResult = await response.json();
-        console.error("Error fetching all work types:", errorResult);
+        console.error("Error fetching work types:", errorResult);
       }
     } catch (error) {
-      console.error("Error fetching all work types:", error);
+      console.error("Error fetching work types:", error);
     }
   };
 
@@ -140,13 +149,13 @@ const WorkAssign = () => {
     fetchWorkTypes();
   }, []);
 
-  // Map API response to react-select format
+  // Map API response to checkbox options
   const designationOptions = designations.map((designation) => ({
     value: designation.id,
     label: designation.name,
   }));
 
-  const workTypeOptions = allWorkTypes.map((workType) => ({
+  const workTypeOptions = workTypes.map((workType) => ({
     value: workType.id,
     label: workType.name,
   }));
@@ -173,36 +182,64 @@ const WorkAssign = () => {
             height: "100%",
           }}
         >
-          {/* react-select for Designation */}
+          {/* Designation Select */}
           <div className="form-group mb-3">
-            <label htmlFor="dropdown1">Select Designation:</label>
-            <Select
-              options={designationOptions} // Options for Designation
-              value={formData.designation} // Current value (selected option)
-              onChange={handleDesignationChange} // Update on change
-              isClearable // Allow clearing the selection
-              placeholder="Select Designation" // Placeholder
-            />
+            <label htmlFor="designation">Select Designation:</label>
+            <select
+              id="designation"
+              className="form-control"
+              value={formData.designation ? formData.designation.value : ""}
+              onChange={(e) =>
+                handleDesignationChange({
+                  value: e.target.value,
+                  label: e.target.options[e.target.selectedIndex].text,
+                })
+              }
+            >
+              <option value="">Select...</option>
+              {designationOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {/* react-select for Work Types (Multi-select) */}
+          {/* Work Types Multi-Select (Checkboxes) */}
           <div className="form-group mb-3">
-            <label htmlFor="dropdown2">Select Multiple Work Types:</label>
-            <Select
-              isMulti // Enable multiple selections
-              options={workTypeOptions} // Options for Work Types
-              value={formData.workTypes} // Current selected work types
-              onChange={handleWorkTypesChange} // Update on change
-              placeholder="Select Work Types" // Placeholder
-            />
-          </div>
+  <label htmlFor="dropdown2">Select Multiple Work Types:</label>
+  <div
+    id="dropdown2"
+    className="form-control"
+    style={{
+      minHeight: "100px",
+      overflowY: "auto",
+      padding: "10px",
+      display: "flex",
+      flexDirection: "column",
+    }}
+  >
+    {workTypeOptions.map((workType) => (
+      <label key={workType.value} style={{ marginBottom: "5px" }}>
+        <input
+          type="checkbox"
+          value={workType.value}
+          checked={formData.workTypes.includes(workType.value)}
+          onChange={handleWorkTypeChange}
+        />
+        {workType.label}
+      </label>
+    ))}
+  </div>
+</div>
 
-          {/* Submit button */}
+
+          {/* Submit Button */}
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? "Submitting..." : "Submit"}
           </button>
 
-          {/* Message display */}
+          {/* Message Display */}
           {message && (
             <div className="mt-3">
               <p
@@ -225,7 +262,6 @@ const WorkAssign = () => {
             overflowY: "auto",
           }}
         >
-          {/* You can add any content here for the right section */}
           <p>Right Section Content</p>
         </div>
       </div>

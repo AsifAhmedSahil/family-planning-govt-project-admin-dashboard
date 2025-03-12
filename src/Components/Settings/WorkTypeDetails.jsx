@@ -30,6 +30,7 @@ const WorkTypeDetails = () => {
     { value: "image", label: "Image" },
     { value: "text", label: "Text" },
     { value: "date", label: "Date" },
+    { value: "dropdown", label: "Dropdown" },
   ];
 
   const fetchWorkType = async () => {

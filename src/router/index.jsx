@@ -17,6 +17,8 @@ import WorkType from "../Components/Settings/WorkType";
 import WorkTypeDetails from "../Components/Settings/WorkTypeDetails";
 import ProtectedRoute from "../Components/ProtectedRoute";
 import WorkAssign from "../Components/Settings/WorkAssign";
+import Previlages from "../Components/Settings/Previlages";
+import Role from "../Components/Settings/Role";
 
 const router = createBrowserRouter([
   {
@@ -124,6 +126,22 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <WorkAssign />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/previlage",
+        element: (
+          <ProtectedRoute>
+            <Previlages />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/role",
+        element: (
+          <ProtectedRoute>
+            <Role />
           </ProtectedRoute>
         ),
       },

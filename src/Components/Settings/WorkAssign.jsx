@@ -1,33 +1,32 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../Header";
-import Select from "react-select"; // Import react-select
+import { MultiSelect } from "react-multi-select-component";
 
 const WorkAssign = () => {
-  // State for form data
   const [formData, setFormData] = useState({
-    designation: null, // For Designation (with react-select)
-    workTypes: [],      // For Work Types (Multi-select with checkboxes)
+    designation: [], // Array to hold selected designations
+    workTypes: [],   // Array to hold selected work types
   });
-  const [message, setMessage] = useState(""); // For showing response message
-  const [loading, setLoading] = useState(false); // To show loading state
-  const [designations, setDesignations] = useState([]); // For storing designations fetched from API
-  const [allWorkTypes, setAllWorkTypes] = useState([]);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [designations, setDesignations] = useState([]);
+  const [workTypes, setWorkTypes] = useState([]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate the form data before making the API call
-    if (!formData.designation || formData.workTypes.length === 0) {
-      setMessage("Please select both a designation and at least one work type.");
+    if (formData.designation.length === 0 || formData.workTypes.length === 0) {
+      setMessage("Please select at least one designation and one work type.");
       return;
     }
 
-    // Prepare the request body based on the API documentation
-    const assignData = formData.workTypes.map((workTypeId) => ({
-      designation_id: formData.designation.value,
-      work_type_id: workTypeId,
-    }));
+    const assignData = formData.workTypes.flatMap((workType) =>
+      formData.designation.map((designationId) => ({
+        designation_id: designationId,
+        work_type_id: workType.value,
+      }))
+    );
 
     const requestBody = {
       assignData: JSON.stringify(assignData),
@@ -36,9 +35,9 @@ const WorkAssign = () => {
     console.log(requestBody);
 
     setLoading(true);
-    setMessage(""); // Reset message before submitting
+    setMessage("");
 
-    // try the API call (commented out for now)
+    // Try API call (commented out for now)
     // try {
     //   const response = await fetch("/api/work/assign-workType", {
     //     method: "POST",
@@ -64,26 +63,28 @@ const WorkAssign = () => {
     // }
   };
 
-  // Handle change for Designation (using react-select)
-  const handleDesignationChange = (selectedOption) => {
+  // Handle designation selection change
+  const handleDesignationChange = (e) => {
+    const options = Array.from(e.target.selectedOptions, (option) => option.value);
     setFormData({
       ...formData,
-      designation: selectedOption, // Update the designation field in formData
+      designation: options, // Update designation with selected option values
     });
   };
 
-  // Handle change for multi-select dropdown with checkboxes (Work Types)
-  // const handleCheckboxChange = (e) => {
-  //   const value = parseInt(e.target.value);
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     workTypes: prevFormData.workTypes.includes(value)
-  //       ? prevFormData.workTypes.filter((item) => item !== value)
-  //       : [...prevFormData.workTypes, value],
-  //   }));
-  // };
+  // Handle work type selection change (MultiSelect)
+  const handleWorkTypeChange = (selectedWorkTypes) => {
+    setFormData((prevFormData) => {
+      // Only update the workTypes field with the newly selected work types
+      return {
+        ...prevFormData,
+        workTypes: selectedWorkTypes,  // Add selected work types (this is automatically handled by MultiSelect)
+      };
+    });
+  };
+  
 
-  // Fetch designations from API
+  // Fetch designations from the API
   const fetchDesignation = async () => {
     const token = localStorage.getItem("authToken");
     try {
@@ -103,14 +104,15 @@ const WorkAssign = () => {
         setDesignations(result);
       } else {
         const errorResult = await response.json();
-        console.error("Error fetching designation:", errorResult);
+        console.error("Error fetching designations:", errorResult);
       }
     } catch (error) {
-      console.error("Error fetching designation:", error);
+      console.error("Error fetching designations:", error);
     }
   };
 
-  const fetchWorkType = async () => {
+  // Fetch work types from the API
+  const fetchWorkTypes = async () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
@@ -126,38 +128,26 @@ const WorkAssign = () => {
 
       if (response.ok) {
         const result = await response.json();
-        setAllWorkTypes(result);
+        setWorkTypes(result.map((wt) => ({ label: wt.name, value: wt.id })));
       } else {
         const errorResult = await response.json();
-        console.error("Error fetching all work types:", errorResult);
+        console.error("Error fetching work types:", errorResult);
       }
     } catch (error) {
-      console.error("Error fetching all work types:", error);
+      console.error("Error fetching work types:", error);
     }
   };
 
-  // Fetch designations when component mounts
+  // Run API calls on component mount
   useEffect(() => {
     fetchDesignation();
-    fetchWorkType()
+    fetchWorkTypes();
   }, []);
 
   const designationOptions = designations.map((designation) => ({
     value: designation.id,
     label: designation.name,
   }));
-
-  const workTypeOptions = allWorkTypes.map((workType) => ({
-    value: workType.id,
-    label: workType.name,
-  }));
-
-  const handleWorkTypesChange = (selectedOptions) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      workTypes: selectedOptions || [], // Update the workTypes field with selected work types
-    }));
-  };
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
@@ -170,7 +160,6 @@ const WorkAssign = () => {
           flex: 1,
         }}
       >
-        {/* Left Section */}
         <form
           onSubmit={handleSubmit}
           style={{
@@ -181,36 +170,41 @@ const WorkAssign = () => {
             height: "100%",
           }}
         >
-          {/* react-select for Designation */}
+          {/* Designation Dropdown */}
           <div className="form-group mb-3">
-            <label htmlFor="dropdown1">Select Designation:</label>
-            <Select
-              options={designationOptions} // Options for Designation
-              value={formData.designation} // Current value (selected option)
-              onChange={handleDesignationChange} // Update on change
-              isClearable // Allow clearing the selection
-              placeholder="Select Designation" // Placeholder
+            <label htmlFor="designation">Select Designations:</label>
+            <select
+              id="designation"
+              className="form-control"
+              multiple
+              value={formData.designation}
+              onChange={handleDesignationChange}
+            >
+              {designationOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Work Types Multi-Select */}
+          <div className="form-group mb-3">
+            <label htmlFor="workTypes">Select Multiple Work Types:</label>
+            <MultiSelect
+              options={workTypes}
+              value={formData.workTypes}
+              onChange={handleWorkTypeChange}
+              labelledBy="Select Work Types"
             />
           </div>
 
-          {/* Multi-select dropdown with checkboxes for Work Types */}
-          <div className="form-group mb-3">
-            <label htmlFor="dropdown2">Select Multiple Work Types:</label>
-            <Select
-              isMulti // Enable multiple selections
-              options={workTypeOptions} // Options for Work Types
-              value={formData.workTypes} // Current selected work types
-              onChange={handleWorkTypesChange} // Update on change
-              placeholder="Select Work Types" // Placeholder
-            />
-          </div>
-
-          {/* Submit button */}
-          <button type="submit" className="btn btn-primary" >
-          কাজের ক্ষেত্র যোগ করুন
+          {/* Submit Button */}
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? "Submitting..." : "Submit"}
           </button>
 
-          {/* Message display */}
+          {/* Message Display */}
           {message && (
             <div className="mt-3">
               <p
@@ -233,7 +227,6 @@ const WorkAssign = () => {
             overflowY: "auto",
           }}
         >
-          {/* You can add any content here for the right section */}
           <p>Right Section Content</p>
         </div>
       </div>

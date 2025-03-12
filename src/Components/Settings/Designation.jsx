@@ -57,6 +57,8 @@ const Designation = () => {
     });
   };
 
+  console.log(attendancePeriods)
+
   // Handle submitting the form (Adding new designation)
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -127,6 +129,8 @@ const Designation = () => {
     });
   };
 
+  
+
   // Fetch attendance periods from the API
   const fetchAttendancePeriods = async () => {
     const token = localStorage.getItem("authToken");
@@ -159,10 +163,36 @@ const Designation = () => {
     fetchAttendancePeriods();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, designation_id) => {
     const token = localStorage.getItem("authToken");
+  
     try {
-      const response = await fetch(
+      // Step 1: Delete the Designation
+      const designationResponse = await fetch(
+        "http://localhost:5001/api/setup/delete-designation",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ id: designation_id }),
+        }
+      );
+  
+      // Check if the designation deletion was successful
+      if (!designationResponse.ok) {
+        const designationErrorResult = await designationResponse.json();
+        console.error("Error deleting designation:", designationErrorResult);
+        return; // Exit if designation deletion failed
+      }
+  
+      const designationData = await designationResponse.json();
+      console.log(designationData.message); // You can log this message if needed
+      await fetchAttendancePeriods()
+  
+      // Step 2: Delete the Attendance Period only after designation deletion is successful
+      const attendanceResponse = await fetch(
         "http://localhost:5001/api/attendance/delete-attendance-period",
         {
           method: "POST",
@@ -173,20 +203,22 @@ const Designation = () => {
           body: JSON.stringify({ id }),
         }
       );
-
-      if (response.ok) {
+  
+      // Check if the attendance period deletion was successful
+      if (attendanceResponse.ok) {
         console.log("Attendance period deleted successfully");
-        await fetchAttendancePeriods(); // Fetch the updated list of unions
+        await fetchAttendancePeriods(); // Fetch the updated list of attendance periods
       } else {
-        const errorResult = await response.json();
+        const errorResult = await attendanceResponse.json();
         console.error("Error deleting attendance period:", errorResult);
       }
     } catch (error) {
-      console.error("Error deleting attendance period:", error);
+      console.error("Error deleting designation or attendance period:", error);
     }
   };
+  
 
-  const handleDeleteConfirmation = (id) => {
+  const handleDeleteConfirmation = (id,designation_id) => {
     Swal.fire({
       title: "আপনি কি নিশ্চিত?",
       icon: "warning",
@@ -197,7 +229,7 @@ const Designation = () => {
       cancelButtonText: "না",
     }).then((result) => {
       if (result.isConfirmed) {
-        handleDelete(id);
+        handleDelete(id,designation_id);
         Swal.fire({
           title: "ডিলিট করা হয়েছে",
           icon: "success",
@@ -317,7 +349,7 @@ const Designation = () => {
                     <td>{item.leaveBalance}</td>
                     <td>
                       <RiDeleteBin6Line
-                        onClick={() => handleDeleteConfirmation(item.id)}
+                        onClick={() => handleDeleteConfirmation(item.id,item.designation_id)}
                         size={30}
                         style={{ color: "red", cursor: "pointer" }}
                       />
