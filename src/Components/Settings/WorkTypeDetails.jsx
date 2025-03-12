@@ -36,7 +36,7 @@ const WorkTypeDetails = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/work/get-work-types",
+        "http://localhost:5000/api/work/get-work-types",
         {
           method: "POST",
           headers: {
@@ -62,7 +62,7 @@ const WorkTypeDetails = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/work/get-work-fields",
+        "http://localhost:5000/api/work/get-work-fields",
         {
           method: "POST",
           headers: {
@@ -119,7 +119,7 @@ const WorkTypeDetails = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/work/delete-work-field",
+        "http://localhost:5000/api/work/delete-work-field",
         {
           method: "POST",
           headers: {
@@ -200,7 +200,7 @@ const WorkTypeDetails = () => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await fetch(
-        "http://localhost:5001/api/work/update-work-field",
+        "http://localhost:5000/api/work/update-work-field",
         {
           method: "POST",
           headers: {
@@ -248,7 +248,7 @@ const WorkTypeDetails = () => {
 
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch("http://localhost:5001/api/work/add-work-field", {
+      const response = await fetch("http://localhost:5000/api/work/add-work-field", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

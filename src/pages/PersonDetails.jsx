@@ -169,7 +169,7 @@ const PersonDetails = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/employee/get-employee-by-id",
+        "http://localhost:5000/api/employee/get-employee-by-id",
         {
           method: "POST",
           headers: {

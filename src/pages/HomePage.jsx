@@ -35,7 +35,7 @@ const HomePage = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-unions",
+        "http://localhost:5000/api/setup/get-unions",
         {
           method: "POST",
           headers: {
@@ -61,7 +61,7 @@ const HomePage = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-units",
+        "http://localhost:5000/api/setup/get-units",
         {
           method: "POST",
           headers: {
@@ -86,7 +86,7 @@ const HomePage = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-upazilas",
+        "http://localhost:5000/api/setup/get-upazilas",
         {
           method: "POST",
           headers: {

@@ -39,7 +39,7 @@ const Notice = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/other/add-notice",
+        "http://localhost:5000/api/other/add-notice",
         {
           method: "POST",
           headers: {
@@ -77,7 +77,7 @@ const Notice = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/other/get-notice",
+        "http://localhost:5000/api/other/get-notice",
         {
           method: "POST",
           headers: {

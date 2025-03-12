@@ -59,7 +59,7 @@ const Designation = () => {
 
     // Step 1: Add Designation
     const designationResponse = await fetch(
-      "http://localhost:5001/api/setup/add-designation",
+      "http://localhost:5000/api/setup/add-designation",
       {
         method: "POST",
         headers: {
@@ -83,7 +83,7 @@ const Designation = () => {
 
     // Step 2: Add Attendance Period using the designation_id
     const attendanceResponse = await fetch(
-      "http://localhost:5001/api/attendance/add-attendance-period",
+      "http://localhost:5000/api/attendance/add-attendance-period",
       {
         method: "POST",
         headers: {
@@ -124,7 +124,7 @@ const Designation = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/attendance/get-attendance-period",
+        "http://localhost:5000/api/attendance/get-attendance-period",
         {
           method: "POST",
           headers: {
@@ -154,7 +154,7 @@ const Designation = () => {
       const token = localStorage.getItem("authToken");
       try {
         const response = await fetch(
-          "http://localhost:5001/api/attendance/delete-attendance-period",
+          "http://localhost:5000/api/attendance/delete-attendance-period",
           {
             method: "POST",
             headers: {
