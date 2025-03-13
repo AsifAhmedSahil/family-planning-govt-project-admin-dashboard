@@ -35,7 +35,7 @@ const PeopleInformation = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-designations",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-designations`,
         {
           method: "POST",
           headers: {
@@ -61,7 +61,7 @@ const PeopleInformation = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-upazilas",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-upazilas`,
         {
           method: "POST",
           headers: {
@@ -87,7 +87,7 @@ const PeopleInformation = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-unions",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-unions`,
         {
           method: "POST",
           headers: {
@@ -113,7 +113,7 @@ const PeopleInformation = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-units",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-units`,
         {
           method: "POST",
           headers: {
@@ -139,7 +139,7 @@ const PeopleInformation = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/employee/get-employee",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/employee/get-employee`,
         {
           method: "POST",
           headers: {
@@ -306,7 +306,7 @@ const PeopleInformation = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/employee/add-employee",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/employee/add-employee`,
         {
           method: "POST",
           headers: {
@@ -342,7 +342,7 @@ const PeopleInformation = () => {
   
     try {
       const response = await fetch(
-        "http://localhost:5001/api/employee/update-employee", // Ensure this URL is correct
+        `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-employee`, // Ensure this URL is correct
         {
           method: "POST",
           headers: {
@@ -387,7 +387,7 @@ const PeopleInformation = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/employee/delete-employee",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/employee/delete-employee`,
         {
           method: "POST",
           headers: {
@@ -648,7 +648,7 @@ const PeopleInformation = () => {
                     <td style={{ color: "#6C6C6C" }}>{item.address}</td>
                     <td>
                       <img
-                        src={`http://localhost:5001/uploads/${item.image}`}
+                        src={`${import.meta.env.REACT_APP_BASE_URL}/uploads/${item.image}`}
                         alt="officer"
                         style={{ width: "50px", height: "50px" }}
                       />

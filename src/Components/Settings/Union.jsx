@@ -26,7 +26,7 @@ const Union = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-upazilas",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-upazilas`,
         {
           method: "POST",
           headers: {
@@ -52,7 +52,7 @@ const Union = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-unions",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-unions`,
         {
           method: "POST",
           headers: {
@@ -86,7 +86,7 @@ const Union = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/add-union",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/add-union`,
         {
           method: "POST",
           headers: {
@@ -118,7 +118,7 @@ const Union = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/delete-union",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/delete-union`,
         {
           method: "POST",
           headers: {
@@ -188,7 +188,7 @@ const Union = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/update-union",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/update-union`,
         {
           method: "POST",
           headers: {

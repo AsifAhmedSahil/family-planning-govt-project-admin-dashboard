@@ -37,7 +37,7 @@ const WorkTypeDetails = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/work/get-work-types",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/work/get-work-types`,
         {
           method: "POST",
           headers: {
@@ -63,7 +63,7 @@ const WorkTypeDetails = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/work/get-work-fields",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/work/get-work-fields`,
         {
           method: "POST",
           headers: {
@@ -120,7 +120,7 @@ const WorkTypeDetails = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/work/delete-work-field",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/work/delete-work-field`,
         {
           method: "POST",
           headers: {
@@ -201,7 +201,7 @@ const WorkTypeDetails = () => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await fetch(
-        "http://localhost:5001/api/work/update-work-field",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/work/update-work-field`,
         {
           method: "POST",
           headers: {
@@ -249,7 +249,7 @@ const WorkTypeDetails = () => {
 
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch("http://localhost:5001/api/work/add-work-field", {
+      const response = await fetch(`${import.meta.env.REACT_APP_BASE_URL}/api/work/add-work-field`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

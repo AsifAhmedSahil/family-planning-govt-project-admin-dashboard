@@ -92,7 +92,7 @@ const WorkAssign = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-designations",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-designations`,
         {
           method: "POST",
           headers: {
@@ -121,7 +121,7 @@ const WorkAssign = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/work/get-work-types",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/work/get-work-types`,
         {
           method: "POST",
           headers: {

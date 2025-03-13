@@ -33,7 +33,7 @@ const Notice = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/other/add-notice",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/other/add-notice`,
         {
           method: "POST",
           headers: {
@@ -70,7 +70,7 @@ const Notice = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/other/get-notice",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/other/get-notice`,
         {
           method: "POST",
           headers: {
@@ -100,7 +100,7 @@ const Notice = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/other/delete-notice",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/other/delete-notice`,
         {
           method: "POST",
           headers: {
@@ -151,7 +151,7 @@ const Notice = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/other/update-notice",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/other/update-notice`,
         {
           method: "POST",
           headers: {

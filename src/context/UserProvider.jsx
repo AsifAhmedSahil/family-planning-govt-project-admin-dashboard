@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
       
       if (token) {
         try {
-          const response = await fetch("http://localhost:5001/api/auth/get-user-from-token", {
+          const response = await fetch(`${import.meta.env.REACT_APP_BASE_URL}/api/auth/get-user-from-token`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

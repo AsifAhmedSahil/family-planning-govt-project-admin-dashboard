@@ -30,7 +30,7 @@ const Unit = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-upazilas",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-upazilas`,
         {
           method: "POST",
           headers: {
@@ -56,7 +56,7 @@ const Unit = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-unions",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-unions`,
         {
           method: "POST",
           headers: {
@@ -81,7 +81,7 @@ const Unit = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-units",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-units`,
         {
           method: "POST",
           headers: {
@@ -152,7 +152,7 @@ const Unit = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5001/api/setup/add-unit", {
+      const response = await fetch(`${import.meta.env.REACT_APP_BASE_URL}/api/setup/add-unit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -183,7 +183,7 @@ const Unit = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/delete-unit",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/delete-unit`,
         {
           method: "POST",
           headers: {
@@ -239,7 +239,7 @@ const Unit = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/update-unit",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/update-unit`,
         {
           method: "POST",
           headers: {

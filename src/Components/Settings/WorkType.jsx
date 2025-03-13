@@ -31,7 +31,7 @@ const WorkType = () => {
       const token = localStorage.getItem("authToken");
 
       const response = await fetch(
-        "http://localhost:5001/api/work/add-work-type",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/work/add-work-type`,
         {
           method: "POST",
           headers: {
@@ -64,7 +64,7 @@ const WorkType = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/work/get-work-types",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/work/get-work-types`,
         {
           method: "POST",
           headers: {
@@ -94,7 +94,7 @@ const WorkType = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/work/delete-work-type",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/work/delete-work-type`,
         {
           method: "POST",
           headers: {
@@ -153,7 +153,7 @@ const WorkType = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/work/update-work-type",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/work/update-work-type`,
         {
           method: "POST",
           headers: {

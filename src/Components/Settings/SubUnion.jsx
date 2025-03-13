@@ -24,7 +24,7 @@ const SubUnion = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/get-upazilas",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-upazilas`,
         {
           method: "POST",
           headers: {
@@ -58,7 +58,7 @@ const SubUnion = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/add-upazila",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/add-upazila`,
         {
           method: "POST",
           headers: {
@@ -87,7 +87,7 @@ const SubUnion = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/delete-upazila",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/delete-upazila`,
         {
           method: "POST",
           headers: {
@@ -148,7 +148,7 @@ const SubUnion = () => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
-        "http://localhost:5001/api/setup/update-upazila",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/update-upazila`,
         {
           method: "POST",
           headers: {

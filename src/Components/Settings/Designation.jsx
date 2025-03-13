@@ -70,7 +70,7 @@ const Designation = () => {
 
     // Step 1: Add Designation
     const designationResponse = await fetch(
-      "http://localhost:5001/api/setup/add-designation",
+      `${import.meta.env.REACT_APP_BASE_URL}/api/setup/add-designation`,
       {
         method: "POST",
         headers: {
@@ -94,7 +94,7 @@ const Designation = () => {
 
     // Step 2: Add Attendance Period using the designation_id
     const attendanceResponse = await fetch(
-      "http://localhost:5001/api/attendance/add-attendance-period",
+      `${import.meta.env.REACT_APP_BASE_URL}/api/attendance/add-attendance-period`,
       {
         method: "POST",
         headers: {
@@ -137,7 +137,7 @@ const Designation = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/attendance/get-attendance-period",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/attendance/get-attendance-period`,
         {
           method: "POST",
           headers: {
@@ -169,7 +169,7 @@ const Designation = () => {
     try {
       // Step 1: Delete the Designation
       const designationResponse = await fetch(
-        "http://localhost:5001/api/setup/delete-designation",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/delete-designation`,
         {
           method: "POST",
           headers: {
@@ -193,7 +193,7 @@ const Designation = () => {
   
       // Step 2: Delete the Attendance Period only after designation deletion is successful
       const attendanceResponse = await fetch(
-        "http://localhost:5001/api/attendance/delete-attendance-period",
+        `${import.meta.env.REACT_APP_BASE_URL}/api/attendance/delete-attendance-period`,
         {
           method: "POST",
           headers: {
