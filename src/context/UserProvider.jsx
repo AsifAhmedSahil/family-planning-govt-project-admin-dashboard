@@ -25,6 +25,7 @@ export const UserProvider = ({ children }) => {
           if (response.ok) {
             const data = await response.json();
             setUser(data.user);
+            console.log(data,"res")
           } else {
             console.error("Failed to fetch user details:", response.statusText);
           }

@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../Header";
 import { useNavigate } from "react-router-dom";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import Swal from "sweetalert2";
 
 const Previleges = () => {
   // State hooks for storing the values of the form inputs
@@ -8,6 +10,8 @@ const Previleges = () => {
     pageName: "",
     pageRoute: "",
   });
+
+  const [allPages, setAllPages] = useState([]);
 
   const navigate = useNavigate();
 
@@ -25,10 +29,126 @@ const Previleges = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData); // Logs the form data to the console
+    const token = localStorage.getItem("authToken");
+
+    try {
+      const requestData = {
+        pageName: formData.pageName,
+        pageRoute: formData.pageRoute,
+      };
+
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/add-page-route`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("page route added successfully:", result);
+        setFormData({
+          pageName: "",
+          pageRoute: "",
+        });
+        await fetchAllPages();
+      } else {
+        const errorResult = await response.json();
+        console.error("Error:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+
+  const fetchAllPages = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-page-route`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setAllPages(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching roles:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllPages();
+  }, []);
+
+const handleDelete = async (id) => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/delete-page-route`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({  id }),
+        }
+      );
+
+      if (response.ok) {
+        console.log("pages deleted successfully");
+        await fetchAllPages(); 
+      } else {
+        const errorResult = await response.json();
+        console.error("Error deleting pages:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error deleting pages:", error);
+    }
+  };
+
+  const handleDeleteConfirmation = (id) => {
+   
+    Swal.fire({
+      title: "আপনি কি নিশ্চিত?",
+
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "হ্যাঁ, নিশ্চিত",
+      cancelButtonText: "না",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(id);
+        Swal.fire({
+          title: "ডিলিট করা হয়েছে",
+          text: "",
+          icon: "success",
+        });
+      }
+    });
+  };
+
+ 
 
   return (
     <div style={{ height: "800px", display: "flex", flexDirection: "column" }}>
@@ -162,28 +282,58 @@ const Previleges = () => {
                   }}
                 >
                   <tr>
-                    <th>নাম</th>
-                    <th>রাউট</th>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#fff",
+                        width: "30%",
+                      }}
+                    >
+                      নাম
+                    </th>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#fff",
+                        width: "50%",
+                      }}
+                    >
+                      রাউট
+                    </th>
 
-                    <th></th>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#fff",
+                        width: "20%",
+                      }}
+                    >
+                      ডিলিট
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {/* {attendancePeriods.map((item) => (
-                            <tr key={item.id}>
-                              <td>{item.name}</td>
-                              <td>{convertTo24HourFormat(item.in_time)}</td>
-                              <td>{item.out_time}</td>
-                              <td>{item.leaveBalance}</td>
-                              <td>
-                                <RiDeleteBin6Line
-                                  onClick={() => handleDeleteConfirmation(item.id,item.designation_id)}
-                                  size={30}
-                                  style={{ color: "red", cursor: "pointer" }}
-                                />
-                              </td>
-                            </tr>
-                          ))} */}
+                  {allPages.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.pageName}</td>
+
+                      <td>{item.pageRoute}</td>
+
+                      <td>
+                        <RiDeleteBin6Line
+                          onClick={() => handleDeleteConfirmation(item.id)}
+                          size={30}
+                          style={{ color: "red", cursor: "pointer" }}
+                        />
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

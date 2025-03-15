@@ -96,6 +96,8 @@ const Notice = () => {
     fetchNotices();
   }, []);
 
+  console.log(noticeToUpdate?.publish_date.split("T")[0])
+
   const handleDelete = async (id) => {
     const token = localStorage.getItem("authToken");
     try {

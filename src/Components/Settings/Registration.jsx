@@ -47,14 +47,12 @@ const Registration = () => {
     const token = localStorage.getItem("authToken");
 
     try {
-     
       const requestData = {
-        user_type: formData.userType.value, 
-        emp_id: formData.empId, 
-        password: formData.password, 
-        role_id: formData.roleId.value, 
+        user_type: formData.userType.value,
+        emp_id: formData.empId,
+        password: formData.password,
+        role_id: formData.roleId.value,
       };
-
 
       const response = await fetch(
         `${import.meta.env.REACT_APP_BASE_URL}/api/auth/register`,
@@ -64,15 +62,14 @@ const Registration = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(requestData), 
+          body: JSON.stringify(requestData),
         }
       );
 
       if (response.ok) {
         const result = await response.json();
         console.log("Success:", result);
-        await fetchAllUsers()
-        
+        await fetchAllUsers();
       } else {
         const errorResult = await response.json();
         console.error("Error:", errorResult);
@@ -82,12 +79,11 @@ const Registration = () => {
     }
   };
 
- 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value, 
+      [name]: value,
     });
   };
 
@@ -107,7 +103,7 @@ const Registration = () => {
 
       if (response.ok) {
         const result = await response.json();
-        setRoles(result); 
+        setRoles(result);
       } else {
         const errorResult = await response.json();
         console.error("Error fetching roles:", errorResult);
@@ -132,7 +128,7 @@ const Registration = () => {
 
       if (response.ok) {
         const result = await response.json();
-        setAllUsers(result); 
+        setAllUsers(result);
       } else {
         const errorResult = await response.json();
         console.error("Error fetching roles:", errorResult);
@@ -142,11 +138,11 @@ const Registration = () => {
     }
   };
 
-  console.log(allUsers)
+  console.log(allUsers);
 
   useEffect(() => {
     fetchRoles();
-    fetchAllUsers()
+    fetchAllUsers();
   }, []);
 
   const convertToBangla = (number) => {
@@ -157,55 +153,55 @@ const Registration = () => {
       .map((digit) => banglaDigits[parseInt(digit)])
       .join("");
   };
-   const handleDelete = async (id) => {
-      const token = localStorage.getItem("authToken");
-      try {
-        const response = await fetch(
-          `${import.meta.env.REACT_APP_BASE_URL}/api/auth/delete-user`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ user_id: id }),
-          }
-        );
-  
-        if (response.ok) {
-          console.log("user deleted successfully");
-          await fetchAllUsers(); // Fetch the updated list of upazilas
-        } else {
-          const errorResult = await response.json();
-          console.error("Error deleting user:", errorResult);
+  const handleDelete = async (id) => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/auth/delete-user`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ user_id: id }),
         }
-      } catch (error) {
-        console.error("Error deleting user:", error);
+      );
+
+      if (response.ok) {
+        console.log("user deleted successfully");
+        await fetchAllUsers(); // Fetch the updated list of upazilas
+      } else {
+        const errorResult = await response.json();
+        console.error("Error deleting user:", errorResult);
       }
-    };
-  
-    const handleDeleteConfirmation = (id) => {
-        console.log(id)
-      Swal.fire({
-        title: "আপনি কি নিশ্চিত?",
-  
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "হ্যাঁ, নিশ্চিত",
-        cancelButtonText: "না",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          handleDelete(id);
-          Swal.fire({
-            title: "ডিলিট করা হয়েছে",
-            text: "",
-            icon: "success",
-          });
-        }
-      });
-    };
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  const handleDeleteConfirmation = (id) => {
+    console.log(id);
+    Swal.fire({
+      title: "আপনি কি নিশ্চিত?",
+
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "হ্যাঁ, নিশ্চিত",
+      cancelButtonText: "না",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(id);
+        Swal.fire({
+          title: "ডিলিট করা হয়েছে",
+          text: "",
+          icon: "success",
+        });
+      }
+    });
+  };
 
   return (
     <div style={{ height: "800px", display: "flex", flexDirection: "column" }}>
@@ -220,7 +216,7 @@ const Registration = () => {
         }}
       >
         <form
-          onSubmit={handleSubmit} 
+          onSubmit={handleSubmit}
           style={{
             width: "30%",
             padding: "20px",
@@ -247,9 +243,7 @@ const Registration = () => {
               value={formData.userType}
               onChange={handleChange}
               options={userTypeOptions}
-            
             />
-            
           </div>
 
           {/* Employee ID Input */}
@@ -343,107 +337,97 @@ const Registration = () => {
             overflowY: "auto",
           }}
         >
-             <div className="table-container" style={{ margin: "26px" }}>
-                      <div
-                        className="table-responsive"
-                        style={{ maxHeight: "500px", overflowY: "auto" }}
-                      >
-                        <table className="table" style={{ width: "100%" }}>
-                          <thead
-                            style={{
-                              position: "sticky",
-                              top: 0,
-                              backgroundColor: "#fff",
-                              zIndex: 1,
-                            }}
-                          >
-                            <tr>
-                              <th
-                                style={{
-                                  color: "#323232",
-                                  position: "sticky",
-                                  top: 0,
-                                  backgroundColor: "#fff",
-                                }}
-                              >
-                                আইডি
-                              </th>
-                              <th
-                                style={{
-                                  color: "#323232",
-                                  position: "sticky",
-                                  top: 0,
-                                  backgroundColor: "#fff",
-                                }}
-                              >
-                                নাম
-                              </th>
-                              <th
-                                style={{
-                                  color: "#323232",
-                                  position: "sticky",
-                                  top: 0,
-                                  backgroundColor: "#fff",
-                                }}
-                              >
-                                ইউজার টাইপ
-                              </th>
-                              <th
-                                style={{
-                                  color: "#323232",
-                                  position: "sticky",
-                                  top: 0,
-                                  backgroundColor: "#fff",
-                                }}
-                              >
-                                রোল
-                              </th>
-                              
-                             
-                              <th
-                                style={{
-                                  color: "#323232",
-                                  position: "sticky",
-                                  top: 0,
-                                  backgroundColor: "#fff",
-                                }}
-                              ></th>
-                              <th
-                                style={{
-                                  color: "#323232",
-                                  position: "sticky",
-                                  top: 0,
-                                  backgroundColor: "#fff",
-                                }}
-                              ></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {allUsers.map((item, index) => (
-                              <tr key={index}>
-                                <td style={{ color: "#6C6C6C" }}>
-                                  {convertToBangla(item.emp_id)}
-                                </td>
-                                <td style={{ color: "#6C6C6C" }}>{item.name}</td>
-                                <td style={{ color: "#6C6C6C" }}>{item.user_type}</td>
-                                <td style={{ color: "#6C6C6C" }}>{item.role}</td>
-                               
-                                
-                               
-                                <td>
-                                  <RiDeleteBin6Line
-                                    onClick={() => handleDeleteConfirmation(item.userId)}
-                                    size={20}
-                                    style={{ color: "gray", cursor: "pointer" }}
-                                  />
-                                </td>
-                                
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
+          <div className="table-container" style={{ margin: "26px" }}>
+            <div
+              className="table-responsive"
+              style={{ maxHeight: "500px", overflowY: "auto" }}
+            >
+              <table className="table" style={{ width: "100%" }}>
+                <thead
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    backgroundColor: "#fff",
+                    zIndex: 1,
+                  }}
+                >
+                  <tr>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      আইডি
+                    </th>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      নাম
+                    </th>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      ইউজার টাইপ
+                    </th>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      রোল
+                    </th>
+
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#fff",
+                      }}
+                    ></th>
+                    
+                    
+                  </tr>
+                </thead>
+                <tbody>
+                  {allUsers.map((item, index) => (
+                    <tr key={index}>
+                      <td style={{ color: "#6C6C6C" }}>
+                        {convertToBangla(item.emp_id)}
+                      </td>
+                      <td style={{ color: "#6C6C6C" }}>{item.name}</td>
+                      <td style={{ color: "#6C6C6C" }}>{item.user_type}</td>
+                      <td style={{ color: "#6C6C6C" }}>{item.role}</td>
+
+                      <td >
+                        <RiDeleteBin6Line
+                          onClick={() => handleDeleteConfirmation(item.userId)}
+                          size={20}
+                          style={{ color: "red", cursor: "pointer" }}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
