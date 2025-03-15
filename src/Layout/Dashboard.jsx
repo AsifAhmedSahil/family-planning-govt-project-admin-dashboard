@@ -189,6 +189,9 @@ const Dashboard = () => {
                   <Dropdown.Item as={Link} to="/setting/previlage" onClick={handleMenuItemClick} className="mt-2">
                   প্রিভিলেজ
                   </Dropdown.Item>
+                  <Dropdown.Item as={Link} to="/setting/role" onClick={handleMenuItemClick} className="mt-2">
+                  রোল
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Nav>

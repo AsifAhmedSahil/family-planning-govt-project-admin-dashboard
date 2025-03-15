@@ -278,8 +278,8 @@ const WorkAssign = () => {
           }}
         >
           {/* Designation Dropdown */}
-          <div className="form-group mb-3">
-            <label htmlFor="designation">Select Designations:</label>
+          <div className="form-group mb-3" style={{marginBottom:"10px"}}>
+            <label htmlFor="designation" style={{marginBottom:"10px"}}>পদবীর নাম</label>
             <Select
               options={designationOptions}
               value={formData.designation}
@@ -293,8 +293,8 @@ const WorkAssign = () => {
             </Select>
           </div>
 
-          <div className="form-group mb-3">
-            <label htmlFor="workTypes">Select Multiple Work Types:</label>
+          <div className="form-group mb-3" style={{marginBottom:"10px"}}>
+            <label htmlFor="workTypes" style={{marginBottom:"10px"}}>কাজের ক্ষেত্র</label>
 
             <Select
               options={workType}
@@ -307,8 +307,8 @@ const WorkAssign = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="btn w-100 text-white mt-4"
-            style={{ backgroundColor: "#13007D" }}
+            className="btn w-100 text-white mt-4 "
+            style={{ backgroundColor: "#13007D",padding:"15px",fontSize:"14px" }}
           >
             কাজের ক্ষেত্র যোগ করুন
           </button>
@@ -334,7 +334,7 @@ const WorkAssign = () => {
           style={{
             width: "70%",
             height: "100%",
-            padding: "20px",
+            padding: "0px 20px",
             overflowY: "auto",
           }}
         >

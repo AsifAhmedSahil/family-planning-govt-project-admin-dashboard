@@ -15,22 +15,7 @@ const HomePage = () => {
     boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
   };
 
-  const attendanceData = [
-    { title: "পরিচালক", percentage: 70, date: "০১/০১" },
-    { title: "পরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "পরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "পরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "উপপরিচালক", percentage: 50, date: "০১/০১" },
-    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "পরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "পরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
-    { title: "উপপরিচালক", percentage: 100, date: "০১/০১" },
-  ];
+  
   const fetchUnions = async () => {
     const token = localStorage.getItem("authToken");
     try {
