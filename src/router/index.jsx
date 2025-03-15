@@ -19,6 +19,7 @@ import ProtectedRoute from "../Components/ProtectedRoute";
 import WorkAssign from "../Components/Settings/WorkAssign";
 import Previlages from "../Components/Settings/Previlages";
 import Role from "../Components/Settings/Role";
+import Registration from "../Components/Settings/Registration";
 
 const router = createBrowserRouter([
   {
@@ -142,6 +143,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Role />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/registration",
+        element: (
+          <ProtectedRoute>
+            <Registration />
           </ProtectedRoute>
         ),
       },

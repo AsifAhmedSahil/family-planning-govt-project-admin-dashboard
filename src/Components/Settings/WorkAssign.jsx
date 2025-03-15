@@ -11,15 +11,11 @@ const WorkAssign = () => {
     workTypes: [],
   });
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+
   const [designations, setDesignations] = useState([]);
   const [workType, setWorkType] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [assignedWorkTypes, setAssignedWorkTypes] = useState([]);
-
-  
-
-
 
   const handleChangeWorktype = (selectedOptions) => {
     setSelectedOptions(selectedOptions);
@@ -48,7 +44,6 @@ const WorkAssign = () => {
 
     // console.log(requestBody);
 
-    setLoading(true);
     setMessage("");
 
     try {
@@ -79,8 +74,6 @@ const WorkAssign = () => {
     } catch (error) {
       setMessage("An error occurred while submitting the form.", error);
       console.log(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -154,7 +147,7 @@ const WorkAssign = () => {
       const token = localStorage.getItem("authToken");
       const response = await fetch(
         `${import.meta.env.REACT_APP_BASE_URL}/api/work/get-assign-workType`,
-        
+
         {
           method: "POST",
           headers: {
@@ -254,8 +247,6 @@ const WorkAssign = () => {
     });
   };
 
- 
-
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       <Header title={"Work Assign"} />
@@ -278,8 +269,10 @@ const WorkAssign = () => {
           }}
         >
           {/* Designation Dropdown */}
-          <div className="form-group mb-3" style={{marginBottom:"10px"}}>
-            <label htmlFor="designation" style={{marginBottom:"10px"}}>পদবীর নাম</label>
+          <div className="form-group mb-3" style={{ marginBottom: "10px" }}>
+            <label htmlFor="designation" style={{ marginBottom: "10px" }}>
+              পদবীর নাম
+            </label>
             <Select
               options={designationOptions}
               value={formData.designation}
@@ -293,8 +286,10 @@ const WorkAssign = () => {
             </Select>
           </div>
 
-          <div className="form-group mb-3" style={{marginBottom:"10px"}}>
-            <label htmlFor="workTypes" style={{marginBottom:"10px"}}>কাজের ক্ষেত্র</label>
+          <div className="form-group mb-3" style={{ marginBottom: "10px" }}>
+            <label htmlFor="workTypes" style={{ marginBottom: "10px" }}>
+              কাজের ক্ষেত্র
+            </label>
 
             <Select
               options={workType}
@@ -308,7 +303,11 @@ const WorkAssign = () => {
           <button
             type="submit"
             className="btn w-100 text-white mt-4 "
-            style={{ backgroundColor: "#13007D",padding:"15px",fontSize:"14px" }}
+            style={{
+              backgroundColor: "#13007D",
+              padding: "15px",
+              fontSize: "14px",
+            }}
           >
             কাজের ক্ষেত্র যোগ করুন
           </button>
@@ -343,7 +342,6 @@ const WorkAssign = () => {
               className="table-responsive"
               style={{ maxHeight: "500px", overflowY: "auto" }}
             >
-             
               <table className="table" style={{ width: "100%" }}>
                 <thead
                   style={{
@@ -401,7 +399,7 @@ const WorkAssign = () => {
                               >
                                 {item.work_type}
                               </span>
-                             
+
                               <RiDeleteBin6Line
                                 onClick={() =>
                                   handleDeleteConfirmation(item.id)

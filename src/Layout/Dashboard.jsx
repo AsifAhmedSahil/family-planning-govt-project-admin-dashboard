@@ -192,6 +192,9 @@ const Dashboard = () => {
                   <Dropdown.Item as={Link} to="/setting/role" onClick={handleMenuItemClick} className="mt-2">
                   রোল
                   </Dropdown.Item>
+                  <Dropdown.Item as={Link} to="/setting/registration" onClick={handleMenuItemClick} className="mt-2">
+                  নিবন্ধন
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Nav>
