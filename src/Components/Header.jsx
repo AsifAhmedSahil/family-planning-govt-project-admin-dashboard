@@ -1,12 +1,15 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import profile from "../assets/profile.png";
+
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap is properly imported
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserProvider";
 
 const Header = ({ title }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate()
+  const {user} = useUser()
+  
 
   // Toggle dropdown visibility on profile image click
   const handleImageClick = () => {
@@ -21,6 +24,8 @@ const Header = ({ title }) => {
     setDropdownOpen(false); 
   };
 
+  
+
   return (
     <div className="header d-flex justify-content-between align-items-center p-3 bg-light position-relative">
       <div>
@@ -32,12 +37,12 @@ const Header = ({ title }) => {
 
       <div className="user-info d-flex align-items-center gap-2 position-relative">
         <div>
-          <p className="mb-0">আরিফুর রহমান</p>
-          <p className="mb-0">ইউএফপিও</p>
+          <p className="mb-0">{user?.name}</p>
+          <p className="mb-0">{user?.designation}</p>
         </div>
         <div>
           <img
-            src={profile}
+            src={user?.image}
             alt="User"
             className="rounded-circle me-2"
             style={{ width: "50px", height: "50px", cursor: "pointer" }}

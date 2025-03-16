@@ -4,6 +4,10 @@ import { FaClipboardList, FaEdit } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
 import Header from "../Components/Header";
+import { format } from "date-fns-tz";
+
+
+
 
 const Notice = () => {
   const [formData, setFormData] = useState({
@@ -96,7 +100,7 @@ const Notice = () => {
     fetchNotices();
   }, []);
 
-  console.log(noticeToUpdate?.publish_date.split("T")[0])
+  console.log(noticeToUpdate,"notice to update")
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem("authToken");
@@ -145,12 +149,19 @@ const Notice = () => {
       }
     });
   };
+  const formatToBangladeshTime = (date) => {
+    const timeZone = "Asia/Dhaka"; // Bangladesh time zone
+    return format(new Date(date), "yyyy-MM-dd", { timeZone });
+  };
+  
 
   const handleUpdate = async () => {
     const token = localStorage.getItem("authToken");
     const { id, publish_date, notice_name, notice_description } =
       noticeToUpdate;
 
+      const formattedDate = formatToBangladeshTime(publish_date);
+      console.log(formattedDate)
     try {
       const response = await fetch(
         `${import.meta.env.REACT_APP_BASE_URL}/api/other/update-notice`,
@@ -162,7 +173,7 @@ const Notice = () => {
           },
           body: JSON.stringify({
             id,
-            publish_date,
+            publish_date:formattedDate,
             notice_name,
             notice_description,
           }),
@@ -181,6 +192,15 @@ const Notice = () => {
     } catch (error) {
       console.error("Error updating notice:", error);
     }
+  };
+
+  const handleEdit = (card) => {
+    // Retain the original publish date when updating
+    setNoticeToUpdate({
+      ...card,
+      publish_date: card.publish_date, // Ensure the original publish date stays
+    });
+    setShowUpdateModal(true);
   };
 
   console.log(noticeToUpdate);
@@ -273,6 +293,7 @@ const Notice = () => {
         >
           <h4 style={{ marginBottom: "20px" }}>পূর্বের নোটিশ</h4>
           {notices.map((card, index) => (
+           
             <div
               key={index}
               style={{
@@ -282,6 +303,7 @@ const Notice = () => {
                 backgroundColor: "#fff",
               }}
             >
+              
               <div style={{ display: "flex" }}>
                 <div
                   style={{
@@ -325,8 +347,7 @@ const Notice = () => {
                         <FaEdit
                           size={20}
                           onClick={() => {
-                            setNoticeToUpdate(card);
-                            setShowUpdateModal(true);
+                            handleEdit(card)
                           }}
                         />
                       </span>
