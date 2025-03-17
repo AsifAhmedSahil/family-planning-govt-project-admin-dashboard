@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import Header from "../Header";
 import { Modal, Button } from "react-bootstrap";
 import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
+import { FaRoute } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const Role = () => {
   const [role, setRole] = useState("");
@@ -11,16 +13,21 @@ const Role = () => {
   const [error, setError] = useState(null);
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-    
-    const [roleToUpdate, setRoleToUpdate] = useState({
-      role_id: null,
-      role: "",
-      create_privilege: "",
-      read_privilege: "",
-      edit_privilege: "",
-      delete_privilege: ""
-    });
 
+  const [roleToUpdate, setRoleToUpdate] = useState({
+    role_id: null,
+    role: "",
+    create_privilege: "",
+    read_privilege: "",
+    edit_privilege: "",
+    delete_privilege: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleNavigate = (id) => {
+    navigate(`/setting/permissionManagement/${id}`);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -47,7 +54,7 @@ const Role = () => {
             create_privilege: "",
             read_privilege: "",
             edit_privilege: "",
-            delete_privilege: ""
+            delete_privilege: "",
           }),
         }
       );
@@ -57,7 +64,7 @@ const Role = () => {
       if (response.ok) {
         console.log(result);
         console.log("role added successfully");
-        fetchAllRole()
+        fetchAllRole();
         setRole("");
       } else {
         console.error(result);
@@ -97,62 +104,62 @@ const Role = () => {
     }
   };
 
-  useEffect(()=>{
-    fetchAllRole()
-  },[])
+  useEffect(() => {
+    fetchAllRole();
+  }, []);
 
-  console.log(allRole)
+  console.log(allRole);
 
   const handleDelete = async (id) => {
-     const token = localStorage.getItem("authToken");
-     try {
-       const response = await fetch(
-         `${import.meta.env.REACT_APP_BASE_URL}/api/role/delete-role`,
-         {
-           method: "POST",
-           headers: {
-             "Content-Type": "application/json",
-             Authorization: `Bearer ${token}`,
-           },
-           body: JSON.stringify({ role_id: id }),
-         }
-       );
- 
-       if (response.ok) {
-         console.log("role deleted successfully");
-         await fetchAllRole(); 
-       } else {
-         const errorResult = await response.json();
-         console.error("Error deleting work role:", errorResult);
-       }
-     } catch (error) {
-       console.error("Error deleting work role:", error);
-     }
-   };
- 
-   const handleDeleteConfirmation = (id) => {
-     Swal.fire({
-       title: "আপনি কি নিশ্চিত?",
- 
-       icon: "warning",
-       showCancelButton: true,
-       confirmButtonColor: "#3085d6",
-       cancelButtonColor: "#d33",
-       confirmButtonText: "হ্যাঁ, নিশ্চিত",
-       cancelButtonText: "না",
-     }).then((result) => {
-       if (result.isConfirmed) {
-         handleDelete(id);
-         Swal.fire({
-           title: "ডিলিট করা হয়েছে",
-           text: " ",
-           icon: "success",
-         });
-       }
-     });
-   };
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/role/delete-role`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ role_id: id }),
+        }
+      );
 
-   const handleUpdateConfirmation = (role_id, role) => {
+      if (response.ok) {
+        console.log("role deleted successfully");
+        await fetchAllRole();
+      } else {
+        const errorResult = await response.json();
+        console.error("Error deleting work role:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error deleting work role:", error);
+    }
+  };
+
+  const handleDeleteConfirmation = (id) => {
+    Swal.fire({
+      title: "আপনি কি নিশ্চিত?",
+
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "হ্যাঁ, নিশ্চিত",
+      cancelButtonText: "না",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(id);
+        Swal.fire({
+          title: "ডিলিট করা হয়েছে",
+          text: " ",
+          icon: "success",
+        });
+      }
+    });
+  };
+
+  const handleUpdateConfirmation = (role_id, role) => {
     setRoleToUpdate({ role_id, role });
     setShowUpdateModal(true);
   };
@@ -179,8 +186,8 @@ const Role = () => {
 
       if (response.ok) {
         console.log("role updated successfully");
-        await fetchAllRole(); 
-        setShowUpdateModal(false); 
+        await fetchAllRole();
+        setShowUpdateModal(false);
       } else {
         const errorResult = await response.json();
         console.error("Error updating role:", errorResult);
@@ -212,7 +219,7 @@ const Role = () => {
                   className="form-control"
                   style={{ width: "100%" }}
                   value={role}
-                  onChange={(e) => setRole(e.target.value)} 
+                  onChange={(e) => setRole(e.target.value)}
                 />
               </div>
               <div className="col-md-2 d-flex flex-column mb-3">
@@ -221,7 +228,7 @@ const Role = () => {
                   type="submit"
                   className="btn w-100 text-white mt-4"
                   style={{ backgroundColor: "#13007D" }}
-                  disabled={loading} 
+                  disabled={loading}
                 >
                   {loading ? "Adding..." : "রোল যোগ করুন"}
                 </button>
@@ -270,6 +277,18 @@ const Role = () => {
                       width: "10%", // Adjust width as needed
                     }}
                   >
+                    রাউট
+                  </th>
+                  <th
+                    style={{
+                      color: "#323232",
+                      position: "sticky",
+                      top: 0,
+                      backgroundColor: "#D9D9D9",
+                      textAlign: "center",
+                      width: "10%", // Adjust width as needed
+                    }}
+                  >
                     ডিলিট
                   </th>
 
@@ -292,6 +311,18 @@ const Role = () => {
                   <tr key={index}>
                     <td style={{ color: "#6C6C6C" }}>{item.role}</td>
 
+                    <td>
+                      <FaRoute
+                        onClick={() => handleNavigate(item.role_id)}
+                        size={25}
+                        style={{
+                          color: "blue",
+                          cursor: "pointer",
+                          textAlign: "center",
+                          width: "100%",
+                        }}
+                      />
+                    </td>
                     <td>
                       <RiDeleteBin6Line
                         onClick={() => handleDeleteConfirmation(item.role_id)}
@@ -327,10 +358,9 @@ const Role = () => {
       </div>
       <Modal show={showUpdateModal} onHide={() => setShowUpdateModal(false)}>
         <Modal.Header closeButton>
-      
           <Modal.Title>রোল আপডেট করুন</Modal.Title>
         </Modal.Header>
-          
+
         <Modal.Body>
           <input
             type="text"
