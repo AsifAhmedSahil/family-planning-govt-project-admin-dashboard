@@ -212,7 +212,7 @@ const PersonDetails = () => {
               paddingBottom: "20px",
             }}
           >
-            {employee.name}
+            {employee?.name}
           </h3>
           <div
             className="col-md-4 d-flex flex-column mb-3"

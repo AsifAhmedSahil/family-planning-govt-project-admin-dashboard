@@ -20,6 +20,7 @@ import WorkAssign from "../Components/Settings/WorkAssign";
 import Previlages from "../Components/Settings/Previlages";
 import Role from "../Components/Settings/Role";
 import Registration from "../Components/Settings/Registration";
+import PermissionManagement from "../Components/Settings/PermissionManagement";
 
 const router = createBrowserRouter([
   {
@@ -151,6 +152,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Registration />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/setting/permissionManagement/:role_id",
+        element: (
+          <ProtectedRoute>
+            <PermissionManagement />
           </ProtectedRoute>
         ),
       },

@@ -42,7 +42,7 @@ const Header = ({ title }) => {
         </div>
         <div>
           <img
-            src={user?.image}
+            src={`${import.meta.env.REACT_APP_BASE_URL}/uploads/${user?.image}`}
             alt="User"
             className="rounded-circle me-2"
             style={{ width: "50px", height: "50px", cursor: "pointer" }}

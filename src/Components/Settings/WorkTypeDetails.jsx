@@ -14,6 +14,7 @@ const WorkTypeDetails = () => {
     work_type_id: null,
     field: "",
     field_type: "",
+    DropdownMenu:""
   });
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -89,6 +90,8 @@ const WorkTypeDetails = () => {
     fetchWorkType();
     fetchWorkField();
   }, []);
+
+  console.log(allWorkField)
 
   const workTypeOptions = allWorkType.map((worktype) => ({
     value: worktype.type_id,
@@ -230,7 +233,7 @@ const WorkTypeDetails = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);  
-    const { work_type_id, field, field_type } = formData;
+    const { work_type_id, field, field_type,DropdownMenu } = formData;
     console.log(formData)
 
     
@@ -244,7 +247,8 @@ const WorkTypeDetails = () => {
     const requestBody = {
       work_type_id,
       field,
-      field_type
+      field_type,
+      DropdownMenu
     };
 
     try {

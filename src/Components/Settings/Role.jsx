@@ -101,6 +101,8 @@ const Role = () => {
     fetchAllRole()
   },[])
 
+  console.log(allRole)
+
   const handleDelete = async (id) => {
      const token = localStorage.getItem("authToken");
      try {
