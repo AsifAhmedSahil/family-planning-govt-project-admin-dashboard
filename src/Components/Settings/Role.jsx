@@ -26,6 +26,7 @@ const Role = () => {
   const navigate = useNavigate();
 
   const handleNavigate = (id) => {
+    console.log(id)
     navigate(`/setting/permissionManagement/${id}`);
   };
   const handleSubmit = async (e) => {

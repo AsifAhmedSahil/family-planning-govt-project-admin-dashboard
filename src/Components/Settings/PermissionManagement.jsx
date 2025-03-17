@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "../Header";
 import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const PermissionManagement = () => {
   const [loading, setLoading] = useState(true);
@@ -207,6 +208,11 @@ const PermissionManagement = () => {
 
       if (response.ok) {
         console.log("update role successfully");
+        Swal.fire({
+            title: "Route Assign Successfully",
+            icon: "success",
+            draggable: true
+          });
         fetchData();
       } else {
         alert(result.message || "Error updating work field");
