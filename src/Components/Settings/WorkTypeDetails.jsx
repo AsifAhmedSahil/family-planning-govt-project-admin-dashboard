@@ -14,16 +14,47 @@ const WorkTypeDetails = () => {
     work_type_id: null,
     field: "",
     field_type: "",
-    DropdownMenu:""
+    DropdownMenu: "",
   });
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [selectedValues, setSelectedValues] = useState([]);
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && inputValue.trim() !== "") {
+      e.preventDefault(); // Prevent form submission
+      addValue(inputValue.trim());
+      setInputValue("");
+    }
+  };
+
+  const addValue = (value) => {
+    if (!selectedValues.includes(value)) {
+      setSelectedValues([...selectedValues, value]);
+    }
+  };
+
+  // Remove a value from the selected values
+  const removeValue = (valueToRemove) => {
+    setSelectedValues(
+      selectedValues.filter((value) => value !== valueToRemove)
+    );
+  };
+
+  const getValuesString = () => {
+    return selectedValues.join(",");
+  };
 
   const [workTypeToUpdate, setWorkTypeToUpdate] = useState({
     field_id: null,
     work_type_id: null,
     field: "",
-    field_type: ""
+    field_type: "",
   });
 
   const typeOptions = [
@@ -91,7 +122,7 @@ const WorkTypeDetails = () => {
     fetchWorkField();
   }, []);
 
-  console.log(allWorkField)
+  console.log(allWorkField);
 
   const workTypeOptions = allWorkType.map((worktype) => ({
     value: worktype.type_id,
@@ -167,13 +198,18 @@ const WorkTypeDetails = () => {
     });
   };
 
-  const handleUpdateConfirmation = (field_id, work_type_id, field, field_type) => {
+  const handleUpdateConfirmation = (
+    field_id,
+    work_type_id,
+    field,
+    field_type
+  ) => {
     // Set the selected field data to the state for update
     setWorkTypeToUpdate({
       field_id,
       work_type_id,
       field,
-      field_type
+      field_type,
     });
     setShowUpdateModal(true);
   };
@@ -182,13 +218,13 @@ const WorkTypeDetails = () => {
     const { name, value } = e.target;
     setWorkTypeToUpdate({
       ...workTypeToUpdate,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleUpdate = async () => {
     const { field_id, work_type_id, field, field_type } = workTypeToUpdate;
-    console.log(workTypeToUpdate)
+    console.log(workTypeToUpdate);
     if (!work_type_id || !field || !field_type) {
       alert("All fields are required");
       return;
@@ -217,9 +253,8 @@ const WorkTypeDetails = () => {
       const result = await response.json();
 
       if (response.ok) {
-        
         setShowUpdateModal(false);
-        fetchWorkField(); 
+        fetchWorkField();
       } else {
         alert(result.message || "Error updating work field");
       }
@@ -232,45 +267,44 @@ const WorkTypeDetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);  
-    const { work_type_id, field, field_type,DropdownMenu } = formData;
-    console.log(formData)
+    setError(null);
+    // const { work_type_id, field, field_type,DropdownMenu } = formData;
+    // console.log(formData)
 
-    
-    if (!work_type_id || !field || !field_type) {
-      setError("All fields are required");
-      setLoading(false);
-      return;
-    }
+    // if (!work_type_id || !field || !field_type) {
+    //   setError("All fields are required");
+    //   setLoading(false);
+    //   return;
+    // }
 
-    
     const requestBody = {
-      work_type_id,
-      field,
-      field_type,
-      DropdownMenu
+      ...formData,
+      DropdownMenu: getValuesString(),
     };
 
+    console.log(requestBody);
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`${import.meta.env.REACT_APP_BASE_URL}/api/work/add-work-field`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/work/add-work-field`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
 
       const result = await response.json();
 
       if (response.ok) {
         console.log("Success:", result);
-        fetchWorkField()
-        
+        fetchWorkField();
+
         setLoading(false);
       } else {
-        
         console.error("Error:", result);
         setError(result.message || "Something went wrong");
         setLoading(false);
@@ -285,24 +319,18 @@ const WorkTypeDetails = () => {
   return (
     <div>
       <Header title={"কাজের ক্ষেত্রের বিবরনী"} />
-      <div className="dashboard p-3" style={{ backgroundColor: "#FFFFFF", borderRadius: "15px" }}>
+      <div
+        className="dashboard p-3"
+        style={{ backgroundColor: "#FFFFFF", borderRadius: "15px" }}
+      >
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <form onSubmit={handleSubmit}>
             <div className="row">
-              <div className="col-md-3 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
-                  কাজের ক্ষেত্রের বিবরনী
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  style={{ width: "100%" }}
-                  value={formData.field}
-                  onChange={handleWorkTypeDetailsChange}
-                />
-              </div>
-              <div className="col-md-3 d-flex flex-column mb-3">
-                <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
+            <div className="col-md-3 d-flex flex-column mb-3">
+                <label
+                  className="mb-2 text-[16px]"
+                  style={{ color: "#323232" }}
+                >
                   কাজের ক্ষেত্র
                 </label>
                 <Select
@@ -323,12 +351,28 @@ const WorkTypeDetails = () => {
                 />
               </div>
               <div className="col-md-3 d-flex flex-column mb-3">
+                <label
+                  className="mb-2 text-[16px]"
+                  style={{ color: "#323232" }}
+                >
+                  কাজের ক্ষেত্রের বিবরনী
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  style={{ width: "100%" }}
+                  value={formData.field}
+                  onChange={handleWorkTypeDetailsChange}
+                />
+              </div>
+              
+              <div className="col-md-3 d-flex flex-column mb-3">
                 <label>Select a Type</label>
                 <select
                   value={formData.field_type}
                   onChange={handleTypeChange}
                   className="form-control"
-                  style={{ width: "200px", marginTop: "10px" }}
+                  style={{  marginTop: "10px" }}
                 >
                   {typeOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -336,8 +380,10 @@ const WorkTypeDetails = () => {
                     </option>
                   ))}
                 </select>
+                
               </div>
-              <div className="col-md-2 d-flex flex-column mb-3">
+              
+              <div className="col-md-3 d-flex flex-column mb-3">
                 <label className="mb-2 text-[16px]"></label>
                 <button
                   type="submit"
@@ -348,6 +394,44 @@ const WorkTypeDetails = () => {
                   {loading ? "Adding..." : "কাজের ক্ষেত্র যোগ করুন"}
                 </button>
               </div>
+              {formData.field_type === "dropdown" && (
+                  <div className="row">
+                    <div className="col-md-8">
+                      <label htmlFor="multiInput" className="form-label">
+                        Add Multiple Values
+                      </label>
+                      <div className="input-group mb-3">
+                        <input
+                          type="text"
+                          id="multiInput"
+                          className="form-control"
+                          placeholder="Type and press Enter to add"
+                          value={inputValue}
+                          onChange={handleInputChange}
+                          onKeyPress={handleKeyPress}
+                        />
+                      </div>
+
+                      <div className="selected-values mt-2">
+                        {selectedValues.map((value, index) => (
+                          <span
+                            key={index}
+                            className="badge bg-primary me-2 mb-2 p-2"
+                          >
+                            {value}
+                            <button
+                              type="button"
+                              className="btn-close btn-close-white ms-2"
+                              style={{ fontSize: "0.5rem" }}
+                              onClick={() => removeValue(value)}
+                              aria-label="Remove"
+                            ></button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
             </div>
           </form>
           {error && <div className="alert alert-danger mt-3">{error}</div>}
@@ -356,14 +440,57 @@ const WorkTypeDetails = () => {
         <hr />
 
         <div className="table-container" style={{ margin: "26px" }}>
-          <div className="table-responsive" style={{ maxHeight: "500px", overflowY: "auto" }}>
+          <div
+            className="table-responsive"
+            style={{ maxHeight: "500px", overflowY: "auto" }}
+          >
             <table className="table" style={{ width: "100%" }}>
-              <thead style={{ position: "sticky", top: 0, backgroundColor: "#D9D9D9" }}>
+              <thead
+                style={{
+                  position: "sticky",
+                  top: 0,
+                  backgroundColor: "#D9D9D9",
+                }}
+              >
                 <tr>
-                  <th style={{ color: "#323232", width: "40%",backgroundColor: "#D9D9D9" }}>কাজের ক্ষেত্রের বিবরনী</th>
-                  <th style={{ color: "#323232", width: "40%" ,backgroundColor: "#D9D9D9"}}>টাইপ</th>
-                  <th style={{ color: "#323232", textAlign: "center", width: "10%",backgroundColor: "#D9D9D9" }}>ডিলিট</th>
-                  <th style={{ color: "#323232", textAlign: "center", width: "10%",backgroundColor: "#D9D9D9" }}>আপডেট</th>
+                  <th
+                    style={{
+                      color: "#323232",
+                      width: "40%",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  >
+                    কাজের ক্ষেত্রের বিবরনী
+                  </th>
+                  <th
+                    style={{
+                      color: "#323232",
+                      width: "40%",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  >
+                    টাইপ
+                  </th>
+                  <th
+                    style={{
+                      color: "#323232",
+                      textAlign: "center",
+                      width: "10%",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  >
+                    ডিলিট
+                  </th>
+                  <th
+                    style={{
+                      color: "#323232",
+                      textAlign: "center",
+                      width: "10%",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  >
+                    আপডেট
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -375,15 +502,30 @@ const WorkTypeDetails = () => {
                       <RiDeleteBin6Line
                         onClick={() => handleDeleteConfirmation(item.field_id)}
                         size={30}
-                        style={{ color: "red", cursor: "pointer", textAlign: "center", width: "100%" }}
+                        style={{
+                          color: "red",
+                          cursor: "pointer",
+                          textAlign: "center",
+                          width: "100%",
+                        }}
                       />
                     </td>
                     <td>
                       <RiEdit2Line
                         size={30}
-                        style={{ color: "blue", cursor: "pointer", textAlign: "center", width: "100%" }}
+                        style={{
+                          color: "blue",
+                          cursor: "pointer",
+                          textAlign: "center",
+                          width: "100%",
+                        }}
                         onClick={() =>
-                          handleUpdateConfirmation(item.field_id, item.work_type_id, item.field, item.field_type)
+                          handleUpdateConfirmation(
+                            item.field_id,
+                            item.work_type_id,
+                            item.field,
+                            item.field_type
+                          )
                         }
                       />
                     </td>
@@ -409,12 +551,18 @@ const WorkTypeDetails = () => {
                   ? {
                       value: workTypeToUpdate.work_type_id,
                       label: workTypeOptions.find(
-                        (option) => option.value === workTypeToUpdate.work_type_id
+                        (option) =>
+                          option.value === workTypeToUpdate.work_type_id
                       )?.label,
                     }
                   : null
               }
-              onChange={(option) => setWorkTypeToUpdate({ ...workTypeToUpdate, work_type_id: option.value })}
+              onChange={(option) =>
+                setWorkTypeToUpdate({
+                  ...workTypeToUpdate,
+                  work_type_id: option.value,
+                })
+              }
               isClearable
               placeholder="Select Work Type"
             />

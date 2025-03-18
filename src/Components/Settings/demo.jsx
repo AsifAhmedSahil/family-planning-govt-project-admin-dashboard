@@ -1,272 +1,326 @@
-import { useEffect, useState } from "react";
-import Header from "../Header";
+"use client"
 
-const WorkAssign = () => {
-  // State for the form data (for Designation and Work Types with checkboxes)
-  const [formData, setFormData] = useState({
-    designation: null, // For Designation (react-select or select)
-    workTypes: [],     // For selected work types (checkboxes)
-  });
-  const [message, setMessage] = useState(""); // For showing response message
-  const [loading, setLoading] = useState(false); // To show loading state
-  const [designations, setDesignations] = useState([]); // For storing designations fetched from API
-  const [workTypes, setWorkTypes] = useState([]); // For storing work types
+import { useState, useEffect } from "react"
+import "bootstrap/dist/css/bootstrap.min.css"
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+export default function PermissionsManagement() {
+  const [loading, setLoading] = useState(true)
+  // State to hold the role data
+  const [roleData, setRoleData] = useState({
+    roleId: 2,
+    roleName: "admin",
+    create_privilege: "",
+    read_privilege: "",
+    edit_privilege: "",
+    delete_privilege: "",
+    page: [
+      {
+        pageName: "home page",
+        pageRoute: "pages/homepage",
+        create_privilege: false,
+        read_privilege: false,
+        edit_privilege: false,
+        delete_privilege: false,
+      },
+      {
+        pageName: "about page demo",
+        pageRoute: "pages/about",
+        create_privilege: false,
+        read_privilege: false,
+        edit_privilege: false,
+        delete_privilege: false,
+      },
+    ],
+  })
 
-    // Validate the form data before making the API call
-    if (!formData.designation || formData.workTypes.length === 0) {
-      setMessage("Please select a designation and at least one work type.");
-      return;
-      
+  // State for the dropdown and multi-value input
+  const [selectedType, setSelectedType] = useState("")
+  const [inputValue, setInputValue] = useState("")
+  const [selectedValues, setSelectedValues] = useState([])
+
+  // Fetch data on component mount
+  useEffect(() => {
+    // Simulating API fetch - replace with your actual API call
+    const fetchData = async () => {
+      try {
+        // Replace with your actual API endpoint
+        // const response = await fetch('/api/roles/2')
+        // const data = await response.json()
+
+        // Using sample data for demonstration
+        const data = {
+          roleId: 2,
+          roleName: "admin",
+          create_privilege: "",
+          read_privilege: "",
+          edit_privilege: "",
+          delete_privilege: "",
+          page: [
+            {
+              pageName: "home page",
+              pageRoute: "pages/homepage",
+              create_privilege: false,
+              read_privilege: false,
+              edit_privilege: false,
+              delete_privilege: false,
+            },
+            {
+              pageName: "about page demo",
+              pageRoute: "pages/about",
+              create_privilege: false,
+              read_privilege: false,
+              edit_privilege: false,
+              delete_privilege: false,
+            },
+          ],
+        }
+
+        setRoleData(data)
+        setLoading(false)
+      } catch (error) {
+        console.error("Error fetching role data:", error)
+        setLoading(false)
+      }
     }
 
-    // Prepare the request body based on the API documentation
-    const assignData = formData.workTypes.map((workTypeId) => ({
-      designation_id: formData.designation.value,
-      work_type_id: workTypeId,
-    }));
+    fetchData()
+  }, [])
 
-    const requestBody = {
-      assignData: JSON.stringify(assignData),
-    };
+  // Update top-level privileges based on page privileges
+  const updateTopLevelPrivileges = (updatedPages) => {
+    // Initialize arrays to hold page routes for each privilege
+    const createPrivileges = []
+    const readPrivileges = []
+    const editPrivileges = []
+    const deletePrivileges = []
 
-    console.log(requestBody);
+    // Collect page routes for each privilege type
+    updatedPages.forEach((page) => {
+      if (page.create_privilege) createPrivileges.push(page.pageRoute)
+      if (page.read_privilege) readPrivileges.push(page.pageRoute)
+      if (page.edit_privilege) editPrivileges.push(page.pageRoute)
+      if (page.delete_privilege) deletePrivileges.push(page.pageRoute)
+    })
 
-    setLoading(true);
-    setMessage(""); // Reset message before submitting
+    // Convert arrays to JSON strings
+    return {
+      create_privilege: JSON.stringify(createPrivileges),
+      read_privilege: JSON.stringify(readPrivileges),
+      edit_privilege: JSON.stringify(editPrivileges),
+      delete_privilege: JSON.stringify(deletePrivileges),
+    }
+  }
 
-    // Try API call (commented out for now)
-    // try {
-    //   const response = await fetch("/api/work/assign-workType", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(requestBody),
-    //   });
+  // Handle checkbox changes
+  const handleCheckboxChange = (pageIndex, privilege, checked) => {
+    setRoleData((prevData) => {
+      // Update the specific page's privilege
+      const updatedPages = [...prevData.page]
+      updatedPages[pageIndex] = {
+        ...updatedPages[pageIndex],
+        [privilege]: checked,
+      }
 
-    //   const data = await response.json();
-
-    //   if (response.status === 201) {
-    //     setMessage("Assignments added successfully");
-    //   } else if (response.status === 400) {
-    //     setMessage(data.message || "Invalid data");
-    //   } else if (response.status === 500) {
-    //     setMessage("Internal server error. Please try again later.");
-    //   }
-    // } catch (error) {
-    //   setMessage("An error occurred while submitting the form.");
-    // } finally {
-    //   setLoading(false);
-    // }
-  };
-
-  // Handle change for Designation
-  const handleDesignationChange = (selectedOption) => {
-    setFormData({
-      ...formData,
-      designation: selectedOption, // Update the designation field
-    });
-  };
-
-  // Handle change for multi-select checkboxes for Work Types
-  const handleWorkTypeChange = (e) => {
-    const value = parseInt(e.target.value);
-    setFormData((prevFormData) => {
-      const newWorkTypes = prevFormData.workTypes.includes(value)
-        ? prevFormData.workTypes.filter((item) => item !== value)
-        : [...prevFormData.workTypes, value];
+      // Update top-level privileges
+      const topLevelPrivileges = updateTopLevelPrivileges(updatedPages)
 
       return {
-        ...prevFormData,
-        workTypes: newWorkTypes,
-      };
-    });
-  };
-
-  // Fetch designations from API
-  const fetchDesignation = async () => {
-    const token = localStorage.getItem("authToken");
-    try {
-      const response = await fetch(
-        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-designations`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const result = await response.json();
-        setDesignations(result);
-      } else {
-        const errorResult = await response.json();
-        console.error("Error fetching designations:", errorResult);
+        ...prevData,
+        ...topLevelPrivileges,
+        page: updatedPages,
       }
-    } catch (error) {
-      console.error("Error fetching designations:", error);
+    })
+  }
+
+  // Handle type selection change
+  const handleTypeChange = (e) => {
+    setSelectedType(e.target.value)
+    // Reset values when type changes
+    setSelectedValues([])
+    setInputValue("")
+  }
+
+  // Handle input change
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value)
+  }
+
+  // Handle key press in input field
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && inputValue.trim() !== "") {
+      e.preventDefault() // Prevent form submission
+      addValue(inputValue.trim())
+      setInputValue("")
     }
-  };
+  }
 
-  console.log(workTypes)
-
-  // Fetch work types from API
-  const fetchWorkTypes = async () => {
-    const token = localStorage.getItem("authToken");
-    try {
-      const response = await fetch(
-        `${import.meta.env.REACT_APP_BASE_URL}/api/work/get-work-types`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const result = await response.json();
-        setWorkTypes(result); // Store the work types
-      } else {
-        const errorResult = await response.json();
-        console.error("Error fetching work types:", errorResult);
-      }
-    } catch (error) {
-      console.error("Error fetching work types:", error);
+  // Add a value to the selected values
+  const addValue = (value) => {
+    if (!selectedValues.includes(value)) {
+      setSelectedValues([...selectedValues, value])
     }
-  };
+  }
 
-  // Fetch data when the component mounts
-  useEffect(() => {
-    fetchDesignation();
-    fetchWorkTypes();
-  }, []);
+  // Remove a value from the selected values
+  const removeValue = (valueToRemove) => {
+    setSelectedValues(selectedValues.filter((value) => value !== valueToRemove))
+  }
 
-  // Map API response to checkbox options
-  const designationOptions = designations.map((designation) => ({
-    value: designation.id,
-    label: designation.name,
-  }));
+  // Get comma-separated string of selected values
+  const getValuesString = () => {
+    return selectedValues.join(",")
+  }
 
-  const workTypeOptions = workTypes.map((workType) => ({
-    value: workType.id,
-    label: workType.name,
-  }));
+  // Handle update button click
+  const handleUpdate = () => {
+    const updatedData = {
+      ...roleData,
+      selectedType,
+      customValues: selectedType === "custom" ? getValuesString() : "",
+    }
+    console.log("Updated role data:", updatedData)
+    // You can add API call here to save the data
+  }
+
+  if (loading) return <div className="container mt-5 text-center">Loading...</div>
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      <Header title={"Work Assign"} />
-      <div
-        className="dashboard p-3"
-        style={{
-          backgroundColor: "#FFFFFF",
-          display: "flex",
-          flex: 1,
-        }}
-      >
-        {/* Left Section */}
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            width: "30%",
-            padding: "20px",
-            borderRight: "1px solid #ddd",
-            overflowY: "auto",
-            height: "100%",
-          }}
-        >
-          {/* Designation Select */}
-          <div className="form-group mb-3">
-            <label htmlFor="designation">Select Designation:</label>
-            <select
-              id="designation"
-              className="form-control"
-              value={formData.designation ? formData.designation.value : ""}
-              onChange={(e) =>
-                handleDesignationChange({
-                  value: e.target.value,
-                  label: e.target.options[e.target.selectedIndex].text,
-                })
-              }
-            >
-              <option value="">Select...</option>
-              {designationOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+    <div className="container mt-4">
+      <div className="card mb-4">
+        <div className="card-body">
+          <div className="row mb-3">
+            <div className="col-md-4">
+              <label htmlFor="typeSelect" className="form-label">
+                Select Type
+              </label>
+              <select id="typeSelect" className="form-select" value={selectedType} onChange={handleTypeChange}>
+                <option value="">Select a type...</option>
+                <option value="users">Users</option>
+                <option value="roles">Roles</option>
+                <option value="permissions">Permissions</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
           </div>
 
-          {/* Work Types Multi-Select (Checkboxes) */}
-          <div className="form-group mb-3">
-  <label htmlFor="dropdown2">Select Multiple Work Types:</label>
-  <div
-    id="dropdown2"
-    className="form-control"
-    style={{
-      minHeight: "100px",
-      overflowY: "auto",
-      padding: "10px",
-      display: "flex",
-      flexDirection: "column",
-    }}
-  >
-    {workTypeOptions.map((workType) => (
-      <label key={workType.value} style={{ marginBottom: "5px" }}>
-        <input
-          type="checkbox"
-          value={workType.value}
-          checked={formData.workTypes.includes(workType.value)}
-          onChange={handleWorkTypeChange}
-        />
-        {workType.label}
-      </label>
-    ))}
-  </div>
-</div>
+          {selectedType === "custom" && (
+            <div className="row">
+              <div className="col-md-8">
+                <label htmlFor="multiInput" className="form-label">
+                  Add Multiple Values
+                </label>
+                <div className="input-group mb-3">
+                  <input
+                    type="text"
+                    id="multiInput"
+                    className="form-control"
+                    placeholder="Type and press Enter to add"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
+                  />
+                </div>
 
+                <div className="selected-values mt-2">
+                  {selectedValues.map((value, index) => (
+                    <span key={index} className="badge bg-primary me-2 mb-2 p-2">
+                      {value}
+                      <button
+                        type="button"
+                        className="btn-close btn-close-white ms-2"
+                        style={{ fontSize: "0.5rem" }}
+                        onClick={() => removeValue(value)}
+                        aria-label="Remove"
+                      ></button>
+                    </span>
+                  ))}
+                </div>
 
-          {/* Submit Button */}
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? "Submitting..." : "Submit"}
-          </button>
-
-          {/* Message Display */}
-          {message && (
-            <div className="mt-3">
-              <p
-                className={
-                  message.includes("successfully") ? "text-success" : "text-danger"
-                }
-              >
-                {message}
-              </p>
+                {selectedValues.length > 0 && (
+                  <div className="mt-3">
+                    <strong>Values as string:</strong> {getValuesString()}
+                  </div>
+                )}
+              </div>
             </div>
           )}
-        </form>
+        </div>
+      </div>
 
-        {/* Right Section */}
-        <div
-          style={{
-            width: "70%",
-            height: "100%",
-            padding: "20px",
-            overflowY: "auto",
-          }}
-        >
-          <p>Right Section Content</p>
+      <div className="card">
+        <div className="card-body">
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th style={{ width: "20%" }}>রোল</th>
+                <th style={{ width: "20%" }}>মডিউলের নাম</th>
+                <th style={{ width: "60%" }}>
+                  <div className="row text-center">
+                    <div className="col-3">Add</div>
+                    <div className="col-3">View</div>
+                    <div className="col-3">Edit</div>
+                    <div className="col-3">Delete</div>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {roleData.page.map((page, pageIndex) => (
+                <tr key={page.pageRoute}>
+                  {pageIndex === 0 && (
+                    <td rowSpan={roleData.page.length} className="align-middle">
+                      {roleData.roleName}
+                    </td>
+                  )}
+                  <td>{page.pageName}</td>
+                  <td>
+                    <div className="row text-center">
+                      <div className="col-3">
+                        <input
+                          type="checkbox"
+                          checked={page.create_privilege}
+                          onChange={(e) => handleCheckboxChange(pageIndex, "create_privilege", e.target.checked)}
+                        />
+                      </div>
+                      <div className="col-3">
+                        <input
+                          type="checkbox"
+                          checked={page.read_privilege}
+                          onChange={(e) => handleCheckboxChange(pageIndex, "read_privilege", e.target.checked)}
+                        />
+                      </div>
+                      <div className="col-3">
+                        <input
+                          type="checkbox"
+                          checked={page.edit_privilege}
+                          onChange={(e) => handleCheckboxChange(pageIndex, "edit_privilege", e.target.checked)}
+                        />
+                      </div>
+                      <div className="col-3">
+                        <input
+                          type="checkbox"
+                          checked={page.delete_privilege}
+                          onChange={(e) => handleCheckboxChange(pageIndex, "delete_privilege", e.target.checked)}
+                        />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="d-flex justify-content-end mt-3">
+            <button
+              className="btn btn-primary"
+              style={{ backgroundColor: "#1a0080", borderColor: "#1a0080", padding: "10px 30px" }}
+              onClick={handleUpdate}
+            >
+              আপডেট করুন
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default WorkAssign;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Header from "../Header";
-import { useNavigate } from "react-router-dom";
+
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 
@@ -13,11 +13,7 @@ const Previleges = () => {
 
   const [allPages, setAllPages] = useState([]);
 
-  const navigate = useNavigate();
-
-  const handleNavigate = () => {
-    navigate("/setting/role");
-  };
+  
 
   // Handle form data changes
   const handleChange = (e) => {
@@ -257,16 +253,7 @@ const handleDelete = async (id) => {
               >
                 রাউট সমূহ
               </h1>
-              <button
-                onClick={handleNavigate}
-                style={{
-                  backgroundColor: "#fff",
-                  border: "0px",
-                  color: "#13007D",
-                }}
-              >
-                রাউট এসাইন করুন
-              </button>
+           
             </div>
 
             <div
