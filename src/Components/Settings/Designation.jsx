@@ -49,11 +49,11 @@ const Designation = () => {
     });
   };
 
-  // Handle time changes (start time, end time)
+  
   const handleTimeChange = (field, value) => {
     setFormData({
       ...formData,
-      [field]: value, // Update the specific field (inTime or outTime)
+      [field]: value, 
     });
   };
 

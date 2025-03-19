@@ -1,6 +1,103 @@
+import { useEffect, useState } from "react";
 import Header from "../Header";
 
 const OverView = () => {
+  const [unions, setUnions] = useState([]);
+  const [units, setUnits] = useState([]);
+  const [upazilas, setUpazila] = useState([]);
+
+  const fetchUnions = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-unions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setUnions(result); // Update the state with fetched data
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching unions:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching unions:", error);
+    }
+  };
+
+  const fetchUnits = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-units`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setUnits(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching units:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching units:", error);
+    }
+  };
+  const fetchUpazilas = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-upazilas`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result, "****");
+        setUpazila(result); // Update the state with fetched data
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching upazilas:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching upazilas:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUnions();
+    fetchUnits()
+    fetchUpazilas()
+  }, []);
+
+  const convertToBangla = (number) => {
+    const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+    return number
+      .toString()
+      .split("")
+      .map((digit) => banglaDigits[parseInt(digit)])
+      .join("");
+  };
   return (
     <div>
       <Header title={"উপস্থিতি"} />
@@ -28,7 +125,7 @@ const OverView = () => {
                 <strong >সর্বমোট উপজেলা </strong>
               </p>
               <p className="mb-3 " style={{ width: "250px" }}>
-              ১৭
+              {convertToBangla(upazilas.length)}
               </p>
             </div>
             <div style={{color:"#565656"}}>
@@ -36,7 +133,7 @@ const OverView = () => {
                 <strong >সর্বমোট ইউনিয়ন</strong>
               </p>
               <p className="mb-3 " style={{ width: "250px" }}>
-              ২৮
+              {convertToBangla(unions.length)}
               </p>
             </div>
             <div style={{color:"#565656"}}>
@@ -44,7 +141,7 @@ const OverView = () => {
                 <strong >সর্বমোট ইউনিট</strong>
               </p>
               <p className="mb-3 " style={{ width: "250px" }}>
-              ৫৬
+              {convertToBangla(units.length)}
               </p>
             </div>
           </div>

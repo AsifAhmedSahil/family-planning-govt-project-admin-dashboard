@@ -511,7 +511,7 @@ const HomePage = () => {
         {/* Right Part - Scrollable Notices */}
         <div className="col-md-4">
           <h5 className="mb-4">সর্বশেষ নোটিশ</h5>
-          <div style={{ ...glassmorphism, padding: "20px" }}>
+          <div style={{ ...glassmorphism, padding: "20px",backgroundColor:"#fff" }}>
             <div className="mb-3 ">
               <p className="mb-1 fw-bold">পরিচালক</p>
               <p className="text-muted small">

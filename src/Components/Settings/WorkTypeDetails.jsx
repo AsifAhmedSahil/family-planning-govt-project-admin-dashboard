@@ -17,6 +17,8 @@ const WorkTypeDetails = () => {
     DropdownMenu: "",
   });
 
+  console.log(formData.work_type_id)
+
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectedValues, setSelectedValues] = useState([]);
@@ -102,6 +104,9 @@ const WorkTypeDetails = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          body:JSON.stringify({
+            work_type_id:formData.work_type_id
+          })
         }
       );
 
@@ -117,10 +122,12 @@ const WorkTypeDetails = () => {
     }
   };
 
+  console.log(allWorkField)
+
   useEffect(() => {
     fetchWorkType();
     fetchWorkField();
-  }, []);
+  }, [formData.work_type_id]);
 
   console.log(allWorkField);
 
