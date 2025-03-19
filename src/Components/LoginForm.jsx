@@ -54,6 +54,7 @@ const LoginForm = () => {
   
         if (user) {
           navigate("/");  // Navigate only after loading is finished
+          window.location.reload();
         }
       } else {
         console.error("Login Failed", response.statusText);

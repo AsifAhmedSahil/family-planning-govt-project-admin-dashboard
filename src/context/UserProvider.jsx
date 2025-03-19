@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import  { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const UserContext = createContext();
 
@@ -9,8 +9,10 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
+      // Get the token from localStorage
       const token = localStorage.getItem("authToken");
-      
+
+      // If there's a token, we need to fetch the user details from the server
       if (token) {
         try {
           const response = await fetch(`${import.meta.env.REACT_APP_BASE_URL}/api/auth/get-user-from-token`, {
@@ -25,18 +27,15 @@ export const UserProvider = ({ children }) => {
           if (response.ok) {
             const data = await response.json();
             setUser(data.user);
-            console.log(data,"res")
           } else {
             console.error("Failed to fetch user details:", response.statusText);
           }
         } catch (error) {
           console.error("Error fetching user details:", error);
-        } finally {
-          setLoading(false);
         }
-      } else {
-        setLoading(false);
       }
+
+      setLoading(false);
     };
 
     fetchUserDetails();
