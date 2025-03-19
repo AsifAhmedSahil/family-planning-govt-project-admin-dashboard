@@ -129,6 +129,7 @@ const WorkTypeDetails = () => {
     fetchWorkField();
   }, [formData.work_type_id]);
 
+
   console.log(allWorkField);
 
   const workTypeOptions = allWorkType.map((worktype) => ({

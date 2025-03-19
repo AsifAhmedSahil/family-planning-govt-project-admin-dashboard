@@ -1,6 +1,7 @@
 import  { useState } from "react";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserProvider";
 // import { useUser } from "../context/UserProvider";
 // import { jwtDecode } from "jwt-decode";
 
@@ -10,46 +11,60 @@ const LoginForm = () => {
     password: "",
   });
 
+  const {user} = useUser()
+  const[loading,setLoading] = useState(false)
+
   const navigate = useNavigate()
 
   // const {setUser} = useUser()
   const handleChange = (e) => {
     const { id, value } = e.target;
+    
     setFormData((prevData) => ({
       ...prevData,
       [id]: value,
     }));
   };
 
-  const handleSubmit =async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+  
     console.log("Form Data:", formData);
-    
+  
     try {
-      const response = await fetch(`${import.meta.env.REACT_APP_BASE_URL}/api/auth/login`,{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
+      setLoading(true);  
+  
+      const response = await fetch(`${import.meta.env.REACT_APP_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify(formData)
-
-      })
-      console.log(response)
-      if(response.ok){
-        const data = await response.json()
-        console.log("token",data.token)
-        localStorage.setItem("authToken",data.token)
-        navigate("/")
+        body: JSON.stringify(formData),
+      });
+  
+      console.log(response);
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log("token", data.token);
+        localStorage.setItem("authToken", data.token);
+  
+        // Set loading to false before navigating
+        setLoading(false);
+  
+        if (user) {
+          navigate("/");  // Navigate only after loading is finished
+        }
+      } else {
+        console.error("Login Failed", response.statusText);
+        setLoading(false);  // Stop loading if login fails
       }
-      else{
-        console.error("Login Failed",response.statusText)
-      }
-
     } catch (error) {
-      console.log(error)
-      
+      console.error(error);
+      setLoading(false);  // Stop loading on error
     }
   };
+  
 
   return (
     <div
@@ -119,7 +134,7 @@ const LoginForm = () => {
               </p>
             </div>
             <button type="submit" className="btn w-100" style={{ backgroundColor: "#13007D", color: "white" }}>
-              প্রবেশ করুন
+              {loading ? "Loading" : "প্রবেশ করুন"}
             </button>
           </form>
         </div>
