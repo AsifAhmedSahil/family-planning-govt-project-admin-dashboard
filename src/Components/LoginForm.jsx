@@ -1,9 +1,7 @@
-import  { useState } from "react";
+import { useState } from "react";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserProvider";
-// import { useUser } from "../context/UserProvider";
-// import { jwtDecode } from "jwt-decode";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -11,15 +9,12 @@ const LoginForm = () => {
     password: "",
   });
 
-  const {user} = useUser()
-  const[loading,setLoading] = useState(false)
+  const { setUser } = useUser();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
-
-  // const {setUser} = useUser()
   const handleChange = (e) => {
     const { id, value } = e.target;
-    
     setFormData((prevData) => ({
       ...prevData,
       [id]: value,
@@ -28,12 +23,12 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     console.log("Form Data:", formData);
-  
+
     try {
-      setLoading(true);  
-  
+      setLoading(true);
+
       const response = await fetch(`${import.meta.env.REACT_APP_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
@@ -41,21 +36,33 @@ const LoginForm = () => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       console.log(response);
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log("token", data.token);
         localStorage.setItem("authToken", data.token);
-  
-        // Set loading to false before navigating
-        setLoading(false);
-  
-        if (user) {
-          navigate("/");  // Navigate only after loading is finished
-          window.location.reload();
+
+        // Fetch user details using the token
+        const userResponse = await fetch(`${import.meta.env.REACT_APP_BASE_URL}/api/auth/get-user-from-token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${data.token}`,
+          },
+          body: JSON.stringify({ token: data.token }),
+        });
+
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          setUser(userData.user); // Update the user context with the new user data
+        } else {
+          console.error("Failed to fetch user details:", userResponse.statusText);
         }
+
+        setLoading(false);
+        navigate("/");  // Navigate only after loading is finished
       } else {
         console.error("Login Failed", response.statusText);
         setLoading(false);  // Stop loading if login fails
@@ -65,7 +72,6 @@ const LoginForm = () => {
       setLoading(false);  // Stop loading on error
     }
   };
-  
 
   return (
     <div

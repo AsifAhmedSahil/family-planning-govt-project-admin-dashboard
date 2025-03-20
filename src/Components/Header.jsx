@@ -1,17 +1,18 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import {  useState } from "react";
 
-import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap is properly imported
+import "bootstrap/dist/css/bootstrap.min.css"; 
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserProvider";
+import {  useUser } from "../context/UserProvider";
 
 const Header = ({ title }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate()
   const {user} = useUser()
+
   
 
-  // Toggle dropdown visibility on profile image click
+
   const handleImageClick = () => {
     setDropdownOpen(!dropdownOpen); 
   };
