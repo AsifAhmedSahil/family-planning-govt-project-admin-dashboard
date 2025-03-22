@@ -113,13 +113,13 @@ const LoginForm = () => {
           <form onSubmit={handleSubmit}>
             <div className="form-group pb-2" style={{ color: "#565656" }}>
               <label htmlFor="emp_id" className="pb-2">
-                মোবাইল নম্বর
+              আইডি
               </label>
               <input
                 type="text"
                 className="form-control"
                 id="emp_id"
-                placeholder="০১৭XX-XXX-XXX"
+                placeholder="আইডি"
                 value={formData.emp_id}
                 onChange={handleChange}
               />
