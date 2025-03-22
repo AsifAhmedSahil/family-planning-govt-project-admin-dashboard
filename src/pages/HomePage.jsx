@@ -2,10 +2,22 @@ import { useEffect, useState } from "react";
 import Header from "../Components/Header";
 
 const HomePage = () => {
-  const [unions, setUnions] = useState([]);
-  const [units, setUnits] = useState([]);
-  const [upazilas, setUpazila] = useState([]);
-  
+  const [designationWiseTodayPresent, setDesignationWiseTodayPresent] = useState([]);
+  const [pairedData, setPairedData] = useState([]);
+  const [topAttendance, setTopAttendance] = useState({
+    todayPresent: 0,
+    todayLate: 0,
+    todayEarlyLeave: 0,
+    todayOnLeave: 0,
+  });
+  const [topRight, setTopRight] = useState({
+    district: 0,
+    upazila: 0,
+    unit: 0,
+    unionData: 0,
+  });
+  const [lastSubmittedWork, setLastSubmittedWork] = useState([]);
+
   const glassmorphism = {
     background: "rgba(70, 42, 42, 0.25)",
     height: "125px",
@@ -16,12 +28,12 @@ const HomePage = () => {
     boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
   };
 
-  
-  const fetchUnions = async () => {
+  const fetchDashboardData = async () => {
     const token = localStorage.getItem("authToken");
+
     try {
       const response = await fetch(
-        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-unions`,
+        `${import.meta.env.REACT_APP_BASE_URL}/api/dashboard/get-dashboard-data`,
         {
           method: "POST",
           headers: {
@@ -33,73 +45,58 @@ const HomePage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        setUnions(result); // Update the state with fetched data
-      } else {
-        const errorResult = await response.json();
-        console.error("Error fetching unions:", errorResult);
-      }
-    } catch (error) {
-      console.error("Error fetching unions:", error);
-    }
-  };
 
-  const fetchUnits = async () => {
-    const token = localStorage.getItem("authToken");
-    try {
-      const response = await fetch(
-        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-units`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        // Set designation-wise present data
+        setDesignationWiseTodayPresent(result.designationWiseTodayPresent);
+
+        // Set top attendance data
+        if (result.topAttendance && result.topAttendance.length > 0) {
+          const { today_present, today_late, today_early_leave, today_on_leave } = result.topAttendance[0];
+          setTopAttendance({
+            todayPresent: today_present,
+            todayLate: today_late,
+            todayEarlyLeave: today_early_leave,
+            todayOnLeave: today_on_leave,
+          });
         }
-      );
 
-      if (response.ok) {
-        const result = await response.json();
-        setUnits(result);
-      } else {
-        const errorResult = await response.json();
-        console.error("Error fetching units:", errorResult);
-      }
-    } catch (error) {
-      console.error("Error fetching units:", error);
-    }
-  };
-  const fetchUpazilas = async () => {
-    const token = localStorage.getItem("authToken");
-    try {
-      const response = await fetch(
-        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-upazilas`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        // Set top-right data
+        if (result.topRight && result.topRight.length > 0) {
+          const { unit, unionData, upazila, district } = result.topRight[0];
+          setTopRight({
+            district,
+            upazila,
+            unit,
+            unionData,
+          });
         }
-      );
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log(result, "****");
-        setUpazila(result); // Update the state with fetched data
+        // Set last submitted work
+        setLastSubmittedWork(result.lastSubmittedWork);
       } else {
         const errorResult = await response.json();
-        console.error("Error fetching upazilas:", errorResult);
+        console.error("Error fetching dashboard data:", errorResult);
       }
     } catch (error) {
-      console.error("Error fetching upazilas:", error);
+      console.error("Error fetching dashboard data:", error);
     }
   };
 
   useEffect(() => {
-    fetchUnions();
-    fetchUnits()
-    fetchUpazilas()
+    fetchDashboardData();
   }, []);
+
+  useEffect(() => {
+    const pairData = () => {
+      const paired = [];
+      for (let i = 0; i < designationWiseTodayPresent.length; i += 2) {
+        paired.push(designationWiseTodayPresent.slice(i, i + 2));
+      }
+      setPairedData(paired);
+    };
+
+    pairData();
+  }, [designationWiseTodayPresent]);
 
   const convertToBangla = (number) => {
     const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -113,12 +110,11 @@ const HomePage = () => {
   return (
     <div>
       <Header title={"ড্যাসবোর্ড"} />
-      {/* Upper Section - Statistics Cards */}
       <div className="row mb-4 mt-3">
         <div className="col-md-2 mb-3 ">
           <div className="card text-end p-3" style={{ height: "105px" }}>
             <h2 className="mb-0" style={{ color: "#3B3B3B" }}>
-              ৩১৫ জন
+              {convertToBangla(topAttendance.todayPresent)} জন
             </h2>
             <p className="mb-0 " style={{ color: "#515151" }}>
               আজ মোট উপস্থিত
@@ -128,7 +124,7 @@ const HomePage = () => {
         <div className="col-md-2 mb-3 ">
           <div className="card text-end p-3" style={{ height: "105px" }}>
             <h2 className="mb-0" style={{ color: "#3B3B3B" }}>
-              ২৭ জন
+              {convertToBangla(topAttendance.todayLate)} জন
             </h2>
             <p className="mb-0 " style={{ color: "#515151" }}>
               আজ দেরীতে উপস্থিত
@@ -138,7 +134,7 @@ const HomePage = () => {
         <div className="col-md-2 mb-3 ">
           <div className="card text-end p-3" style={{ height: "105px" }}>
             <h2 className="mb-0" style={{ color: "#3B3B3B" }}>
-              ১৩ জন
+              {convertToBangla(topAttendance.todayEarlyLeave)} জন
             </h2>
             <p className="mb-0 " style={{ color: "#515151" }}>
               আজ অগ্রীম প্রস্থান
@@ -148,371 +144,75 @@ const HomePage = () => {
         <div className="col-md-2 mb-3 ">
           <div className="card text-end p-3" style={{ height: "105px" }}>
             <h2 className="mb-0" style={{ color: "#3B3B3B" }}>
-              ০৭ জন
+              {convertToBangla(topAttendance.todayOnLeave)} জন
             </h2>
             <p className="mb-0 " style={{ color: "#515151" }}>
               আজ ছুটিতে আছেন
             </p>
           </div>
         </div>
-
         <div className="col-md-4">
           <div className="p-3 card" style={{ height: "105px" }}>
             <div className="d-flex justify-content-evenly mb-3">
               <div className="d-flex">
                 <p className="me-2 mb-1">জেলা</p>
-                <h5 className="mb-1">০১</h5>
+                <h5 className="mb-1">{convertToBangla(topRight.district)}</h5>
               </div>
               <div className="d-flex">
                 <p className="me-2 mb-1">ইউনিয়ন</p>
-                <h5 className="mb-1">{convertToBangla(unions.length)}</h5>
+                <h5 className="mb-1">{convertToBangla(topRight.unionData)}</h5>
               </div>
             </div>
             <div className="d-flex justify-content-evenly">
               <div className="d-flex">
                 <p className="me-2 mb-0">উপজেলা</p>
-                <h5 className="mb-0">{convertToBangla(upazilas.length)}</h5>
+                <h5 className="mb-0">{convertToBangla(topRight.upazila)}</h5>
               </div>
               <div className="d-flex">
                 <p className="me-2 mb-0">ইউনিট</p>
-                <h5 className="mb-0">{convertToBangla(units.length)}</h5>
+                <h5 className="mb-0">{convertToBangla(topRight.unit)}</h5>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Lower Section - Two Parts */}
       <div className="row">
-        {/* Left Part - Attendance List */}
         <div className="col-md-8 mb-3">
           <h5 className="mb-4">সর্বশেষের উপস্থিতি তালিকা</h5>
-          <div
-            className="p-4"
-            style={{ height: "530px", backgroundColor: "white" }}
-          >
-            <div className="row mb-3">
-              <div className="col-md-6">
-                <p className="mb-1">পরিচালক</p>
-                <div
-                  className="progress"
-                  style={{ height: "25px", backgroundColor: "#D9D9D9" }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{
-                      width: "70%",
-                      backgroundColor: "#63E680",
-                      color: "#565656",
-                    }}
-                    aria-valuenow={70}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
+          <div className="p-4" style={{ height: "530px", backgroundColor: "white" }}>
+            {pairedData.map((pair, rowIndex) => (
+              <div className="row mb-3" key={rowIndex}>
+                {pair.map((item, colIndex) => (
+                  <div className="col-md-6" key={colIndex}>
+                    <p className="mb-1">{item.designation_name}</p>
+                    <div
+                      className="progress"
+                      style={{ height: "25px", backgroundColor: "#D9D9D9" }}
+                    >
+                      <div
+                        className="progress-bar"
+                        role="progressbar"
+                        style={{
+                          width: `${(item.present_today / item.total_employees) * 100}%`,
+                          backgroundColor: item.present_today === item.total_employees ? "#4cd964" : "#63E680",
+                          color: "#565656",
+                        }}
+                        aria-valuenow={(item.present_today / item.total_employees) * 100}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                      >
+                        {`${item.present_today.toString().padStart(2, '0')}/${item.total_employees.toString().padStart(2, '0')}`}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-              <div className="col-md-6">
-                <p className="mb-1">পরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="row mb-3">
-              <div className="col-md-6">
-                <p className="mb-1">উপপরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <p className="mb-1">উপপরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="row mb-3">
-              <div className="col-md-6">
-                <p className="mb-1">পরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <p className="mb-1">পরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="row mb-3">
-              <div className="col-md-6">
-                <p className="mb-1">উ��পরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "50%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={50}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <p className="mb-1">উপপরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="row mb-3">
-              <div className="col-md-6">
-                <p className="mb-1">পরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <p className="mb-1">পরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="row mb-3">
-              <div className="col-md-6">
-                <p className="mb-1">উপপরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <p className="mb-1">উপপরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="row mb-3">
-              <div className="col-md-6">
-                <p className="mb-1">উপপরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <p className="mb-1">উপপরিচালক</p>
-                <div
-                  className="progress"
-                  style={{
-                    height: "25px",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                  }}
-                >
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: "100%", backgroundColor: "#4cd964" }}
-                    aria-valuenow={100}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                  >
-                    ০১/০১
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-
-        {/* Right Part - Scrollable Notices */}
         <div className="col-md-4">
           <h5 className="mb-4">সর্বশেষ নোটিশ</h5>
-          <div style={{ ...glassmorphism, padding: "20px",backgroundColor:"#fff" }}>
+          <div style={{ ...glassmorphism, padding: "20px", backgroundColor: "#fff" }}>
             <div className="mb-3 ">
               <p className="mb-1 fw-bold">পরিচালক</p>
               <p className="text-muted small">
@@ -524,7 +224,6 @@ const HomePage = () => {
           </div>
           <h5 className="mb-4 mt-4">সর্বশেষ কাজের বিবরণ</h5>
           <div style={{ backgroundColor: "white" }}>
-            {/* Scrollable Area */}
             <div
               style={{
                 maxHeight: "340px",
