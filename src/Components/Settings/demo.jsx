@@ -1,326 +1,203 @@
-"use client"
+import { useEffect, useState } from "react";
+import Header from "../Components/Header";
 
-import { useState, useEffect } from "react"
-import "bootstrap/dist/css/bootstrap.min.css"
+const HomePage = () => {
+  const [designationWiseTodayPresent, setDesignationWiseTodayPresent] =
+    useState([]);
+  const [pairedData, setPairedData] = useState([]);
+  const [topAttendance, setTopAttendance] = useState({
+    todayPresent: 0,
+    todayLate: 0,
+    todayEarlyLeave: 0,
+    todayOnLeave: 0,
+  });
+  const [topRight, setTopRight] = useState({
+    district: 0,
+    upazila: 0,
+    unit: 0,
+    unionData: 0,
+  });
+  const [lastSubmittedWork, setLastSubmittedWork] = useState([]);
+  const [lastNotice, setLastNotice] = useState({});
+  const [modalNotice, setModalNotice] = useState({});
 
-export default function PermissionsManagement() {
-  const [loading, setLoading] = useState(true)
-  // State to hold the role data
-  const [roleData, setRoleData] = useState({
-    roleId: 2,
-    roleName: "admin",
-    create_privilege: "",
-    read_privilege: "",
-    edit_privilege: "",
-    delete_privilege: "",
-    page: [
-      {
-        pageName: "home page",
-        pageRoute: "pages/homepage",
-        create_privilege: false,
-        read_privilege: false,
-        edit_privilege: false,
-        delete_privilege: false,
-      },
-      {
-        pageName: "about page demo",
-        pageRoute: "pages/about",
-        create_privilege: false,
-        read_privilege: false,
-        edit_privilege: false,
-        delete_privilege: false,
-      },
-    ],
-  })
+  const glassmorphism = {
+    background: "rgba(70, 42, 42, 0.25)",
+    height: "125px",
+    backdropFilter: "blur(10px)",
+    WebkitBackdropFilter: "blur(10px)",
+    borderRadius: "15px",
+    border: "1px solid rgba(255, 255, 255, 0.18)",
+    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+  };
 
-  // State for the dropdown and multi-value input
-  const [selectedType, setSelectedType] = useState("")
-  const [inputValue, setInputValue] = useState("")
-  const [selectedValues, setSelectedValues] = useState([])
+  const fetchDashboardData = async () => {
+    const token = localStorage.getItem("authToken");
 
-  // Fetch data on component mount
-  useEffect(() => {
-    // Simulating API fetch - replace with your actual API call
-    const fetchData = async () => {
-      try {
-        // Replace with your actual API endpoint
-        // const response = await fetch('/api/roles/2')
-        // const data = await response.json()
+    try {
+      const response = await fetch(
+        `${
+          import.meta.env.REACT_APP_BASE_URL
+        }/api/dashboard/get-dashboard-data`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        // Using sample data for demonstration
-        const data = {
-          roleId: 2,
-          roleName: "admin",
-          create_privilege: "",
-          read_privilege: "",
-          edit_privilege: "",
-          delete_privilege: "",
-          page: [
-            {
-              pageName: "home page",
-              pageRoute: "pages/homepage",
-              create_privilege: false,
-              read_privilege: false,
-              edit_privilege: false,
-              delete_privilege: false,
-            },
-            {
-              pageName: "about page demo",
-              pageRoute: "pages/about",
-              create_privilege: false,
-              read_privilege: false,
-              edit_privilege: false,
-              delete_privilege: false,
-            },
-          ],
+      if (response.ok) {
+        const result = await response.json();
+
+        // Set designation-wise present data
+        setDesignationWiseTodayPresent(result.designationWiseTodayPresent);
+
+        // Set top attendance data
+        if (result.topAttendance && result.topAttendance.length > 0) {
+          const {
+            today_present,
+            today_late,
+            today_early_leave,
+            today_on_leave,
+          } = result.topAttendance[0];
+          setTopAttendance({
+            todayPresent: today_present,
+            todayLate: today_late,
+            todayEarlyLeave: today_early_leave,
+            todayOnLeave: today_on_leave,
+          });
         }
 
-        setRoleData(data)
-        setLoading(false)
-      } catch (error) {
-        console.error("Error fetching role data:", error)
-        setLoading(false)
+        // Set top-right data
+        if (result.topRight && result.topRight.length > 0) {
+          const { unit, unionData, upazila, district } = result.topRight[0];
+          setTopRight({
+            district,
+            upazila,
+            unit,
+            unionData,
+          });
+        }
+
+        // Set last submitted work
+        setLastSubmittedWork(result.lastSubmittedWork);
+        setLastNotice(result.lastNotice);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching dashboard data:", errorResult);
       }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
     }
+  };
 
-    fetchData()
-  }, [])
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
-  // Update top-level privileges based on page privileges
-  const updateTopLevelPrivileges = (updatedPages) => {
-    // Initialize arrays to hold page routes for each privilege
-    const createPrivileges = []
-    const readPrivileges = []
-    const editPrivileges = []
-    const deletePrivileges = []
-
-    // Collect page routes for each privilege type
-    updatedPages.forEach((page) => {
-      if (page.create_privilege) createPrivileges.push(page.pageRoute)
-      if (page.read_privilege) readPrivileges.push(page.pageRoute)
-      if (page.edit_privilege) editPrivileges.push(page.pageRoute)
-      if (page.delete_privilege) deletePrivileges.push(page.pageRoute)
-    })
-
-    // Convert arrays to JSON strings
-    return {
-      create_privilege: JSON.stringify(createPrivileges),
-      read_privilege: JSON.stringify(readPrivileges),
-      edit_privilege: JSON.stringify(editPrivileges),
-      delete_privilege: JSON.stringify(deletePrivileges),
-    }
-  }
-
-  // Handle checkbox changes
-  const handleCheckboxChange = (pageIndex, privilege, checked) => {
-    setRoleData((prevData) => {
-      // Update the specific page's privilege
-      const updatedPages = [...prevData.page]
-      updatedPages[pageIndex] = {
-        ...updatedPages[pageIndex],
-        [privilege]: checked,
+  useEffect(() => {
+    const pairData = () => {
+      const paired = [];
+      for (let i = 0; i < designationWiseTodayPresent.length; i += 2) {
+        paired.push(designationWiseTodayPresent.slice(i, i + 2));
       }
+      setPairedData(paired);
+    };
 
-      // Update top-level privileges
-      const topLevelPrivileges = updateTopLevelPrivileges(updatedPages)
+    pairData();
+  }, [designationWiseTodayPresent]);
 
-      return {
-        ...prevData,
-        ...topLevelPrivileges,
-        page: updatedPages,
-      }
-    })
-  }
+  const convertToBangla = (number) => {
+    const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+    return number
+      .toString()
+      .split("")
+      .map((digit) => banglaDigits[parseInt(digit)]).join("");
+  };
 
-  // Handle type selection change
-  const handleTypeChange = (e) => {
-    setSelectedType(e.target.value)
-    // Reset values when type changes
-    setSelectedValues([])
-    setInputValue("")
-  }
-
-  // Handle input change
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value)
-  }
-
-  // Handle key press in input field
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && inputValue.trim() !== "") {
-      e.preventDefault() // Prevent form submission
-      addValue(inputValue.trim())
-      setInputValue("")
-    }
-  }
-
-  // Add a value to the selected values
-  const addValue = (value) => {
-    if (!selectedValues.includes(value)) {
-      setSelectedValues([...selectedValues, value])
-    }
-  }
-
-  // Remove a value from the selected values
-  const removeValue = (valueToRemove) => {
-    setSelectedValues(selectedValues.filter((value) => value !== valueToRemove))
-  }
-
-  // Get comma-separated string of selected values
-  const getValuesString = () => {
-    return selectedValues.join(",")
-  }
-
-  // Handle update button click
-  const handleUpdate = () => {
-    const updatedData = {
-      ...roleData,
-      selectedType,
-      customValues: selectedType === "custom" ? getValuesString() : "",
-    }
-    console.log("Updated role data:", updatedData)
-    // You can add API call here to save the data
-  }
-
-  if (loading) return <div className="container mt-5 text-center">Loading...</div>
+  // Function to open the modal and set the notice data
+  const handleReadMore = (notice) => {
+    setModalNotice(notice);
+    window.$("#noticeModal").modal("show"); // Open modal using jQuery (Bootstrap 4/5)
+  };
 
   return (
-    <div className="container mt-4">
-      <div className="card mb-4">
-        <div className="card-body">
-          <div className="row mb-3">
-            <div className="col-md-4">
-              <label htmlFor="typeSelect" className="form-label">
-                Select Type
-              </label>
-              <select id="typeSelect" className="form-select" value={selectedType} onChange={handleTypeChange}>
-                <option value="">Select a type...</option>
-                <option value="users">Users</option>
-                <option value="roles">Roles</option>
-                <option value="permissions">Permissions</option>
-                <option value="custom">Custom</option>
-              </select>
+    <div>
+      <Header title={"ড্যাসবোর্ড"} />
+      {/* Your other components */}
+
+      <div className="row">
+        <div className="col-md-4">
+          <h5 className="mb-4">সর্বশেষ নোটিশ</h5>
+          <div
+            style={{
+              ...glassmorphism,
+              padding: "20px",
+              backgroundColor: "#fff",
+            }}
+          >
+            <div className="mb-3 ">
+              <p className="mb-1 fw-bold">{lastNotice.notice_name}</p>
+              <p className="text-muted small">
+                {lastNotice.notice_description.length > 100
+                  ? lastNotice.notice_description.slice(0, 100) + "..."
+                  : lastNotice.notice_description}
+              </p>
+              {lastNotice.notice_description.length > 100 && (
+                <button
+                  className="btn btn-link p-0"
+                  onClick={() => handleReadMore(lastNotice)}
+                  style={{ fontSize: "13px", color: "#6366f1" }}
+                >
+                  Read More
+                </button>
+              )}
             </div>
           </div>
-
-          {selectedType === "custom" && (
-            <div className="row">
-              <div className="col-md-8">
-                <label htmlFor="multiInput" className="form-label">
-                  Add Multiple Values
-                </label>
-                <div className="input-group mb-3">
-                  <input
-                    type="text"
-                    id="multiInput"
-                    className="form-control"
-                    placeholder="Type and press Enter to add"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyPress={handleKeyPress}
-                  />
-                </div>
-
-                <div className="selected-values mt-2">
-                  {selectedValues.map((value, index) => (
-                    <span key={index} className="badge bg-primary me-2 mb-2 p-2">
-                      {value}
-                      <button
-                        type="button"
-                        className="btn-close btn-close-white ms-2"
-                        style={{ fontSize: "0.5rem" }}
-                        onClick={() => removeValue(value)}
-                        aria-label="Remove"
-                      ></button>
-                    </span>
-                  ))}
-                </div>
-
-                {selectedValues.length > 0 && (
-                  <div className="mt-3">
-                    <strong>Values as string:</strong> {getValuesString()}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
-      <div className="card">
-        <div className="card-body">
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th style={{ width: "20%" }}>রোল</th>
-                <th style={{ width: "20%" }}>মডিউলের নাম</th>
-                <th style={{ width: "60%" }}>
-                  <div className="row text-center">
-                    <div className="col-3">Add</div>
-                    <div className="col-3">View</div>
-                    <div className="col-3">Edit</div>
-                    <div className="col-3">Delete</div>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {roleData.page.map((page, pageIndex) => (
-                <tr key={page.pageRoute}>
-                  {pageIndex === 0 && (
-                    <td rowSpan={roleData.page.length} className="align-middle">
-                      {roleData.roleName}
-                    </td>
-                  )}
-                  <td>{page.pageName}</td>
-                  <td>
-                    <div className="row text-center">
-                      <div className="col-3">
-                        <input
-                          type="checkbox"
-                          checked={page.create_privilege}
-                          onChange={(e) => handleCheckboxChange(pageIndex, "create_privilege", e.target.checked)}
-                        />
-                      </div>
-                      <div className="col-3">
-                        <input
-                          type="checkbox"
-                          checked={page.read_privilege}
-                          onChange={(e) => handleCheckboxChange(pageIndex, "read_privilege", e.target.checked)}
-                        />
-                      </div>
-                      <div className="col-3">
-                        <input
-                          type="checkbox"
-                          checked={page.edit_privilege}
-                          onChange={(e) => handleCheckboxChange(pageIndex, "edit_privilege", e.target.checked)}
-                        />
-                      </div>
-                      <div className="col-3">
-                        <input
-                          type="checkbox"
-                          checked={page.delete_privilege}
-                          onChange={(e) => handleCheckboxChange(pageIndex, "delete_privilege", e.target.checked)}
-                        />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="d-flex justify-content-end mt-3">
-            <button
-              className="btn btn-primary"
-              style={{ backgroundColor: "#1a0080", borderColor: "#1a0080", padding: "10px 30px" }}
-              onClick={handleUpdate}
-            >
-              আপডেট করুন
-            </button>
+      {/* Modal */}
+      <div
+        className="modal fade"
+        id="noticeModal"
+        tabIndex="-1"
+        aria-labelledby="noticeModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="noticeModalLabel">
+                {modalNotice.notice_name}
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <p>{modalNotice.notice_description}</p>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
-  )
-}
+  );
+};
 
+export default HomePage;
