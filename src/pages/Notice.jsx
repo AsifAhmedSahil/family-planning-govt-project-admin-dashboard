@@ -6,9 +6,6 @@ import { Modal, Button } from "react-bootstrap";
 import Header from "../Components/Header";
 import { format } from "date-fns-tz";
 
-
-
-
 const Notice = () => {
   const [formData, setFormData] = useState({
     date: "",
@@ -100,7 +97,7 @@ const Notice = () => {
     fetchNotices();
   }, []);
 
-  console.log(noticeToUpdate,"notice to update")
+  console.log(noticeToUpdate, "notice to update");
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem("authToken");
@@ -153,15 +150,14 @@ const Notice = () => {
     const timeZone = "Asia/Dhaka"; // Bangladesh time zone
     return format(new Date(date), "yyyy-MM-dd", { timeZone });
   };
-  
 
   const handleUpdate = async () => {
     const token = localStorage.getItem("authToken");
     const { id, publish_date, notice_name, notice_description } =
       noticeToUpdate;
 
-      const formattedDate = formatToBangladeshTime(publish_date);
-      console.log(formattedDate)
+    const formattedDate = formatToBangladeshTime(publish_date);
+    console.log(formattedDate);
     try {
       const response = await fetch(
         `${import.meta.env.REACT_APP_BASE_URL}/api/other/update-notice`,
@@ -173,7 +169,7 @@ const Notice = () => {
           },
           body: JSON.stringify({
             id,
-            publish_date:formattedDate,
+            publish_date: formattedDate,
             notice_name,
             notice_description,
           }),
@@ -293,7 +289,6 @@ const Notice = () => {
         >
           <h4 style={{ marginBottom: "20px" }}>পূর্বের নোটিশ</h4>
           {notices.map((card, index) => (
-           
             <div
               key={index}
               style={{
@@ -303,7 +298,6 @@ const Notice = () => {
                 backgroundColor: "#fff",
               }}
             >
-              
               <div style={{ display: "flex" }}>
                 <div
                   style={{
@@ -347,14 +341,21 @@ const Notice = () => {
                         <FaEdit
                           size={20}
                           onClick={() => {
-                            handleEdit(card)
+                            handleEdit(card);
                           }}
                         />
                       </span>
                     </div>
                   </div>
                   <p style={{ fontWeight: "600" }}>{card.notice_name}</p>
-                  <p>{card.notice_description}</p>
+                  <p>{card.notice_description.slice(0,350) + "....."} <span
+                  data-bs-toggle="modal"
+                  data-bs-target="#updateModal"
+                  onClick={()=>setNoticeToUpdate(card)}
+                  style={{ cursor: "pointer", color: "blue" }}
+                >
+                  Read more
+                </span></p>
                 </div>
               </div>
             </div>
@@ -429,6 +430,58 @@ const Notice = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* update modal */}
+      <div
+        className="modal fade"
+        id="updateModal"
+        tabIndex="-1"
+        aria-labelledby="updateModalLabel"
+        aria-hidden="true"
+      >
+        <div
+          className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+          style={{
+            width: "50%",
+            height: "70%",
+            maxHeight: "90vh",
+            maxWidth: "70vw",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <div className="modal-content" style={{ padding: "30px" }}>
+            <div className="modal-header">
+              <h5
+                className="modal-title"
+                id="updateModalLabel"
+                style={{ fontSize: "25px" }}
+              >
+                নোটিশ
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+
+            <div
+              className="modal-body"
+              style={{
+                maxHeight: "60vh",
+                overflowY: "auto",
+              }}
+            >
+              {/* <label>নোটিশের নাম</label> */}
+              <p style={{ fontWeight: "600" }}>{noticeToUpdate?.notice_name}</p>
+              <label style={{ fontWeight: "600" }}>নোটিশ: </label>
+              <p>{noticeToUpdate?.notice_description}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
