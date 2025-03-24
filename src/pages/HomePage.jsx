@@ -247,7 +247,7 @@ const HomePage = () => {
             }}
           >
             <div className="mb-3 ">
-              <p className="mb-1 fw-bold ">{lastNotice.notice_name.slice(0,50)}</p>
+              <p className="mb-1 fw-bold ">{lastNotice?.notice_name?.slice(0,50)}</p>
               <p className="text-muted small">
                 {lastNotice.notice_description &&
                   lastNotice.notice_description.slice(0, 160) + "....."}

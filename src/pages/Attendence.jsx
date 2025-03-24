@@ -1,183 +1,278 @@
-import { SlLocationPin } from "react-icons/sl";
 import Header from "../Components/Header";
-import officer from "../assets/officer.png"
+
+import Select from "react-select";
+import { useEffect, useState } from "react";
+
+import "react-datepicker/dist/react-datepicker.css"; // Importing DatePicker styles
+
+import { CDateRangePicker } from "@coreui/react-pro";
+import "@coreui/coreui/dist/css/coreui.min.css";
+import "@coreui/coreui-pro/dist/css/coreui.min.css";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 const Attendence = () => {
-  const presenlist = [
-    {
-      name: "ফারজানা খানম",
-      presentcount: "৪ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "লায়লা বেগম",
-      presentcount: "২ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "ফারজানা খানম",
-      presentcount: "৩ টি",
-      status: "দেরীতে উপস্থিত",
-    },
-    {
-      name: "ফারজানা খানম",
-      presentcount: "১ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "লায়লা বেগম",
-      presentcount: "১ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "রানীর ঝড়ু",
-      presentcount: "১ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "রানীর ঝড়ু",
-      presentcount: "১ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "লায়লা বেগম",
-      presentcount: "১ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "ফারজানা খানম",
-      presentcount: "১ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "লায়লা বেগম",
-      presentcount: "১ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "রানীর ঝড়ু",
-      presentcount: "১ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "রানীর ঝড়ু",
-      presentcount: "১ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    {
-      name: "লায়লা বেগম",
-      presentcount: "১ টি",
-      status: "সঠিক সময়ে উপস্থিত",
-    },
-    
-    
-    
-  ];
+  const [designation, setDesignation] = useState([]);
+  const [upazilas, setUpazilas] = useState([]);
+  const [unions, setUnions] = useState([]);
+  const [units, setUnits] = useState([]);
+  const [attendenceData, setAttendenceData] = useState([]);
+  const [attendanceDetails, setAttendanceDetails] = useState(null);
+  const [employeeName, setEmployeeName] = useState(null);
 
-  const events = [
-    { location: "যাত্রী পরিষদমন্দির", time: "০৯:২০" },
-    { location: "বাজার মোড়", time: "১০:০০" },
-    { location: "নতুন পাড়া", time: "১১:৩০" },
-    { location: "বাজার মোড়", time: "১০:০০" },
-    { location: "নতুন পাড়া", time: "১১:৩০" },
-    { location: "বাজার মোড়", time: "১০:০০" },
-    { location: "নতুন পাড়া", time: "১১:৩০" },
-    // Add more events as needed
-  ];
+  const [formData, setFormData] = useState({
+    designation_name: "",
+    district: "",
+    upazila_name: "",
+    union_name: "",
+    unit_name: "",
+    startDate: null, // Store start date
+    endDate: null, // Store end date
+  });
 
-  const containerStyle = {
-    height: "100%",
-    display: "flex",
-    flexDirection: "row",
+  const fetchDesignation = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-designations`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setDesignation(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching designation:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching designation:", error);
+    }
   };
 
-  const leftSectionStyle = {
-    height: "500px", // Fixed height of 500px
-    width: "60%", // 60% width
-    padding: "10px",
-    backgroundColor:"#ffffff",
-    // Enable vertical scrolling when content exceeds height
-    borderRight: "1px solid #ccc", // Add a border to separate sections
+  const fetchUpazilas = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-upazilas`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setUpazilas(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching upazilas:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching upazilas:", error);
+    }
   };
 
-  const rightSectionStyle = {
-    height: "500px", // Fixed height of 500px
-    width: "40%", // 40% width
-    padding: " 20px",
-    fontWeight:"600",
-    backgroundColor:"#ffffff",
-    overflowY:"auto"
+  const fetchUnions = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-unions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    // Enable vertical scrolling when content exceeds height
+      if (response.ok) {
+        const result = await response.json();
+        setUnions(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching unions:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching unions:", error);
+    }
   };
 
-  const cardStyle = {
-    borderRadius: "5px",
-    marginBottom: "10px",
+  const fetchUnits = async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/setup/get-units`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        setUnits(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching units:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching units:", error);
+    }
   };
+
+  useEffect(() => {
+    fetchDesignation();
+    fetchUpazilas();
+    fetchUnions();
+    fetchUnits();
+  }, []);
+
+  const designationOptions = designation.map((desig) => ({
+    id: desig.id,
+    label: desig.name,
+  }));
+
+  const handleDesignationChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      designation_name: selectedOption ? selectedOption.label : null,
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({
+      ...formData,
+      [id]: value,
+    });
+  };
+
+  const handleUpazilaChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      upazila_name: selectedOption ? selectedOption.label : null,
+    });
+  };
+  const upazilaOptions = upazilas.map((upazila) => ({
+    id: upazila.id,
+    label: upazila.name,
+  }));
+
+  const unionOptions = unions.map((union) => ({
+    id: union.id,
+    label: union.name,
+  }));
+
+  const unitOptions = units.map((unit) => ({
+    id: unit.id,
+    label: unit.name,
+  }));
+
+  const handleUnionChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      union_name: selectedOption ? selectedOption.label : null,
+    });
+  };
+
+  const handleUnitChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      unit_name: selectedOption ? selectedOption.label : null,
+    });
+  };
+
+  const fetchAttendance = async () => {
+    const token = localStorage.getItem("authToken");
+    const {
+      startDate,
+      endDate,
+      designation_name,
+      district,
+      upazila_name,
+      union_name,
+      unit_name,
+    } = formData;
+
+    // Ensure both startDate and endDate are selected
+    if (!startDate || !endDate) {
+      console.error("Start date and end date are mandatory!");
+      return;
+    }
+
+    const requestBody = {
+      designation: designation_name,
+      district: district,
+      upazila: upazila_name,
+      union: union_name,
+      unit: unit_name,
+      search: "",
+      startDate: startDate.toISOString(), // Send startDate as ISO string
+      endDate: endDate.toISOString(), // Send endDate as ISO string
+    };
+
+    try {
+      const response = await fetch(
+        "https://family-planning-server.mpairproject.xyz/api/report/get-Attendance-with-filter",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result); // Handle the response data here
+        setAttendenceData(result);
+      } else {
+        const errorResult = await response.json();
+        console.error("Error fetching attendance:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error fetching attendance:", error);
+    }
+  };
+
+  // Trigger API call when filter is changed
+  useEffect(() => {
+    if (formData.startDate && formData.endDate) {
+      fetchAttendance(); // Call the API when the formData is updated and both dates are set
+    }
+  }, [formData]);
+
+  // Function to handle the row click event
+  const handleRowClick = (attendanceDetails, name) => {
+    // Parse the attendanceDetails from JSON if it's a string
+    setAttendanceDetails(JSON.parse(attendanceDetails));
+    setEmployeeName(name);
+  };
+
+  console.log(formData);
 
   const cardHeaderStyle = {
     padding: "10px",
     fontWeight: "bold",
     fontSize: "16px",
-    color:"#13007D"
+    color: "#13007D",
   };
 
-  const scrollableContentStyle = {
-    maxHeight: "calc(500px - 56px)", // Adjust for card header height
-    overflowY: "auto",
-    padding: "10px",
-  };
-
-  
-
-  const badgeSuccessStyle = {
-    backgroundColor: "#CEFFEA",
-    color: "#00BE57",
-    padding: "5px 10px",
-    borderRadius: "5px",
-  };
-
-  const badgeDangerStyle = {
-    backgroundColor: "#FFCECE",
-    color: "#FF4747",
-    padding: "5px 10px",
-    borderRadius: "5px",
-  };
-
-  const rightCardStyle = {
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-    marginBottom: "10px",
-    backgroundColor: "#f9f9f9", // Light background color
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)", // Subtle shadow for depth
-  };
-
-  const cardBodyStyle = {
-    // margin: '15px',
-  };
-
-  const iconStyle = {
-    backgroundColor: "#e7e7ff", // Light purple background for the icon
-    color: "#857CBC", // Purple color for the icon
-    // borderRadius: '50%',
-    width: "50px",
-    height: "80px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    // marginRight: '10px',
-  };
-
-  const textStyle = {
-    fontSize: "14px",
-    color: "#333",
-  };
-
-  const timeStyle = {
-    fontSize: "12px",
-    color: "#777",
-  };
   const convertToBangla = (number) => {
     const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
     return number
@@ -187,96 +282,140 @@ const Attendence = () => {
       .join("");
   };
 
+  console.log(attendanceDetails, employeeName);
+
   return (
     <div>
       <Header title={"উপস্থিতি"} />
-      <div className="dashboard p-3" >
+      <div className="dashboard p-3">
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <div className="row g-6">
             <div className="col-md-2 d-flex flex-column mb-3">
-              <label className="mb-2 text-[16px]">তারিখ</label>
-              <input
-                type="date"
-                className="form-control"
-                aria-label="Select date"
-                style={{ borderRadius: "5px" }} // Optional: Customize border radius if needed
-              />
+              {/* <label className="mb-2 text-[16px]">তারিখ</label> */}
+              <div>
+                <CDateRangePicker
+                  label="তারিখ"
+                  locale="en-US"
+                  onStartDateChange={(date) => {
+                    // Updating formData with the selected start date
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      startDate: date,
+                    }));
+                  }}
+                  onEndDateChange={(date) => {
+                    // Updating formData with the selected end date
+                    setFormData((prevData) => ({ ...prevData, endDate: date }));
+                  }}
+                />
+              </div>
             </div>
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
                 পদবী
               </label>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-              >
-                <option selected>পদবী</option>
-                <option value="1">এফডব্লিউএ</option>
-              </select>
+              <Select
+                options={designationOptions}
+                value={designationOptions.find(
+                  (option) => option.label === formData.designation_name
+                )}
+                onChange={handleDesignationChange}
+                isClearable
+                placeholder="Select"
+                getOptionValue={(option) => option.id}
+                getOptionLabel={(option) => option.label}
+              />
             </div>
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
                 জেলা
               </label>
               <select
+                name="district"
                 className="form-select"
-                aria-label="Default select example"
+                value={formData.district}
+                onChange={handleInputChange}
               >
-                <option selected>জেলা</option>
-                <option value="1">চট্টগ্রাম</option>
+                <option value="চট্টগ্রাম">চট্টগ্রাম</option>
               </select>
             </div>
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
                 উপজেলা
               </label>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-              >
-                <option selected>উপজেলা</option>
-                <option value="1">আনোয়ারা</option>
-              </select>
+              <Select
+                options={upazilaOptions}
+                value={upazilaOptions.find(
+                  (option) => option.label === formData.upazila_name
+                )}
+                onChange={handleUpazilaChange}
+                isClearable
+                placeholder="Select upazila"
+                getOptionValue={(option) => option.id}
+                getOptionLabel={(option) => option.label}
+              />
             </div>
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
                 ইউনিয়ন
               </label>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-              >
-                <option selected>ইউনিয়ন</option>
-                <option value="1">কুশাখালি</option>
-              </select>
+              <Select
+                options={unionOptions}
+                value={unionOptions.find(
+                  (option) => option.label === formData.union_name
+                )}
+                onChange={handleUnionChange}
+                isClearable
+                placeholder="Select Union"
+                getOptionValue={(option) => option.id}
+                getOptionLabel={(option) => option.label}
+              />
             </div>
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
                 ইউনিট
               </label>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-              >
-                <option selected>ইউনিট</option>
-                <option value="1">১ক</option>
-              </select>
+              <Select
+                options={unitOptions}
+                value={unitOptions.find(
+                  (option) => option.label === formData.unit_name
+                )}
+                onChange={handleUnitChange}
+                isClearable
+                placeholder="Select unit"
+                getOptionValue={(option) => option.id}
+                getOptionLabel={(option) => option.label}
+              />
             </div>
           </div>
         </div>
         <hr />
 
-        {/* Two Sections */}
         <div style={cardHeaderStyle}>উপস্থিতি তালিকা</div>
-        <div style={containerStyle}>
-          {/* Left Section */}
-          <div style={leftSectionStyle}>
-            <div style={cardStyle}>
-              <div className="table-container" >
-                <div
-                  className="table-responsive"
-                  style={scrollableContentStyle}
-                >
+        <div
+          className="dashboard p-3"
+          style={{
+            backgroundColor: "#FFFFFF",
+            display: "flex",
+            flex: 1,
+          }}
+        >
+          {/* left side */}
+          <div
+            style={{
+              width: "30%",
+              padding: "20px",
+              borderRight: "1px solid #ddd",
+              overflowY: "auto",
+              height: "500px",
+            }}
+          >
+            <div className="table-container" style={{ margin: "26px" }}>
+              <div
+                className="table-responsive"
+                style={{ maxHeight: "400px", overflowY: "auto" }}
+              >
+                {attendenceData && attendenceData.length > 0 ? (
                   <table className="table" style={{ width: "100%" }}>
                     <thead
                       style={{
@@ -291,12 +430,14 @@ const Attendence = () => {
                           style={{
                             color: "#323232",
                             position: "sticky",
+                            width: "50%",
                             top: 0,
                             backgroundColor: "#fff",
                           }}
                         >
                           নাম
                         </th>
+
                         <th
                           style={{
                             color: "#323232",
@@ -305,8 +446,9 @@ const Attendence = () => {
                             backgroundColor: "#fff",
                           }}
                         >
-                          উপস্থিতি দিয়েছে
+                          মোট উপস্থিতি
                         </th>
+
                         <th
                           style={{
                             color: "#323232",
@@ -314,218 +456,180 @@ const Attendence = () => {
                             top: 0,
                             backgroundColor: "#fff",
                           }}
-                        >
-                          উপস্থিতি স্ট্যাটাস
-                        </th>
+                        ></th>
                       </tr>
                     </thead>
-
                     <tbody>
-                      {presenlist.map((item, index) => (
+                      {attendenceData?.map((item, index) => (
                         <tr
                           key={index}
-                          style={{ borderBottom: "1px solid #ddd" }}
+                          onClick={() =>
+                            handleRowClick(item.attendanceDetails, item.name)
+                          }
+                          style={{ cursor: "pointer" }}
                         >
-                          <td>{item.name}</td>
-                          <td>{item.presentcount}</td>
+                          <td style={{ color: "#6C6C6C" }}>{item.name}</td>
+                          <td style={{ color: "#6C6C6C" }}>
+                            {convertToBangla(item.totalPresentDays)}
+                          </td>
+                          {/* <td style={{ color: "#6C6C6C" }}>{item.role}</td> */}
+
                           <td>
-                            <span
-                              style={
-                                item.status === "সঠিক সময়ে উপস্থিত"
-                                  ? badgeSuccessStyle
-                                  : badgeDangerStyle
-                              }
-                            >
-                              {item.status}
-                            </span>
+                            <FaLongArrowAltRight
+                              size={20}
+                              style={{ color: "gray", cursor: "pointer" }}
+                            />
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                </div>
+                ) : (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "20px",
+                      fontSize: "18px",
+                      color: "#6C6C6C",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Please select a date
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Right Section */}
-          <div style={rightSectionStyle} data-bs-toggle="modal"
-              data-bs-target="#officerModal">
-            <p style={{ fontSize: "14px", color: "#565656" }}>ফারজানা খানম</p>
-            {events.map((event, index) => (
-              <div key={index} style={rightCardStyle}>
-                <div style={cardBodyStyle}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <div style={iconStyle}>
-                      <SlLocationPin /> {/* FontAwesome icon */}
-                    </div>
-                    <div
+          {/* right side */}
+          <div
+            style={{
+              width: "70%",
+              height: "500px",
+              // padding: "20px",
+              overflowY: "auto",
+            }}
+          >
+            <div className="table-container" style={{ margin: "26px" }}>
+              <div
+                className="table-responsive"
+                style={{ maxHeight: "500px", overflowY: "auto" }}
+              >
+                {employeeName && (
+                  <label
+                    style={{
+                      fontWeight: "600",
+                      color: "#565656",
+                      paddingBottom: "20px",
+                    }}
+                  >
+                    {employeeName}
+                  </label>
+                )}
+                {attendanceDetails && attendanceDetails.length > 0 ? (
+                  <table className="table" style={{ width: "100%" }}>
+                    <thead
                       style={{
-                        display: "flex",
-                        padding: "10px",
-                        justifyContent: "space-between",
-                        width: "100%",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#D9D9D9",
+                        zIndex: 1,
                       }}
                     >
-                      <div style={{ display: "flex", flexDirection: "column" }}>
-                        <div style={textStyle}>{event.location}</div>
-                        <div style={timeStyle}>সময় - {event.time}</div>
-                      </div>
-                      <div style={{ fontWeight: "bold", color: "#323232" }}>
-                        {convertToBangla(index + 1)}
-                      </div>
-                    </div>
+                      <tr>
+                        <th
+                          style={{
+                            color: "#323232",
+                            position: "sticky",
+                            width: "20%",
+                            top: 0,
+                            backgroundColor: "#D9D9D9",
+                          }}
+                        >
+                          তারিখ
+                        </th>
+                        <th
+                          style={{
+                            color: "#323232",
+                            position: "sticky",
+                            top: 0,
+                            width: "15%",
+                            backgroundColor: "#D9D9D9",
+                          }}
+                        >
+                          ইন
+                        </th>
+                        <th
+                          style={{
+                            color: "#323232",
+                            position: "sticky",
+                            top: 0,
+                            width: "15%",
+                            backgroundColor: "#D9D9D9",
+                          }}
+                        >
+                          আউট
+                        </th>
+                        <th
+                          style={{
+                            color: "#323232",
+                            position: "sticky",
+                            top: 0,
+                            width: "50%",
+                            backgroundColor: "#D9D9D9",
+                          }}
+                        >
+                          স্ট্যাটাস
+                        </th>
+
+                        <th
+                          style={{
+                            color: "#323232",
+                            position: "sticky",
+                            top: 0,
+                            backgroundColor: "#D9D9D9",
+                          }}
+                        ></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {attendanceDetails?.map((item, index) => (
+                        <tr key={index}>
+                          <td style={{ color: "#6C6C6C" }}>{item.date}</td>
+                          <td style={{ color: "#6C6C6C" }}>{item.in_time}</td>
+                          <td style={{ color: "#6C6C6C" }}>{item.out_time}</td>
+                          <td style={{ color: "#6C6C6C" }}>{item.location}</td>
+
+                          {/* <td >
+                                    <RiDeleteBin6Line
+                                      onClick={() => handleDeleteConfirmation(item.userId)}
+                                      size={20}
+                                      style={{ color: "red", cursor: "pointer" }}
+                                    />
+                                  </td> */}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "20px",
+                      marginTop: "20px",
+                      fontSize: "18px",
+                      color: "#6C6C6C",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Choose which person attendence you want to view
                   </div>
-                </div>
+                )}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>
-      {/* modal */}
-
-      <div
-              className="modal fade"
-              id="officerModal"
-              tabIndex="-1"
-              aria-labelledby="officerModalLabel"
-              aria-hidden="true"
-              style={{ overflowX: "hidden" }}
-            >
-              <div
-                className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
-                style={{
-                  width: "70%", // Set the width of the modal to 70%
-                  height: "70%", // Set the height of the modal to 70%
-                  maxHeight: "90vh", // Ensure the modal's height doesn't exceed 90% of the viewport
-                  maxWidth: "60vw", // Ensure the modal's height doesn't exceed 90% of the viewport
-                  marginLeft: "auto", // Center the modal horizontally
-                  marginRight: "auto", // Center the modal horizontally
-                }}
-              >
-                <div className="modal-content" style={{ padding: "30px" }}>
-                  <div className="modal-header">
-                    <h5 className="modal-title" id="officerModalLabel">
-                      {/* Modal Title */}
-                    </h5>
-                    <button
-                      type="button"
-                      className="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div className="modal-body" style={{ overflowX: "hidden" }}>
-                    {/* Modal Content */}
-                    <div className="row g-5">
-                      <div className="col-md-3 d-flex flex-column mb-3">
-                        <label
-                          className="mb-2 text-[16px]"
-                          style={{ color: "#13007D" }}
-                        >
-                          কাজের ক্ষেত্র
-                        </label>
-                        <p>বাড়ি পরিদর্শন</p>
-                      </div>
-                      <div className="col-md-3 d-flex flex-column mb-3">
-                        <label
-                          className="mb-2 text-[16px]"
-                          style={{ color: "#13007D" }}
-                        >
-                          দম্পতি নাম্বার
-                        </label>
-                        <p>১২০৯১১২</p>
-                      </div>
-                      <div className="col-md-3 d-flex flex-column mb-3">
-                        <label
-                          className="mb-2 text-[16px]"
-                          style={{ color: "#13007D" }}
-                        >
-                          দম্পতির নাম
-                        </label>
-                        <p>মাসুমা সুলতানা</p>
-                      </div>
-                      <div className="col-md-3 d-flex flex-column mb-3">
-                        <label
-                          className="mb-2 text-[16px]"
-                          style={{ color: "#13007D" }}
-                        >
-                          স্বামীর নাম
-                        </label>
-                        <p>আবদুল বাতেন</p>
-                      </div>
-                    </div>
-                    <div className="row g-5">
-                      <div className="col-md-3 d-flex flex-column mb-3">
-                        <label
-                          className="mb-2 text-[16px]"
-                          style={{ color: "#13007D" }}
-                        >
-                          ছেলে-মেয়ের সংখ্যা
-                        </label>
-                        <p>৩ জন</p>
-                      </div>
-                      <div className="col-md-3 d-flex flex-column mb-3">
-                        <label
-                          className="mb-2 text-[16px]"
-                          style={{ color: "#13007D" }}
-                        >
-                          পদ্ধতির নাম
-                        </label>
-                        <p>খাবার বড়ি</p>
-                      </div>
-                      <div className="col-md-3 d-flex flex-column mb-3">
-                        <label
-                          className="mb-2 text-[16px]"
-                          style={{ color: "#13007D" }}
-                        >
-                          মোবাইল নাম্বার
-                        </label>
-                        <p>মাসুমা সুলতানা</p>
-                      </div>
-                      <div className="col-md-3 d-flex flex-column mb-3">
-                        <label
-                          className="mb-2 text-[16px]"
-                          style={{ color: "#13007D" }}
-                        >
-                          সংক্ষিপ্ত ঠিকানা
-                        </label>
-                        <p>জামতলা, বাতেন বাড়ি</p>
-                      </div>
-                    </div>
-                    <div className="row g-5">
-                      <div className="col-md-3 d-flex flex-column mb-3">
-                        <label
-                          className="mb-2 text-[16px]"
-                          style={{ color: "#13007D" }}
-                        >
-                          ছবি
-                        </label>
-                        <p>
-                          <img
-                            src={officer}
-                            alt="officer"
-                            style={{ width: "150px", height: "150px" }}
-                          />
-                        </p>
-                      </div>
-                      <div className="col-md-6 d-flex flex-column mb-3">
-                        <label
-                          className="mb-2 text-[16px]"
-                          style={{ color: "#13007D" }}
-                        >
-                          বিবরন
-                        </label>
-                        <p>
-                          এই দম্পতিকে জন্মনিয়ন্ত্রনের পরামর্শ দেয়া হয়েছে, কিছু
-                          জন্মনিয়ন্ত্রক বড়ি দেয়া হয়েছে
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
     </div>
   );
 };

@@ -348,7 +348,7 @@ const Notice = () => {
                     </div>
                   </div>
                   <p style={{ fontWeight: "600" }}>{card.notice_name}</p>
-                  <p>{card.notice_description.slice(0,350) + "....."} <span
+                  <p>{card?.notice_description?.slice(0,350) + "....."} <span
                   data-bs-toggle="modal"
                   data-bs-target="#updateModal"
                   onClick={()=>setNoticeToUpdate(card)}

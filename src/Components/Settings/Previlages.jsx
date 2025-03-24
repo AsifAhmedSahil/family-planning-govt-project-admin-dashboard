@@ -13,8 +13,6 @@ const Previleges = () => {
 
   const [allPages, setAllPages] = useState([]);
 
-  
-
   // Handle form data changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,7 +92,7 @@ const Previleges = () => {
     fetchAllPages();
   }, []);
 
-const handleDelete = async (id) => {
+  const handleDelete = async (id) => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
@@ -105,13 +103,13 @@ const handleDelete = async (id) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({  id }),
+          body: JSON.stringify({ id }),
         }
       );
 
       if (response.ok) {
         console.log("pages deleted successfully");
-        await fetchAllPages(); 
+        await fetchAllPages();
       } else {
         const errorResult = await response.json();
         console.error("Error deleting pages:", errorResult);
@@ -122,7 +120,6 @@ const handleDelete = async (id) => {
   };
 
   const handleDeleteConfirmation = (id) => {
-   
     Swal.fire({
       title: "আপনি কি নিশ্চিত?",
 
@@ -143,8 +140,6 @@ const handleDelete = async (id) => {
       }
     });
   };
-
- 
 
   return (
     <div style={{ height: "800px", display: "flex", flexDirection: "column" }}>
@@ -253,7 +248,6 @@ const handleDelete = async (id) => {
               >
                 রাউট সমূহ
               </h1>
-           
             </div>
 
             <div
