@@ -21,6 +21,7 @@ import Previlages from "../Components/Settings/Previlages";
 import Role from "../Components/Settings/Role";
 import Registration from "../Components/Settings/Registration";
 import PermissionManagement from "../Components/Settings/PermissionManagement";
+import WorkTypeShow from "../pages/WorkTypeShow";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Attendence />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/worktypeshow",
+        element: (
+          <ProtectedRoute>
+            <WorkTypeShow />
           </ProtectedRoute>
         ),
       },

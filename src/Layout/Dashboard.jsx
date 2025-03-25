@@ -10,6 +10,7 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaClipboard } from "react-icons/fa";
 import { Dropdown } from "react-bootstrap"; // Import the Dropdown component from react-bootstrap
+import { MdOutlineAddHomeWork } from "react-icons/md";
 
 const Dashboard = () => {
   const handleMenuItemClick = (event) => {
@@ -87,6 +88,27 @@ const Dashboard = () => {
                   style={{ fontSize: "18px" }}
                 >
                   উপস্থিতি
+                </span>
+              </NavLink>
+              <NavLink
+                to="/worktypeshow"
+                className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg  text-center p-2 transition-transform transform  text-black ps-5 gap-3"
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? '#D5D1E8' : 'transparent',
+                  color: isActive ? "#13007D" : "inherit"
+                })}
+              >
+                <div>
+                  <MdOutlineAddHomeWork
+                    className="mb-2"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                </div>
+                <span
+                  className="d-none d-lg-block text-xs lg:text-lg font-weight-semibold bg-transparent"
+                  style={{ fontSize: "18px" }}
+                >
+                  কাজের ক্ষেত্র
                 </span>
               </NavLink>
               <NavLink

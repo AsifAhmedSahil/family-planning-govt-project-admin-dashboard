@@ -142,3 +142,18 @@ style={{ overflowX: "hidden" }}
   </div>
 </div>
 </div>
+
+const workList2 = [
+  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'দম্পতি নাম্বার', work_field_type: 'text', value: '০১৯২৮৮৩৭৩৩' },
+  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'দম্পতির নাম', work_field_type: 'text', value: 'পরি মনি' },
+  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'স্বামীর নাম', work_field_type: 'text', value: 'জয়' },
+  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'ছেলে-মেয়ের সংখ্যা', work_field_type: 'text', value: '১০' },
+  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'সেবার নাম', work_field_type: 'dropdown', value: 'পরিবার পরিকল্পনা' },
+  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'মোবাইল নাম্বার', work_field_type: 'text', value: '০১৯২৮৮২৭২৮' },
+  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'সংক্ষিপ্ত ঠিকানা', work_field_type: 'text', value: 'ককক' },
+  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'ছবি', work_field_type: 'image', value: '/home/mpairproject/family-planning-server.mpairproject.xyz/Files/image/1742884064681-field_21.jpg' },
+  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'বিবরণ', work_field_type: 'text', value: 'কাজ' }
+];
+
+// Use map to extract 'work_field' and 'value'
+
