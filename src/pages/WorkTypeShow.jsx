@@ -19,11 +19,10 @@ const WorkTypeShow = () => {
   const [workTypeData, setWorkTypeData] = useState([]);
   const [workLists, setWorkLists] = useState(null);
   const [employeeName, setEmployeeName] = useState(null);
-  const [selectedWork, setSelectedWork] = useState(null);
-  const [workList2, setWorkList2] = useState([]);
-  const [item, setItem] = useState([]);
+  
+
   const [modalItem, setModalItem] = useState([]);
-  const [workType, setWorkType] = useState("");
+ 
 
   const [formData, setFormData] = useState({
     designation_name: "",
@@ -312,10 +311,10 @@ const WorkTypeShow = () => {
   console.log(modalItem);
 
   // Function to handle the row click event
-  const handleRowClick = (workList, name, item) => {
+  const handleRowClick = (workList, name) => {
     // Parse the attendanceDetails from JSON if it's a string
     setWorkLists(JSON.parse(workList));
-    setItem(item);
+    
     setEmployeeName(name);
   };
 
@@ -527,7 +526,7 @@ const WorkTypeShow = () => {
                         <tr
                           key={index}
                           onClick={() =>
-                            handleRowClick(item.workList, item.name, item)
+                            handleRowClick(item.workList, item.name)
                           }
                           style={{ cursor: "pointer" }}
                         >
