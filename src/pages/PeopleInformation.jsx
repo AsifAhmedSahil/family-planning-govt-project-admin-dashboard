@@ -302,6 +302,8 @@ const PeopleInformation = () => {
       formDataToSend.append("image", formData.image);
     }
 
+
+    console.log(formDataToSend,"**")
     
 
     try {
@@ -333,7 +335,7 @@ const PeopleInformation = () => {
 
   const handleUpdateFormSubmit = async (e) => {
     e.preventDefault();
-    console.log("Update Form Data: ", employeeToUpdate.image.name);
+    console.log("Update Form Data: ", employeeToUpdate.image);
   
     const token = localStorage.getItem("authToken");
     console.log(token);
@@ -356,7 +358,7 @@ const PeopleInformation = () => {
             mobile: employeeToUpdate.mobile,
             nid: employeeToUpdate.nid,
             address: employeeToUpdate.address,
-            image:employeeToUpdate.image.name
+            image:employeeToUpdate.image
           }), // Serialize the form data to JSON
         }
       );
