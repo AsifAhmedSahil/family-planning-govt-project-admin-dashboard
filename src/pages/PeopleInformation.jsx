@@ -335,21 +335,20 @@ const PeopleInformation = () => {
 
   const handleUpdateFormSubmit = async (e) => {
     e.preventDefault();
-    console.log("Update Form Data: ", employeeToUpdate.image);
+    console.log("Update Form Data:", employeeToUpdate.image);
   
     const token = localStorage.getItem("authToken");
     console.log(token);
-
-    
   
     try {
-      const response = await fetch(
+      // First, update employee details (excluding image)
+      const employeeDetailsResponse = await fetch(
         `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-employee`, // Ensure this URL is correct
         {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}`, // Bearer token for authorization
-            "Content-Type": "application/json", // Set the Content-Type to application/json
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json", // Keep this for JSON body
           },
           body: JSON.stringify({
             emp_id: employeeToUpdate.emp_id,
@@ -358,24 +357,57 @@ const PeopleInformation = () => {
             mobile: employeeToUpdate.mobile,
             nid: employeeToUpdate.nid,
             address: employeeToUpdate.address,
-            image:employeeToUpdate.image
-          }), // Serialize the form data to JSON
+          }),
         }
       );
   
-      console.log(response);
+      console.log(employeeDetailsResponse);
   
-      if (response.ok) {
-        const result = await response.json();
+      if (employeeDetailsResponse.ok) {
+        const result = await employeeDetailsResponse.json();
         console.log(result);
-        console.log("Employee updated successfully:", result);
+        console.log("Employee details updated successfully:", result);
   
-        // Optionally, reset the form or update the UI
+        // If image is available, update the image using FormData
+        if (employeeToUpdate.image) {
+          const formData = new FormData();
+          formData.append("emp_id", employeeToUpdate.emp_id);
+          formData.append("image", employeeToUpdate.image); 
+          
+          // Ensure this is a File object (e.g., from a file input)
+          for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+          }
+  
+          const imageResponse = await fetch(
+            `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-employee-image`, // Ensure this URL is correct
+            {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${token}`,
+                // Do not set Content-Type header when using FormData
+              },
+              body: formData,
+            }
+          );
+  
+          console.log(imageResponse);
+  
+          if (imageResponse.ok) {
+            const imageResult = await imageResponse.json();
+            console.log("Employee image updated successfully:", imageResult);
+          } else {
+            const errorResult = await imageResponse.json();
+            console.error("Error updating image:", errorResult);
+            // Handle image update error
+          }
+        }
+  
+        // Optionally, refresh employee list or update UI
         fetchEmployees(); // Refresh employee list or UI
-        // You can clear or reset the form here if needed
       } else {
-        const errorResult = await response.json();
-        console.error("Error:", errorResult);
+        const errorResult = await employeeDetailsResponse.json();
+        console.error("Error updating employee details:", errorResult);
         // Handle the error result (e.g., show an error message to the user)
       }
     } catch (error) {
@@ -383,6 +415,7 @@ const PeopleInformation = () => {
       // Handle the error (e.g., show a message to the user)
     }
   };
+  
   
 
   const handleDelete = async (id) => {
@@ -458,11 +491,22 @@ const PeopleInformation = () => {
   };
   const handleImageUpdateChange = (e) => {
     const { id, files } = e.target;
-    setEmployeeToUpdate({
-      ...employeeToUpdate,
-      [id]: files[0],
-    });
+
+    console.log(files)
+    
+    // Check if a file is selected
+    if (files && files[0]) {
+      setEmployeeToUpdate({
+        ...employeeToUpdate,
+        [id]: files[0],  // Add the file to the state
+      });
+      console.log("Selected image:", files[0]);
+      console.log(employeeToUpdate)  // Log the selected file to ensure it's being picked up
+    } else {
+      console.log("No file selected");
+    }
   };
+  
 
   return (
     <div>
