@@ -368,7 +368,6 @@ const PeopleInformation = () => {
         console.log(result);
         console.log("Employee details updated successfully:", result);
   
-        // If image is available, update the image using FormData
         if (employeeToUpdate.image) {
           const formData = new FormData();
           formData.append("emp_id", employeeToUpdate.emp_id);
