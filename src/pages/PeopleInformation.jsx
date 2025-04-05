@@ -21,6 +21,14 @@ const PeopleInformation = () => {
   const [employees, setEmployees] = useState([]);
   const [units, setUnits] = useState([]);
   const [employeeToUpdate, setEmployeeToUpdate] = useState([]);
+  const [filterData, setFilterData] = useState({
+    designation: "", // String filter
+    district: null, // ID filter
+    upazila: null, // ID filter
+    union: null, // ID filter
+    unit: null, // ID filter
+    search: "",
+  });
 
   const convertToBangla = (number) => {
     const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -135,7 +143,7 @@ const PeopleInformation = () => {
     }
   };
 
-  const fetchEmployees = async (designation = "", search = "") => {
+  const fetchEmployees = async (designation, search = "") => {
     const token = localStorage.getItem("authToken");
     try {
       const response = await fetch(
@@ -147,7 +155,7 @@ const PeopleInformation = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            designation: designation,
+            designation: filterData?.designation,
             search: search,
           }),
         }
@@ -171,7 +179,9 @@ const PeopleInformation = () => {
     fetchUnions();
     fetchUnits();
     fetchEmployees();
-  }, []);
+  }, [filterData?.designation]);
+
+  console.log(filterData);
 
   const designationOptions = designation.map((desig) => ({
     id: desig.id,
@@ -221,6 +231,12 @@ const PeopleInformation = () => {
       designation_id: selectedOption ? selectedOption.id : null,
     });
   };
+  const handleDesignationChangeFilter = (selectedOption) => {
+    setFilterData({
+      ...filterData,
+      designation: selectedOption ? selectedOption.label : "",
+    });
+  };
   const handleDesignationUpdateChange = (selectedOption) => {
     setEmployeeToUpdate({
       ...employeeToUpdate,
@@ -232,6 +248,12 @@ const PeopleInformation = () => {
     setFormData({
       ...formData,
       upazila_id: selectedOption ? selectedOption.id : null,
+    });
+  };
+  const handleUpazilaChangeFilter = (selectedOption) => {
+    setFilterData({
+      ...filterData,
+      upazila: selectedOption ? selectedOption.id : null,
     });
   };
   const handleUpazilaUpdateChange = (selectedOption) => {
@@ -247,6 +269,12 @@ const PeopleInformation = () => {
       union_id: selectedOption ? selectedOption.id : null,
     });
   };
+  const handleUnionChangeFilter = (selectedOption) => {
+    setFilterData({
+      ...filterData,
+      union: selectedOption ? selectedOption.id : null,
+    });
+  };
   const handleUnionUpdateChange = (selectedOption) => {
     setEmployeeToUpdate({
       ...employeeToUpdate,
@@ -258,6 +286,12 @@ const PeopleInformation = () => {
     setFormData({
       ...formData,
       unit_id: selectedOption ? selectedOption.id : null,
+    });
+  };
+  const handleUnitChangeFilter = (selectedOption) => {
+    setFilterData({
+      ...filterData,
+      unit: selectedOption ? selectedOption.id : null,
     });
   };
   const handleUnitUpdateChange = (selectedOption) => {
@@ -283,7 +317,6 @@ const PeopleInformation = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data: ", formData.image);
-    
 
     const token = localStorage.getItem("authToken");
 
@@ -302,9 +335,7 @@ const PeopleInformation = () => {
       formDataToSend.append("image", formData.image);
     }
 
-
-    console.log(formDataToSend,"**")
-    
+    console.log(formDataToSend, "**");
 
     try {
       const response = await fetch(
@@ -336,10 +367,10 @@ const PeopleInformation = () => {
   const handleUpdateFormSubmit = async (e) => {
     e.preventDefault();
     console.log("Update Form Data:", employeeToUpdate.image);
-  
+
     const token = localStorage.getItem("authToken");
     console.log(token);
-  
+
     try {
       // First, update employee details (excluding image)
       const employeeDetailsResponse = await fetch(
@@ -347,8 +378,8 @@ const PeopleInformation = () => {
         {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json", 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             emp_id: employeeToUpdate.emp_id,
@@ -360,47 +391,47 @@ const PeopleInformation = () => {
           }),
         }
       );
-  
+
       console.log(employeeDetailsResponse);
-  
+
       if (employeeDetailsResponse.ok) {
         const result = await employeeDetailsResponse.json();
         console.log(result);
         console.log("Employee details updated successfully:", result);
-  
+
         if (employeeToUpdate.image) {
           const formData = new FormData();
-          formData.append("image", employeeToUpdate.image); 
-          
+          formData.append("image", employeeToUpdate.image);
+
           // Ensure this is a File object (e.g., from a file input)
           for (let [key, value] of formData.entries()) {
             console.log(key, value);
           }
-  
+
           const imageResponse = await fetch(
-            `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-image/${employeeToUpdate.emp_id}`, 
+            `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-image/${
+              employeeToUpdate.emp_id
+            }`,
             {
               method: "POST",
               headers: {
-                "Authorization": `Bearer ${token}`,
-                
+                Authorization: `Bearer ${token}`,
               },
               body: formData,
             }
           );
-  
-          console.log(imageResponse,"****");
-  
+
+          console.log(imageResponse, "****");
+
           if (imageResponse.ok) {
             const imageResult = await imageResponse.json();
             console.log("Employee image updated successfully:", imageResult);
           } else {
             const errorResult = await imageResponse.json();
             console.error("Error updating image:", errorResult);
-           
           }
         }
-  
+
         // Optionally, refresh employee list or update UI
         fetchEmployees(); // Refresh employee list or UI
       } else {
@@ -413,8 +444,6 @@ const PeopleInformation = () => {
       // Handle the error (e.g., show a message to the user)
     }
   };
-  
-  
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem("authToken");
@@ -490,21 +519,20 @@ const PeopleInformation = () => {
   const handleImageUpdateChange = (e) => {
     const { id, files } = e.target;
 
-    console.log(files)
-    
+    console.log(files);
+
     // Check if a file is selected
     if (files && files[0]) {
       setEmployeeToUpdate({
         ...employeeToUpdate,
-        [id]: files[0],  // Add the file to the state
+        [id]: files[0], // Add the file to the state
       });
       console.log("Selected image:", files[0]);
-      console.log(employeeToUpdate)  // Log the selected file to ensure it's being picked up
+      console.log(employeeToUpdate); // Log the selected file to ensure it's being picked up
     } else {
       console.log("No file selected");
     }
   };
-  
 
   return (
     <div>
@@ -516,13 +544,17 @@ const PeopleInformation = () => {
               <label className="mb-2 text-[16px] " style={{ color: "#323232" }}>
                 পদবী
               </label>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-              >
-                <option selected>পদবী</option>
-                <option value="1">এফডব্লিউএ</option>
-              </select>
+              <Select
+                options={designationOptions}
+                value={designationOptions.find(
+                  (option) => option.label === filterData.designation
+                )}
+                onChange={handleDesignationChangeFilter}
+                isClearable
+                placeholder="Select"
+                getOptionValue={(option) => option.id}
+                getOptionLabel={(option) => option.label}
+              />
             </div>
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px] " style={{ color: "#323232" }}>
@@ -540,37 +572,49 @@ const PeopleInformation = () => {
               <label className="mb-2 text-[16px] " style={{ color: "#323232" }}>
                 উপজেলা
               </label>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-              >
-                <option selected>উপজেলা</option>
-                <option value="1">আনোয়ারা</option>
-              </select>
+              <Select
+                options={upazilaOptions}
+                value={upazilaOptions.find(
+                  (option) => option.label === filterData.upazila
+                )}
+                onChange={handleUpazilaChangeFilter}
+                isClearable
+                placeholder="Select"
+                getOptionValue={(option) => option.id}
+                getOptionLabel={(option) => option.label}
+              />
             </div>
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px] " style={{ color: "#323232" }}>
                 ইউনিয়ন
               </label>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-              >
-                <option selected>ইউনিয়ন</option>
-                <option value="1">কুশাখালি</option>
-              </select>
+              <Select
+                options={unionOptions}
+                value={unionOptions.find(
+                  (option) => option.label === filterData.union
+                )}
+                onChange={handleUnionChangeFilter}
+                isClearable
+                placeholder="Select"
+                getOptionValue={(option) => option.id}
+                getOptionLabel={(option) => option.label}
+              />
             </div>
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px]" style={{ color: "#323232" }}>
                 ইউনিট
               </label>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-              >
-                <option selected> ইউনিট</option>
-                <option value="1">১ক</option>
-              </select>
+              <Select
+                options={unitOptions}
+                value={unitOptions.find(
+                  (option) => option.label === filterData.unit
+                )}
+                onChange={handleUnitChangeFilter}
+                isClearable
+                placeholder="Select"
+                getOptionValue={(option) => option.id}
+                getOptionLabel={(option) => option.label}
+              />
             </div>
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px] "></label>
@@ -692,7 +736,9 @@ const PeopleInformation = () => {
                     <td style={{ color: "#6C6C6C" }}>{item.address}</td>
                     <td>
                       <img
-                        src={`${import.meta.env.REACT_APP_BASE_URL}/uploads/${item.image}`}
+                        src={`${import.meta.env.REACT_APP_BASE_URL}/uploads/${
+                          item.image
+                        }`}
                         alt="officer"
                         style={{ width: "50px", height: "50px" }}
                       />
