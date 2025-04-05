@@ -156,7 +156,7 @@ const Union = () => {
         handleDelete(id);
         Swal.fire({
           title: "ডিলিট করা হয়েছে",
-          text: "উপজেলা ডিলিট সম্পন্ন",
+          text: "ইউনিয়ন ডিলিট সম্পন্ন",
           icon: "success",
         });
       }
@@ -404,7 +404,8 @@ const Union = () => {
       </div>
       <Modal show={showUpdateModal} onHide={() => setShowUpdateModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Update Union</Modal.Title>
+          <Modal.Title>ইউনিয়ন আপডেট 
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <input

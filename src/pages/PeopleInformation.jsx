@@ -348,7 +348,7 @@ const PeopleInformation = () => {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json", // Keep this for JSON body
+            "Content-Type": "application/json", 
           },
           body: JSON.stringify({
             emp_id: employeeToUpdate.emp_id,
@@ -370,7 +370,6 @@ const PeopleInformation = () => {
   
         if (employeeToUpdate.image) {
           const formData = new FormData();
-          formData.append("emp_id", employeeToUpdate.emp_id);
           formData.append("image", employeeToUpdate.image); 
           
           // Ensure this is a File object (e.g., from a file input)
@@ -379,18 +378,18 @@ const PeopleInformation = () => {
           }
   
           const imageResponse = await fetch(
-            `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-employee-image`, // Ensure this URL is correct
+            `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-image/${employeeToUpdate.emp_id}`, 
             {
               method: "POST",
               headers: {
                 "Authorization": `Bearer ${token}`,
-                // Do not set Content-Type header when using FormData
+                
               },
               body: formData,
             }
           );
   
-          console.log(imageResponse);
+          console.log(imageResponse,"****");
   
           if (imageResponse.ok) {
             const imageResult = await imageResponse.json();
@@ -398,7 +397,7 @@ const PeopleInformation = () => {
           } else {
             const errorResult = await imageResponse.json();
             console.error("Error updating image:", errorResult);
-            // Handle image update error
+           
           }
         }
   

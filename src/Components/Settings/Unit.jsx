@@ -4,6 +4,7 @@ import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import Header from "../Header";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
+import toast from "react-hot-toast";
 
 const Unit = () => {
   
@@ -221,7 +222,7 @@ const Unit = () => {
         handleDelete(id);
         Swal.fire({
           title: "ডিলিট করা হয়েছে",
-          text: "উপজেলা ডিলিট সম্পন্ন",
+          text: "ইউনিট ডিলিট সম্পন্ন",
           icon: "success",
         });
       }
@@ -256,7 +257,8 @@ const Unit = () => {
       );
 
       if (response.ok) {
-        console.log("Union updated successfully");
+        // console.log("Union updated successfully");
+        toast.success("Unit updated successfully")
         await fetchUnits(); 
         setShowUpdateModal(false); 
       } else {
@@ -468,7 +470,7 @@ const Unit = () => {
       </div>
       <Modal show={showUpdateModal} onHide={() => setShowUpdateModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Update Union</Modal.Title>
+          <Modal.Title>ইউনিট আপডেট</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <input

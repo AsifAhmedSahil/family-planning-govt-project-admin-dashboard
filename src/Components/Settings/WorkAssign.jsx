@@ -4,6 +4,7 @@ import Header from "../Header";
 import Select from "react-select";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 const WorkAssign = () => {
   const [formData, setFormData] = useState({
@@ -63,8 +64,14 @@ const WorkAssign = () => {
       const data = await response.json();
 
       if (response.status === 201) {
-        setMessage("work asign added successfully");
-        console.log("work asign added successfully");
+        // setMessage("work asign added successfully");
+        // console.log("work asign added successfully");
+        setFormData({
+          designation: [],
+          workTypes: [],
+        })
+        setSelectedOptions([])
+        toast.success("work asign added successfully")
         await fetchAssignedWorkTypes(requestBody.designation_id);
       } else if (response.status === 400) {
         setMessage(data.message || "Invalid data");

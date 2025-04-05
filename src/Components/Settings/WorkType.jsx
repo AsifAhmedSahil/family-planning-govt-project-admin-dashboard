@@ -3,6 +3,7 @@ import Header from "../Header";
 import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
+import toast from "react-hot-toast";
 
 const WorkType = () => {
   const [workType, setWorkType] = useState("");
@@ -16,6 +17,7 @@ const WorkType = () => {
     type_id: null,
     name: "",
   });
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,6 +50,7 @@ const WorkType = () => {
         console.log(result);
         fetchWorkType();
         setWorkType("");
+        toast.success("work type added successfully")
       } else {
         console.error(result);
         setError(result.message);
@@ -132,7 +135,7 @@ const WorkType = () => {
         handleDelete(id);
         Swal.fire({
           title: "ডিলিট করা হয়েছে",
-          text: "উপজেলা ডিলিট সম্পন্ন",
+          text: "কাজের ক্ষেত্র ডিলিট সম্পন্ন",
           icon: "success",
         });
       }
@@ -140,6 +143,7 @@ const WorkType = () => {
   };
 
   const handleUpdateConfirmation = (type_id, name) => {
+  
     setWorkTypeToUpdate({ type_id, name });
     setShowUpdateModal(true);
   };
@@ -165,7 +169,8 @@ const WorkType = () => {
       );
 
       if (response.ok) {
-        console.log("work type updated successfully");
+        
+        toast.success("work type updated successfully")
         await fetchWorkType(); // Fetch the updated list of upazilas
         setShowUpdateModal(false); // Close the modal
       } else {
@@ -317,7 +322,7 @@ const WorkType = () => {
         <Modal.Body>
           <input
             type="text"
-            value={workTypeToUpdate.field}
+            value={workTypeToUpdate.name}
             onChange={handleUpdateChange}
             className="form-control"
           />

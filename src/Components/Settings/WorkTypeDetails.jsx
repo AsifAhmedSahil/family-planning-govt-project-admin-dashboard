@@ -200,7 +200,7 @@ const WorkTypeDetails = () => {
         handleDelete(id);
         Swal.fire({
           title: "ডিলিট করা হয়েছে",
-          text: "উপজেলা ডিলিট সম্পন্ন",
+          text: "কাজের ক্ষেত্রের বিবরনী ডিলিট সম্পন্ন",
           icon: "success",
         });
       }
@@ -234,10 +234,7 @@ const WorkTypeDetails = () => {
   const handleUpdate = async () => {
     const { field_id, work_type_id, field, field_type } = workTypeToUpdate;
     console.log(workTypeToUpdate);
-    if (!work_type_id || !field || !field_type) {
-      alert("All fields are required");
-      return;
-    }
+   
 
     const requestBody = {
       field_id,
@@ -259,6 +256,7 @@ const WorkTypeDetails = () => {
           body: JSON.stringify(requestBody),
         }
       );
+      
       const result = await response.json();
 
       if (response.ok) {

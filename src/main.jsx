@@ -8,11 +8,13 @@ import { StrictMode } from "react";
 import { RouterProvider } from "react-router-dom";
 import router from "./router";
 import { UserProvider } from "./context/UserProvider";
+import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <UserProvider>
       <RouterProvider router={router} />
+      <Toaster position="bottom-right"/>
     </UserProvider>
   </StrictMode>
 );

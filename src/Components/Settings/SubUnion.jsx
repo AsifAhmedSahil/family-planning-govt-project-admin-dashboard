@@ -46,6 +46,7 @@ const SubUnion = () => {
       console.error("Error fetching upazilas:", error);
     }
   };
+  
 
   // Fetch upazilas when the component mounts
   useEffect(() => {
@@ -133,6 +134,7 @@ const SubUnion = () => {
   };
 
   const handleUpdateConfirmation = (id, name) => {
+    console.log(name)
     setUpazilaToUpdate({ id, name });
     setShowUpdateModal(true);
   };
@@ -324,7 +326,7 @@ const SubUnion = () => {
                         size={30}
                         style={{ color: "blue", cursor: "pointer" }}
                         onClick={() =>
-                          handleUpdateConfirmation(item.id, item.union_name)
+                          handleUpdateConfirmation(item.id, item.name)
                         }
                       />
                     </td>

@@ -8,7 +8,7 @@ const PermissionManagement = () => {
   const [loading, setLoading] = useState(true);
   const { role_id } = useParams();
   console.log(role_id);
- 
+
   const [roleData, setRoleData] = useState({
     roleId: 2,
     roleName: "admin",
@@ -35,8 +35,8 @@ const PermissionManagement = () => {
       },
     ],
   });
+  console.log(roleData, "***********");
 
- 
   const fetchData = async () => {
     const token = localStorage.getItem("authToken");
     try {
@@ -58,7 +58,9 @@ const PermissionManagement = () => {
 
       if (response.ok) {
         const result = await response.json();
+        console.log(result, "***");
         setRoleData(result);
+
         setLoading(false);
       } else {
         const errorResult = await response.json();
@@ -73,13 +75,11 @@ const PermissionManagement = () => {
   }, []);
 
   const updateTopLevelPrivileges = (updatedPages) => {
-    
     let createPrivileges = "";
     let readPrivileges = "";
     let editPrivileges = "";
     let deletePrivileges = "";
 
-    
     updatedPages.forEach((page) => {
       if (page.create_privilege) createPrivileges += page.pageRoute + ",";
       if (page.read_privilege) readPrivileges += page.pageRoute + ",";
@@ -87,13 +87,11 @@ const PermissionManagement = () => {
       if (page.delete_privilege) deletePrivileges += page.pageRoute + ",";
     });
 
-    
     createPrivileges = createPrivileges.slice(0, -1);
     readPrivileges = readPrivileges.slice(0, -1);
     editPrivileges = editPrivileges.slice(0, -1);
     deletePrivileges = deletePrivileges.slice(0, -1);
 
-    
     return {
       create_privilege: createPrivileges,
       read_privilege: readPrivileges,
@@ -102,19 +100,15 @@ const PermissionManagement = () => {
     };
   };
 
-  
   const handleCheckboxChange = (pageIndex, privilege, checked) => {
     setRoleData((prevData) => {
-      
       const updatedPages = [...prevData.page];
       updatedPages[pageIndex] = {
         ...updatedPages[pageIndex],
         [privilege]: checked,
       };
 
-   
       const topLevelPrivileges = updateTopLevelPrivileges(updatedPages);
-
       return {
         ...prevData,
         ...topLevelPrivileges,
@@ -122,52 +116,6 @@ const PermissionManagement = () => {
       };
     });
   };
-
-  //   ******************** array structure*************************
-  // const updateTopLevelPrivileges = (updatedPages) => {
-  //     // Initialize arrays to hold page routes for each privilege
-  //     const createPrivileges = []
-  //     const readPrivileges = []
-  //     const editPrivileges = []
-  //     const deletePrivileges = []
-
-  //     // Collect page routes for each privilege type
-  //     updatedPages.forEach((page) => {
-  //       if (page.create_privilege) createPrivileges.push(page.pageRoute)
-  //       if (page.read_privilege) readPrivileges.push(page.pageRoute)
-  //       if (page.edit_privilege) editPrivileges.push(page.pageRoute)
-  //       if (page.delete_privilege) deletePrivileges.push(page.pageRoute)
-  //     })
-
-  //     // Convert arrays to JSON strings
-  //     return {
-  //       create_privilege: JSON.stringify(createPrivileges),
-  //       read_privilege: JSON.stringify(readPrivileges),
-  //       edit_privilege: JSON.stringify(editPrivileges),
-  //       delete_privilege: JSON.stringify(deletePrivileges),
-  //     }
-  //   }
-
-  //   // Handle checkbox changes
-  //   const handleCheckboxChange = (pageIndex, privilege, checked) => {
-  //     setRoleData((prevData) => {
-  //       // Update the specific page's privilege
-  //       const updatedPages = [...prevData.page]
-  //       updatedPages[pageIndex] = {
-  //         ...updatedPages[pageIndex],
-  //         [privilege]: checked,
-  //       }
-
-  //       // Update top-level privileges
-  //       const topLevelPrivileges = updateTopLevelPrivileges(updatedPages)
-
-  //       return {
-  //         ...prevData,
-  //         ...topLevelPrivileges,
-  //         page: updatedPages,
-  //       }
-  //     })
-  //   }
 
   const handleUpdate = async () => {
     console.log("Updated role data:", roleData);
@@ -209,10 +157,10 @@ const PermissionManagement = () => {
       if (response.ok) {
         console.log("update role successfully");
         Swal.fire({
-            title: "Route Assign Successfully",
-            icon: "success",
-            draggable: true
-          });
+          title: "Route Assign Successfully",
+          icon: "success",
+          draggable: true,
+        });
         fetchData();
       } else {
         alert(result.message || "Error updating work field");

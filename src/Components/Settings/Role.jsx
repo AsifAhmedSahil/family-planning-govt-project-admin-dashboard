@@ -5,6 +5,7 @@ import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import { FaRoute } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Role = () => {
   const [role, setRole] = useState("");
@@ -26,7 +27,7 @@ const Role = () => {
   const navigate = useNavigate();
 
   const handleNavigate = (id) => {
-    console.log(id)
+    console.log(id);
     navigate(`/setting/permissionManagement/${id}`);
   };
   const handleSubmit = async (e) => {
@@ -186,7 +187,7 @@ const Role = () => {
       );
 
       if (response.ok) {
-        console.log("role updated successfully");
+        toast.success("role updated successfully");
         await fetchAllRole();
         setShowUpdateModal(false);
       } else {
@@ -365,7 +366,7 @@ const Role = () => {
         <Modal.Body>
           <input
             type="text"
-            value={roleToUpdate.field}
+            value={roleToUpdate.role}
             onChange={handleUpdateChange}
             className="form-control"
           />
