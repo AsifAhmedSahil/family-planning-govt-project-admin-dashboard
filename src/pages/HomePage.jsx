@@ -256,7 +256,8 @@ const HomePage = () => {
                   data-bs-target="#updateModal"
                   style={{ cursor: "pointer", color: "blue" }}
                 >
-                  Read more
+                  আরো পড়ুন
+
                 </span>
               </p>
             </div>
