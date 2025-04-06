@@ -5,6 +5,7 @@ import "react-clock/dist/Clock.css";
 import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
+import toast from "react-hot-toast";
 
 const SubUnion = () => {
   const [data, setData] = useState([]);
@@ -73,6 +74,7 @@ const SubUnion = () => {
       if (response.ok) {
         const result = await response.json();
         console.log("Success:", result);
+        toast.success("Upazila added successfully")
         await fetchUpazilas();
         setFormData({ upazila: "" });
       } else {
@@ -163,6 +165,7 @@ const SubUnion = () => {
 
       if (response.ok) {
         console.log("Upazila updated successfully");
+        toast.success("Upazila updated successfully")
         await fetchUpazilas(); // Fetch the updated list of upazilas
         setShowUpdateModal(false); // Close the modal
       } else {
@@ -312,7 +315,7 @@ const SubUnion = () => {
                       {convertToBangla(index + 1)}
                     </td>
                     <td style={{ color: "#6C6C6C" }}>{item.name}</td>
-                    <td style={{ color: "#6C6C6C" }}>{0}</td>
+                    <td style={{ color: "#6C6C6C" }}>{item.employee}</td>
 
                     <td>
                       <RiDeleteBin6Line

@@ -4,6 +4,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
 import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
+import toast from "react-hot-toast";
 // import 'react-select/dist/styles.css';
 
 const Union = () => {
@@ -103,6 +104,7 @@ const Union = () => {
       if (response.ok) {
         const result = await response.json();
         console.log("Success:", result);
+        toast.success("Union added successfully")
         await fetchUnions();
         setFormData({ upazila: null, union: "" });
       } else {
@@ -205,6 +207,7 @@ const Union = () => {
 
       if (response.ok) {
         console.log("Union updated successfully");
+        toast.success("Union updated successfully")
         await fetchUnions(); // Fetch the updated list of unions
         setShowUpdateModal(false); // Close the modal
       } else {
@@ -374,7 +377,7 @@ const Union = () => {
                       {convertToBangla(index + 1)}
                     </td>
                     <td style={{ color: "#6C6C6C" }}>{item.name}</td>
-                    <td style={{ color: "#6C6C6C" }}>{0}</td>
+                    <td style={{ color: "#6C6C6C" }}>{item.employee}</td>
                     <td>
                       <RiDeleteBin6Line
                         onClick={() => handleDeleteConfirmation(item.id)}

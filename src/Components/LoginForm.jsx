@@ -124,7 +124,7 @@ const LoginForm = () => {
                 onChange={handleChange}
               />
             </div>
-            <div className="form-group pb-2" style={{ color: "#565656" }}>
+            <div className="form-group pb-2" style={{ color: "#565656" ,paddingBottom:"50px"}}>
               <label htmlFor="password" className="pb-2">
                 পাসওয়ার্ড
               </label>
@@ -136,11 +136,9 @@ const LoginForm = () => {
                 value={formData.password}
                 onChange={handleChange}
               />
-              <p className="text-end pt-2" style={{ color: "#13007D", fontSize: "12px" }}>
-                পাসওয়ার্ড ভুলে গিয়েছি
-              </p>
+             
             </div>
-            <button type="submit" className="btn w-100" style={{ backgroundColor: "#13007D", color: "white" }}>
+            <button type="submit" className="btn w-100" style={{ backgroundColor: "#13007D", color: "white",marginTop:"15px" }}>
               {loading ? "Loading" : "প্রবেশ করুন"}
             </button>
           </form>

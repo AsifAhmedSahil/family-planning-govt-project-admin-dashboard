@@ -439,7 +439,7 @@ const Unit = () => {
                   <tr key={index}>
                     <td style={{ color: "#6C6C6C" }}>{index + 1}</td>
                     <td style={{ color: "#6C6C6C" }}>{item.name}</td>
-                    <td style={{ color: "#6C6C6C" }}>{0}</td>
+                    <td style={{ color: "#6C6C6C" }}>{item.employee}</td>
                     <td>
                       <RiDeleteBin6Line
                         size={30}
