@@ -163,7 +163,7 @@ const Attendence = () => {
   const handleUpazilaChange = (selectedOption) => {
     setFormData({
       ...formData,
-      upazila_name: selectedOption ? selectedOption.label : null,
+      upazila_name: selectedOption ? selectedOption.id : null,
     });
   };
   const upazilaOptions = upazilas.map((upazila) => ({
@@ -184,14 +184,14 @@ const Attendence = () => {
   const handleUnionChange = (selectedOption) => {
     setFormData({
       ...formData,
-      union_name: selectedOption ? selectedOption.label : null,
+      union_name: selectedOption ? selectedOption.id : null,
     });
   };
 
   const handleUnitChange = (selectedOption) => {
     setFormData({
       ...formData,
-      unit_name: selectedOption ? selectedOption.label : null,
+      unit_name: selectedOption ? selectedOption.id : null,
     });
   };
 
@@ -348,7 +348,7 @@ const Attendence = () => {
               <Select
                 options={upazilaOptions}
                 value={upazilaOptions.find(
-                  (option) => option.label === formData.upazila_name
+                  (option) => option.id === formData.upazila_name
                 )}
                 onChange={handleUpazilaChange}
                 isClearable
@@ -364,7 +364,7 @@ const Attendence = () => {
               <Select
                 options={unionOptions}
                 value={unionOptions.find(
-                  (option) => option.label === formData.union_name
+                  (option) => option.id === formData.union_name
                 )}
                 onChange={handleUnionChange}
                 isClearable
@@ -380,7 +380,7 @@ const Attendence = () => {
               <Select
                 options={unitOptions}
                 value={unitOptions.find(
-                  (option) => option.label === formData.unit_name
+                  (option) => option.id === formData.unit_name
                 )}
                 onChange={handleUnitChange}
                 isClearable
