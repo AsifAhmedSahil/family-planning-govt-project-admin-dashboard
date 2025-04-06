@@ -1,159 +1,111 @@
-{/* modal */}
+import * as XLSX from "xlsx";
+import Papa from "papaparse";
+import { useState } from "react";
 
-<div
-className="modal fade"
-id="officerModal"
-tabIndex="-1"
-aria-labelledby="officerModalLabel"
-aria-hidden="true"
-style={{ overflowX: "hidden" }}
->
-<div
-  className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
-  style={{
-    width: "70%", // Set the width of the modal to 70%
-    height: "70%", // Set the height of the modal to 70%
-    maxHeight: "90vh", // Ensure the modal's height doesn't exceed 90% of the viewport
-    maxWidth: "60vw", // Ensure the modal's height doesn't exceed 90% of the viewport
-    marginLeft: "auto", // Center the modal horizontally
-    marginRight: "auto", // Center the modal horizontally
-  }}
->
-  <div className="modal-content" style={{ padding: "30px" }}>
-    <div className="modal-header">
-      <h5 className="modal-title" id="officerModalLabel">
-        {/* Modal Title */}
-      </h5>
-      <button
-        type="button"
-        className="btn-close"
-        data-bs-dismiss="modal"
-        aria-label="Close"
-      ></button>
+const YourComponent = () => {
+  const [uploadedData, setUploadedData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setLoading(true); // Show loading spinner
+      setError(null); // Reset error
+      if (file.type === "text/csv") {
+        // Handle CSV file
+        parseCsvFile(file);
+      } else if (
+        file.type === "application/vnd.ms-excel" ||
+        file.type ===
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ) {
+        // Handle Excel file
+        parseExcelFile(file);
+      } else {
+        setLoading(false); // Hide loading spinner
+        setError("Please upload a valid CSV or Excel file.");
+      }
+    }
+  };
+
+  const parseCsvFile = (file) => {
+    Papa.parse(file, {
+      complete: (result) => {
+        console.log("CSV data:", result);
+        if (result.data.length === 0) {
+          setLoading(false); // Hide loading spinner
+          setError("No data found in the CSV file.");
+        } else {
+          setUploadedData(result.data); // Set the uploaded data to state
+          setLoading(false); // Hide loading spinner
+        }
+      },
+      header: true,
+    });
+  };
+
+  const parseExcelFile = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0]; // Get the first sheet
+      const sheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(sheet); // Convert sheet to JSON
+      console.log("Excel data:", jsonData);
+      if (jsonData.length === 0) {
+        setLoading(false); // Hide loading spinner
+        setError("No data found in the Excel file.");
+      } else {
+        setUploadedData(jsonData); // Set the uploaded data to state
+        setLoading(false); // Hide loading spinner
+      }
+    };
+    reader.readAsArrayBuffer(file); // Read the file as an array buffer
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleFileChange} />
+      
+      {/* Loading Spinner */}
+      {loading && <div>Loading...</div>}
+
+      {/* Error Message */}
+      {error && <div style={{ color: "red" }}>{error}</div>}
+
+      {/* Table to display data */}
+      <table className="table table-bordered">
+        <thead>
+          <tr>
+            <th>Emp ID</th>
+            <th>Name</th>
+            <th>Mobile</th>
+            <th>NID</th>
+            <th>Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          {uploadedData.length > 0 ? (
+            uploadedData.map((row, index) => (
+              <tr key={index}>
+                <td>{row["Emp ID"]}</td>
+                <td>{row["Name"]}</td>
+                <td>{row["Mobile"]}</td>
+                <td>{row["NID"]}</td>
+                <td>{row["Address"]}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5">No data uploaded</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
-    <div className="modal-body" style={{ overflowX: "hidden" }}>
-      {/* Modal Content */}
-      <div className="row g-5">
-        <div className="col-md-3 d-flex flex-column mb-3">
-          <label
-            className="mb-2 text-[16px]"
-            style={{ color: "#13007D" }}
-          >
-            কাজের ক্ষেত্র
-          </label>
-          <p>বাড়ি পরিদর্শন</p>
-        </div>
-        <div className="col-md-3 d-flex flex-column mb-3">
-          <label
-            className="mb-2 text-[16px]"
-            style={{ color: "#13007D" }}
-          >
-            দম্পতি নাম্বার
-          </label>
-          <p>১২০৯১১২</p>
-        </div>
-        <div className="col-md-3 d-flex flex-column mb-3">
-          <label
-            className="mb-2 text-[16px]"
-            style={{ color: "#13007D" }}
-          >
-            দম্পতির নাম
-          </label>
-          <p>মাসুমা সুলতানা</p>
-        </div>
-        <div className="col-md-3 d-flex flex-column mb-3">
-          <label
-            className="mb-2 text-[16px]"
-            style={{ color: "#13007D" }}
-          >
-            স্বামীর নাম
-          </label>
-          <p>আবদুল বাতেন</p>
-        </div>
-      </div>
-      <div className="row g-5">
-        <div className="col-md-3 d-flex flex-column mb-3">
-          <label
-            className="mb-2 text-[16px]"
-            style={{ color: "#13007D" }}
-          >
-            ছেলে-মেয়ের সংখ্যা
-          </label>
-          <p>৩ জন</p>
-        </div>
-        <div className="col-md-3 d-flex flex-column mb-3">
-          <label
-            className="mb-2 text-[16px]"
-            style={{ color: "#13007D" }}
-          >
-            পদ্ধতির নাম
-          </label>
-          <p>খাবার বড়ি</p>
-        </div>
-        <div className="col-md-3 d-flex flex-column mb-3">
-          <label
-            className="mb-2 text-[16px]"
-            style={{ color: "#13007D" }}
-          >
-            মোবাইল নাম্বার
-          </label>
-          <p>মাসুমা সুলতানা</p>
-        </div>
-        <div className="col-md-3 d-flex flex-column mb-3">
-          <label
-            className="mb-2 text-[16px]"
-            style={{ color: "#13007D" }}
-          >
-            সংক্ষিপ্ত ঠিকানা
-          </label>
-          <p>জামতলা, বাতেন বাড়ি</p>
-        </div>
-      </div>
-      <div className="row g-5">
-        <div className="col-md-3 d-flex flex-column mb-3">
-          <label
-            className="mb-2 text-[16px]"
-            style={{ color: "#13007D" }}
-          >
-            ছবি
-          </label>
-          <p>
-            <img
-              src={officer}
-              alt="officer"
-              style={{ width: "150px", height: "150px" }}
-            />
-          </p>
-        </div>
-        <div className="col-md-6 d-flex flex-column mb-3">
-          <label
-            className="mb-2 text-[16px]"
-            style={{ color: "#13007D" }}
-          >
-            বিবরন
-          </label>
-          <p>
-            এই দম্পতিকে জন্মনিয়ন্ত্রনের পরামর্শ দেয়া হয়েছে, কিছু
-            জন্মনিয়ন্ত্রক বড়ি দেয়া হয়েছে
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
+  );
+};
 
-const workList2 = [
-  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'দম্পতি নাম্বার', work_field_type: 'text', value: '০১৯২৮৮৩৭৩৩' },
-  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'দম্পতির নাম', work_field_type: 'text', value: 'পরি মনি' },
-  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'স্বামীর নাম', work_field_type: 'text', value: 'জয়' },
-  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'ছেলে-মেয়ের সংখ্যা', work_field_type: 'text', value: '১০' },
-  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'সেবার নাম', work_field_type: 'dropdown', value: 'পরিবার পরিকল্পনা' },
-  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'মোবাইল নাম্বার', work_field_type: 'text', value: '০১৯২৮৮২৭২৮' },
-  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'সংক্ষিপ্ত ঠিকানা', work_field_type: 'text', value: 'ককক' },
-  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'ছবি', work_field_type: 'image', value: '/home/mpairproject/family-planning-server.mpairproject.xyz/Files/image/1742884064681-field_21.jpg' },
-  { work_id: 2, work_type: 'বাড়ি পরিদর্শন', work_field: 'বিবরণ', work_field_type: 'text', value: 'কাজ' }
-];
-
-// Use map to extract 'work_field' and 'value'
-
+export default YourComponent;

@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import Papa from "papaparse"; // Library for CSV parsing
+import * as XLSX from "xlsx"; // Library for Excel file parsing
 
 const PeopleInformation = () => {
   const navigate = useNavigate();
@@ -20,6 +22,8 @@ const PeopleInformation = () => {
   const [unions, setUnions] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [units, setUnits] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [employeeToUpdate, setEmployeeToUpdate] = useState([]);
   const [filterData, setFilterData] = useState({
     designation: "", // String filter
@@ -29,6 +33,9 @@ const PeopleInformation = () => {
     unit: null, // ID filter
     search: "",
   });
+
+  const [uploadedData, setUploadedData] = useState([]);
+  const [tab, setTab] = useState("individual");
 
   const convertToBangla = (number) => {
     const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -487,7 +494,7 @@ const PeopleInformation = () => {
         handleDelete(id);
         Swal.fire({
           title: "ডিলিট করা হয়েছে",
-          text: "উপজেলা ডিলিট সম্পন্ন",
+          text: "কর্মকর্তা ডিলিট সম্পন্ন",
           icon: "success",
         });
       }
@@ -534,6 +541,100 @@ const PeopleInformation = () => {
     }
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setLoading(true); // Show loading spinner
+      setError(null); // Reset error
+      if (file.type === "text/csv") {
+        // Handle CSV file
+        parseCsvFile(file);
+      } else if (
+        file.type === "application/vnd.ms-excel" ||
+        file.type ===
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ) {
+        // Handle Excel file
+        parseExcelFile(file);
+      } else {
+        setLoading(false); // Hide loading spinner
+        setError("Please upload a valid CSV or Excel file.");
+      }
+    }
+  };
+
+  const parseCsvFile = (file) => {
+    Papa.parse(file, {
+      complete: (result) => {
+        console.log("CSV data:", result);
+        if (result.data.length === 0) {
+          setLoading(false); // Hide loading spinner
+          setError("No data found in the CSV file.");
+        } else {
+          setUploadedData(result.data); // Set the uploaded data to state
+          setLoading(false); // Hide loading spinner
+        }
+      },
+      header: true,
+    });
+  };
+
+  const parseExcelFile = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0]; // Get the first sheet
+      const sheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(sheet); // Convert sheet to JSON
+      console.log("Excel data:", jsonData);
+      if (jsonData.length === 0) {
+        setLoading(false); // Hide loading spinner
+        setError("No data found in the Excel file.");
+      } else {
+        setUploadedData(jsonData); // Set the uploaded data to state
+        setLoading(false); // Hide loading spinner
+      }
+    };
+    reader.readAsArrayBuffer(file); // Read the file as an array buffer
+  };
+
+  const handleBulkSubmit = async (e) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem("authToken");
+    // const formDataToSend = new FormData();
+    // formDataToSend.append("employees", JSON.stringify(uploadedData));
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/employee/add-employee-bulk`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ uploadedData }),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("All Employee registered successfully:", result);
+        fetchEmployees();
+      } else {
+        const errorResult = await response.json();
+        console.error("Error:", errorResult);
+        // Optionally, display an error message to the user
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // Optionally, display an error message to the user
+    }
+  };
+
+  console.log(uploadedData);
   return (
     <div>
       <Header title={"কর্মকর্তার তথ্য"} />
@@ -776,6 +877,8 @@ const PeopleInformation = () => {
         </div>
       </div>
 
+      {/* modal for add people */}
+
       <div
         className="modal fade"
         id="officerModal"
@@ -807,203 +910,353 @@ const PeopleInformation = () => {
               ></button>
             </div>
 
-            <div className="filter mb-4" style={{ margin: "26px" }}>
-              <div className="row g-5 ">
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px] "
-                    style={{ color: "#323232" }}
+            <div className="modal-body">
+              {/* Tabs */}
+              <ul className="nav nav-tabs" id="myTab" role="tablist">
+                <li className="nav-item" role="presentation">
+                  <a
+                    className={`nav-link ${
+                      tab === "individual" ? "active" : ""
+                    }`}
+                    id="home-tab"
+                    role="tab"
+                    onClick={() => setTab("individual")}
                   >
-                    আইডি
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.emp_id}
-                    onChange={handleIdChange}
-                    className="form-control"
-                  />
-                </div>
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px] "
-                    style={{ color: "#323232" }}
+                    Add Individual
+                  </a>
+                </li>
+                <li className="nav-item" role="presentation">
+                  <a
+                    className={`nav-link ${tab === "upload" ? "active" : ""}`}
+                    id="upload-tab"
+                    role="tab"
+                    onClick={() => setTab("upload")}
                   >
-                    পদবী
-                  </label>
-                  <Select
-                    options={designationOptions}
-                    value={designationOptions.find(
-                      (option) => option.id === formData.designation_id
-                    )}
-                    onChange={handleDesignationChange}
-                    isClearable
-                    placeholder="Select"
-                    getOptionValue={(option) => option.id}
-                    getOptionLabel={(option) => option.label}
-                  />
-                </div>
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px] "
-                    style={{ color: "#323232" }}
-                  >
-                    জেলা
-                  </label>
-                  <select
-                    name="district"
-                    className="form-select"
-                    value={formData.district}
-                    onChange={handleInputChange}
-                  >
-                    <option value="চট্টগ্রাম">চট্টগ্রাম</option>
-                  </select>
-                </div>
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px] "
-                    style={{ color: "#323232" }}
-                  >
-                    উপজেলা
-                  </label>
-                  <Select
-                    options={upazilaOptions}
-                    value={upazilaOptions.find(
-                      (option) => option.id === formData.upazila_id
-                    )}
-                    onChange={handleUpazilaChange}
-                    isClearable
-                    placeholder="Select upazila"
-                    getOptionValue={(option) => option.id}
-                    getOptionLabel={(option) => option.label}
-                  />
-                </div>
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px] "
-                    style={{ color: "#323232" }}
-                  >
-                    ইউনিয়ন
-                  </label>
-                  <Select
-                    options={unionOptions}
-                    value={unionOptions.find(
-                      (option) => option.id === formData.union_id
-                    )}
-                    onChange={handleUnionChange}
-                    isClearable
-                    placeholder="Select Union"
-                    getOptionValue={(option) => option.id}
-                    getOptionLabel={(option) => option.label}
-                  />
-                </div>
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px]"
-                    style={{ color: "#323232" }}
-                  >
-                    ইউনিট
-                  </label>
-                  <Select
-                    options={unitOptions}
-                    value={unitOptions.find(
-                      (option) => option.id === formData.unit_id
-                    )}
-                    onChange={handleUnitChange}
-                    isClearable
-                    placeholder="Select unit"
-                    getOptionValue={(option) => option.id}
-                    getOptionLabel={(option) => option.label}
-                  />
-                </div>
-              </div>
-            </div>
+                    Upload CSV/Excel
+                  </a>
+                </li>
+              </ul>
 
-            <div
-              className="modal-body"
-              style={{
-                maxHeight: "60vh",
-                overflowY: "auto",
-              }}
-            >
-              <form onSubmit={handleFormSubmit}>
-                <div className="row mb-3">
-                  <div className="col-md-4">
-                    <label htmlFor="name" className="form-label">
-                      কর্মকর্তা নাম
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="name"
-                      placeholder="কর্মকর্তার নাম লিখুন"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="col-md-4">
-                    <label htmlFor="mobile" className="form-label">
-                      মোবাইল
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="mobile"
-                      placeholder="কর্মকর্তার মোবাইল"
-                      value={formData.mobile}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="col-md-4">
-                    <label htmlFor="nid" className="form-label">
-                      জাতীয় পরিচয়পত্র
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="nid"
-                      placeholder="কর্মকর্তার জাতীয় পরিচয়পত্র"
-                      value={formData.nid}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <div className="col-md-6">
-                    <label htmlFor="address" className="form-label">
-                      ঠিকানা
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="address"
-                      placeholder="ঠিকানা লিখুন"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="image" className="form-label">
-                      ছবি
-                    </label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      placeholder="সংযুক্ত করুন"
-                      id="image"
-                      onChange={handleImageChange}
-                    />
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="submit"
-                    className="btn btn-primary text-white mt-4"
-                    style={{ backgroundColor: "#13007D" }}
+              <div className="tab-content" id="myTabContent">
+                {/* Tab 1: Add Individual */}
+                {tab === "individual" && (
+                  <div
+                    className="tab-pane fade show active"
+                    id="home"
+                    role="tabpanel"
+                    aria-labelledby="home-tab"
                   >
-                    কর্মকর্তা যোগ করুন
-                  </button>
-                </div>
-              </form>
+                    <form onSubmit={handleFormSubmit}>
+                      <div className="row g-5">
+                        {/* Existing fields */}
+
+                        <div className="row g-5">
+                          {/* Employee ID */}
+                          <div className="col-md-2 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              আইডি
+                            </label>
+                            <input
+                              type="text"
+                              value={formData.emp_id}
+                              onChange={handleIdChange}
+                              className="form-control"
+                            />
+                          </div>
+
+                          {/* Name */}
+                          <div className="col-md-3 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              নাম
+                            </label>
+                            <input
+                              type="text"
+                              id="name"
+                              value={formData.name}
+                              onChange={handleInputChange}
+                              className="form-control"
+                              placeholder="Enter Name"
+                            />
+                          </div>
+
+                          {/* Mobile Number */}
+                          <div className="col-md-3 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              মোবাইল
+                            </label>
+                            <input
+                              type="text"
+                              id="mobile"
+                              value={formData.mobile}
+                              onChange={handleInputChange}
+                              className="form-control"
+                              placeholder="Enter Mobile Number"
+                            />
+                          </div>
+
+                          {/* National ID */}
+                          <div className="col-md-2 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              জাতীয় পরিচয়পত্র
+                            </label>
+                            <input
+                              type="text"
+                              id="nid"
+                              value={formData.nid}
+                              onChange={handleInputChange}
+                              className="form-control"
+                              placeholder="Enter NID"
+                            />
+                          </div>
+
+                          {/* Address */}
+                          <div className="col-md-3 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              ঠিকানা
+                            </label>
+                            <input
+                              type="text"
+                              id="address"
+                              value={formData.address}
+                              onChange={handleInputChange}
+                              className="form-control"
+                              placeholder="Enter Address"
+                            />
+                          </div>
+
+                          {/* Designation */}
+                          <div className="col-md-3 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              পদবী
+                            </label>
+                            <Select
+                              options={designationOptions}
+                              value={designationOptions.find(
+                                (option) =>
+                                  option.id === formData.designation_id
+                              )}
+                              onChange={handleDesignationChange}
+                              isClearable
+                              placeholder="Select"
+                              getOptionValue={(option) => option.id}
+                              getOptionLabel={(option) => option.label}
+                            />
+                          </div>
+
+                          {/* District */}
+                          <div className="col-md-3 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              জেলা
+                            </label>
+                            <input
+                              type="text"
+                              id="district"
+                              value={formData.district}
+                              onChange={handleInputChange}
+                              className="form-control"
+                              placeholder="Enter District"
+                            />
+                          </div>
+
+                          {/* Upazila */}
+                          <div className="col-md-3 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              উপজেলা
+                            </label>
+                            <Select
+                              options={upazilaOptions}
+                              value={upazilaOptions.find(
+                                (option) => option.id === formData.upazila_id
+                              )}
+                              onChange={handleUpazilaChange}
+                              isClearable
+                              placeholder="Select Upazila"
+                              getOptionValue={(option) => option.id}
+                              getOptionLabel={(option) => option.label}
+                            />
+                          </div>
+
+                          {/* Union */}
+                          <div className="col-md-3 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              ইউনিয়ন
+                            </label>
+                            <Select
+                              options={unionOptions}
+                              value={unionOptions.find(
+                                (option) => option.id === formData.union_id
+                              )}
+                              onChange={handleUnionChange}
+                              isClearable
+                              placeholder="Select Union"
+                              getOptionValue={(option) => option.id}
+                              getOptionLabel={(option) => option.label}
+                            />
+                          </div>
+
+                          {/* Unit */}
+                          <div className="col-md-3 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              ইউনিট
+                            </label>
+                            <Select
+                              options={unitOptions}
+                              value={unitOptions.find(
+                                (option) => option.id === formData.unit_id
+                              )}
+                              onChange={handleUnitChange}
+                              isClearable
+                              placeholder="Select Unit"
+                              getOptionValue={(option) => option.id}
+                              getOptionLabel={(option) => option.label}
+                            />
+                          </div>
+
+                          {/* Image Upload */}
+                          <div className="col-md-3 d-flex flex-column mb-3">
+                            <label
+                              className="mb-2 text-[16px]"
+                              style={{ color: "#323232" }}
+                            >
+                              ছবি আপলোড করুন
+                            </label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="form-control"
+                              onChange={handleImageChange}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="modal-footer">
+                        <button
+                          type="submit"
+                          className="btn btn-primary text-white mt-4"
+                          style={{ backgroundColor: "#13007D" }}
+                        >
+                          কর্মকর্তা যোগ করুন
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* Tab 2: Upload CSV/Excel */}
+                {tab === "upload" && (
+                  <div
+                    className="tab-pane show active"
+                    id="upload"
+                    role="tabpanel"
+                    aria-labelledby="upload-tab"
+                  >
+                    <form>
+                      {/* File Upload Input */}
+                      <div className="mb-3">
+                        <label htmlFor="fileUpload" className="form-label">
+                          Upload CSV/Excel File
+                        </label>
+                        <input
+                          type="file"
+                          className="form-control"
+                          id="fileUpload"
+                          accept=".csv, .xlsx, .xls"
+                          onChange={handleFileChange} // Handle the file change event
+                        />
+                      </div>
+                      {loading && <div>Loading...</div>}
+
+                      {/* Error Message */}
+                      {error && <div style={{ color: "red" }}>{error}</div>}
+
+                      {/* Display Uploaded Data */}
+                      <div className="mt-4">
+                        <h5>Uploaded Data:</h5>
+                        <table className="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Emp ID</th>
+                              <th>Name</th>
+                              <th>Mobile</th>
+                              <th>NID</th>
+                              <th>Address</th>
+                              <th>Designation</th>
+                              <th>District</th>
+                              <th>Upazila</th>
+                              <th>Union</th>
+                              <th>Unit</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {uploadedData.length > 0 ? (
+                              uploadedData.map((row, index) => (
+                                <tr key={index}>
+                                  <td>{row.emp_id}</td>
+                                  <td>{row.name}</td>
+                                  <td>{row.mobile}</td>
+                                  <td>{row.nid}</td>
+                                  <td>{row.address}</td>
+                                  <td>{row.designation_id}</td>
+                                  <td>{row.district}</td>
+                                  <td>{row.upazila_id}</td>
+                                  <td>{row.union_id}</td>
+                                  <td>{row.unit_id}</td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan="5">No data uploaded</td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <div className="modal-footer">
+                        <button
+                          type="button"
+                          className="btn btn-primary text-white mt-4"
+                          style={{ backgroundColor: "#13007D" }}
+                          onClick={handleBulkSubmit}
+                        >
+                          Add All Officers
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

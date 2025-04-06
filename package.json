@@ -17,6 +17,7 @@
     "dotenv": "^16.4.7",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
+    "papaparse": "^5.5.2",
     "react": "^18.0.0",
     "react-bootstrap": "^2.10.9",
     "react-datepicker": "^8.2.1",
@@ -28,7 +29,8 @@
     "react-select": "^5.10.1",
     "react-time-picker": "^7.0.0",
     "sweetalert2": "^11.17.2",
-    "vite-plugin-env-compatible": "^2.0.1"
+    "vite-plugin-env-compatible": "^2.0.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
