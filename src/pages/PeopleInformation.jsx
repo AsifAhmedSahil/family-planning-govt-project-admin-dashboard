@@ -2,20 +2,26 @@ import { useEffect, useState } from "react";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import Header from "../Components/Header";
-import { FaRegEye, FaEdit } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { 
+  // FaRegEye, 
+  FaEdit } from "react-icons/fa";
+// import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Papa from "papaparse"; // Library for CSV parsing
 import * as XLSX from "xlsx"; // Library for Excel file parsing
+import toast from "react-hot-toast";
+
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import 'bootstrap'; // Import Bootstrap JS (includes Popper.js)
 
 const PeopleInformation = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const handleRowClick = (id) => {
-    navigate(`/person/${id}`);
-  };
+  // const handleRowClick = (id) => {
+  //   navigate(`/person/${id}`);
+  // };
 
   const [designation, setDesignation] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
@@ -24,7 +30,19 @@ const PeopleInformation = () => {
   const [units, setUnits] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [employeeToUpdate, setEmployeeToUpdate] = useState([]);
+  const [employeeToUpdate, setEmployeeToUpdate] = useState({
+    emp_id: "",
+    designation_id: "",
+    district: "চট্টগ্রাম",
+    upazila_id: "",
+    union_id: "",
+    unit_id: "",
+    name: "",
+    mobile: "",
+    nid: "",
+    address: "",
+    image: null,
+  });
   const [filterData, setFilterData] = useState({
     designation: "", // String filter
     district: null, // ID filter
@@ -33,6 +51,7 @@ const PeopleInformation = () => {
     unit: null, // ID filter
     search: "",
   });
+  console.log(employeeToUpdate)
 
   const [uploadedData, setUploadedData] = useState([]);
   const [tab, setTab] = useState("individual");
@@ -213,7 +232,7 @@ const PeopleInformation = () => {
   const [formData, setFormData] = useState({
     emp_id: "",
     designation_id: "",
-    district: "",
+    district: "চট্টগ্রাম",
     upazila_id: "",
     union_id: "",
     unit_id: "",
@@ -361,7 +380,23 @@ const PeopleInformation = () => {
         const result = await response.json();
         console.log(result);
         console.log("Employee registered successfully:", result);
+        setFormData({
+          emp_id: "",
+          designation_id: "",
+          district: "",
+          upazila_id: "",
+          union_id: "",
+          unit_id: "",
+          name: "",
+          mobile: "",
+          nid: "",
+          address: "",
+          image: null,
+        });
+        toast.success("Employee registered successfully");
         fetchEmployees();
+        const closeButton = document.querySelector('[data-bs-dismiss="modal"]');
+        closeButton.click(); // Simulate a click to close the modal
       } else {
         const errorResult = await response.json();
         console.error("Error:", errorResult);
@@ -433,14 +468,31 @@ const PeopleInformation = () => {
           if (imageResponse.ok) {
             const imageResult = await imageResponse.json();
             console.log("Employee image updated successfully:", imageResult);
+            
           } else {
             const errorResult = await imageResponse.json();
             console.error("Error updating image:", errorResult);
           }
         }
 
+        setEmployeeToUpdate({
+          emp_id: "",
+          designation_id: "",
+          district: "চট্টগ্রাম",
+          upazila_id: "",
+          union_id: "",
+          unit_id: "",
+          name: "",
+          mobile: "",
+          nid: "",
+          address: "",
+          image: null,
+        })
         // Optionally, refresh employee list or update UI
         fetchEmployees(); // Refresh employee list or UI
+        const closeButton = document.querySelector('[data-bs-dismiss="modal"]');
+        closeButton.click(); // Simulate a click to close the modal
+        
       } else {
         const errorResult = await employeeDetailsResponse.json();
         console.error("Error updating employee details:", errorResult);
@@ -623,6 +675,10 @@ const PeopleInformation = () => {
         const result = await response.json();
         console.log("All Employee registered successfully:", result);
         fetchEmployees();
+        setUploadedData([]);
+        toast.success("All Employee registered successfully");
+        const closeButton = document.querySelector('[data-bs-dismiss="modal"]');
+        closeButton.click(); // Simulate a click to close the modal
       } else {
         const errorResult = await response.json();
         console.error("Error:", errorResult);
@@ -634,7 +690,7 @@ const PeopleInformation = () => {
     }
   };
 
-  console.log(uploadedData);
+  console.log(formData);
   return (
     <div>
       <Header title={"কর্মকর্তার তথ্য"} />
@@ -844,13 +900,13 @@ const PeopleInformation = () => {
                         style={{ width: "50px", height: "50px" }}
                       />
                     </td>
-                    <td>
+                    {/* <td>
                       <FaRegEye
                         size={20}
                         onClick={() => handleRowClick(item.emp_id)}
                         style={{ color: "gray", cursor: "pointer" }}
                       />
-                    </td>
+                    </td> */}
                     <td>
                       <RiDeleteBin6Line
                         onClick={() => handleDeleteConfirmation(item.emp_id)}
@@ -1069,14 +1125,22 @@ const PeopleInformation = () => {
                             >
                               জেলা
                             </label>
-                            <input
+                            {/* <input
                               type="text"
                               id="district"
                               value={formData.district}
                               onChange={handleInputChange}
                               className="form-control"
                               placeholder="Enter District"
-                            />
+                            /> */}
+                            <select
+                              name="district"
+                              className="form-select"
+                              value={formData.district}
+                              onChange={handleInputChange}
+                            >
+                              <option value="চট্টগ্রাম">চট্টগ্রাম</option>
+                            </select>
                           </div>
 
                           {/* Upazila */}
@@ -1152,7 +1216,7 @@ const PeopleInformation = () => {
                             </label>
                             <input
                               type="file"
-                              accept="image/*"
+                              id="image"
                               className="form-control"
                               onChange={handleImageChange}
                             />
