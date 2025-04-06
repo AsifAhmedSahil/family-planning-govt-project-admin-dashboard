@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // Import Bootstrap JS (with Popper)
-
+import "../src/App.css"
 // import App from "./App";
 import { StrictMode } from "react";
 import { RouterProvider } from "react-router-dom";
