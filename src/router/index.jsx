@@ -22,6 +22,7 @@ import Role from "../Components/Settings/Role";
 import Registration from "../Components/Settings/Registration";
 import PermissionManagement from "../Components/Settings/PermissionManagement";
 import WorkTypeShow from "../pages/WorkTypeShow";
+import Profile from "../pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -177,6 +178,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <PersonDetails />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/profile",
+        element: (
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         ),
       },

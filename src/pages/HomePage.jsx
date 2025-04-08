@@ -22,13 +22,13 @@ const HomePage = () => {
   const [lastNotice, setLastNotice] = useState({});
 
   const glassmorphism = {
-    background: "rgba(70, 42, 42, 0.25)",
+    // background: "rgba(70, 42, 42, 0.25)",
     height: "125px",
     backdropFilter: "blur(10px)",
     WebkitBackdropFilter: "blur(10px)",
-    borderRadius: "15px",
-    border: "1px solid rgba(255, 255, 255, 0.18)",
-    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+    borderRadius: "5px",
+    border: "1px solid rgba(100, 97, 97, 0.18)",
+    // boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
   };
 
   const fetchDashboardData = async () => {
@@ -125,7 +125,7 @@ const HomePage = () => {
       <Header title={"ড্যাসবোর্ড"} />
       <div className="row mb-4 mt-3">
         <div className="col-md-2 mb-3 ">
-          <div className="card text-end p-3" style={{ height: "105px" }}>
+          <div className="card text-end p-3" style={{ height: "105px",borderRadius:"12px" }}>
             <h2 className="mb-0" style={{ color: "#3B3B3B" }}>
               {convertToBangla(topAttendance.todayPresent)} জন
             </h2>
@@ -135,7 +135,7 @@ const HomePage = () => {
           </div>
         </div>
         <div className="col-md-2 mb-3 ">
-          <div className="card text-end p-3" style={{ height: "105px" }}>
+          <div className="card text-end p-3" style={{ height: "105px",borderRadius:"12px" }}>
             <h2 className="mb-0" style={{ color: "#3B3B3B" }}>
               {convertToBangla(topAttendance.todayLate)} জন
             </h2>
@@ -145,7 +145,7 @@ const HomePage = () => {
           </div>
         </div>
         <div className="col-md-2 mb-3 ">
-          <div className="card text-end p-3" style={{ height: "105px" }}>
+          <div className="card text-end p-3" style={{ height: "105px",borderRadius:"12px" }}>
             <h2 className="mb-0" style={{ color: "#3B3B3B" }}>
               {convertToBangla(topAttendance.todayEarlyLeave)} জন
             </h2>
@@ -155,7 +155,7 @@ const HomePage = () => {
           </div>
         </div>
         <div className="col-md-2 mb-3 ">
-          <div className="card text-end p-3" style={{ height: "105px" }}>
+          <div className="card text-end p-3" style={{ height: "105px",borderRadius:"12px" }}>
             <h2 className="mb-0" style={{ color: "#3B3B3B" }}>
               {convertToBangla(topAttendance.todayOnLeave)} জন
             </h2>
@@ -165,36 +165,45 @@ const HomePage = () => {
           </div>
         </div>
         <div className="col-md-4">
-          <div className="p-3 card" style={{ height: "105px" }}>
-            <div className="d-flex justify-content-evenly mb-3">
-              <div className="d-flex">
-                <p className="me-2 mb-1">জেলা</p>
-                <h5 className="mb-1">{convertToBangla(topRight.district)}</h5>
-              </div>
-              <div className="d-flex">
-                <p className="me-2 mb-1">ইউনিয়ন</p>
-                <h5 className="mb-1">{convertToBangla(topRight.unionData)}</h5>
-              </div>
-            </div>
-            <div className="d-flex justify-content-evenly">
-              <div className="d-flex">
-                <p className="me-2 mb-0">উপজেলা</p>
-                <h5 className="mb-0">{convertToBangla(topRight.upazila)}</h5>
-              </div>
-              <div className="d-flex">
-                <p className="me-2 mb-0">ইউনিট</p>
-                <h5 className="mb-0">{convertToBangla(topRight.unit)}</h5>
-              </div>
-            </div>
-          </div>
+        <div className="p-3 card" style={{ height: "105px", borderRadius: "12px" }}>
+  <div className="d-flex justify-content-between mb-3">
+    <div className="d-flex" style={{ width: "50%" }}>
+      <p className="me-2 mb-1">জেলা:</p>
+      <h5 className="mb-1" style={{ fontFamily: 'SolaimanLipi, sans-serif' }}>
+        {convertToBangla(topRight.district)}টি
+      </h5>
+    </div>
+    <div className="d-flex" style={{ width: "50%" }}>
+      <p className="me-2 mb-1">ইউনিয়ন:</p>
+      <h5 className="mb-1" style={{ fontFamily: 'SolaimanLipi, sans-serif' }}>
+        {convertToBangla(topRight.unionData)}টি
+      </h5>
+    </div>
+  </div>
+  <div className="d-flex justify-content-between">
+    <div className="d-flex" style={{ width: "50%" }}>
+      <p className="me-2 mb-0">উপজেলা:</p>
+      <h5 className="mb-0" style={{ fontFamily: 'SolaimanLipi, sans-serif' }}>
+        {convertToBangla(topRight.upazila)}টি
+      </h5>
+    </div>
+    <div className="d-flex" style={{ width: "50%" }}>
+      <p className="me-2 mb-0">ইউনিট:</p>
+      <h5 className="mb-0" style={{ fontFamily: 'SolaimanLipi, sans-serif' }}>
+        {convertToBangla(topRight.unit)}টি
+      </h5>
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
       <div className="row">
         <div className="col-md-8 mb-3">
           <h5 className="mb-4">সর্বশেষের উপস্থিতি তালিকা</h5>
           <div
-            className="p-4"
-            style={{ height: "530px", backgroundColor: "white" }}
+            className="card p-4"
+            style={{ height: "530px", backgroundColor: "white",borderRadius:"12px" }}
           >
             {pairedData.map((pair, rowIndex) => (
               <div className="row mb-3" key={rowIndex}>
@@ -203,7 +212,7 @@ const HomePage = () => {
                     <p className="mb-1">{item.designation_name}</p>
                     <div
                       className="progress"
-                      style={{ height: "25px", backgroundColor: "#D9D9D9" }}
+                      style={{ height: "25px", backgroundColor: "#D9D9D9",borderRadius:"15px" }}
                     >
                       <div
                         className="progress-bar"
@@ -214,9 +223,9 @@ const HomePage = () => {
                           }%`,
                           backgroundColor:
                             item.present_today === item.total_employees
-                              ? "#4cd964"
-                              : "#63E680",
-                          color: "#565656",
+                              ? "#006400"
+                              : "#228B22 ",
+                          color: "#FFF",
                         }}
                         aria-valuenow={
                           (item.present_today / item.total_employees) * 100
@@ -243,8 +252,10 @@ const HomePage = () => {
             style={{
               ...glassmorphism,
               padding: "20px",
-              backgroundColor: "#fff",
+              backgroundColor: "#fff",borderRadius:"12px"
+              
             }}
+            
           >
             <div className="mb-3 ">
               <p className="mb-1 fw-bold ">{lastNotice?.notice_name?.slice(0,50)}</p>
@@ -266,13 +277,14 @@ const HomePage = () => {
           <div
             style={{
               backgroundColor: "white",
-              borderRadius: "20px",
-              padding: "0px 10px",
+              borderRadius: "12px",
+              padding: "0px ",
+              border: "1px solid rgba(100, 97, 97, 0.18)"
             }}
           >
             <div
               style={{
-                maxHeight: "340px",
+                maxHeight: "330px",
                 overflowY: "auto",
                 overflowX: "hidden",
                 borderRadius: "20px",
@@ -280,116 +292,110 @@ const HomePage = () => {
             >
               {lastSubmittedWork.map((item) => (
                 <div
-                  key={item}
-                  // className="mb-3"
+                key={item}
+                style={{
+                  backgroundColor: "#fff",
+                  borderRadius: "10px",
+                  padding: "10px",
+                }}
+              >
+                <div
+                  className="card-body"
                   style={{
-                    backgroundColor: "#fff",
-                    borderRadius: "10px",
-                    padding: "10px",
+                    borderBottom: "1px solid rgba(178, 189, 187, 0.38)", // Bottom border only
+                    padding: "15px",
+                    // borderRadius: "10px",
                   }}
                 >
-                  <div
-                    className="card-body "
-                    style={{
-                      border: "1px solid rgba(178, 189, 187, 0.38)",
-                      padding: "15px",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    <div className="d-flex align-items-start">
-                      <div
-                        className="d-flex justify-content-center align-items-center me-3"
-                        style={{
-                          width: "36px",
-                          height: "36px",
-                          borderRadius: "50%",
-                          backgroundColor: "#f0f1ff",
-                        }}
+                  <div className="d-flex align-items-start">
+                    <div
+                      className="d-flex justify-content-center align-items-center me-3"
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        backgroundColor: "#f0f1ff",
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        fill="#6366f1"
+                        viewBox="0 0 16 16"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          fill="#6366f1"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-                        </svg>
+                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                      </svg>
+                    </div>
+                    <div className="flex-grow-1">
+                      <div className="d-flex justify-content-between align-items-center mb-1">
+                        <div className="d-flex align-items-center">
+                          <span
+                            className="fw-medium"
+                            style={{ fontSize: "15px", color: "#333" }}
+                          >
+                            {item.name}
+                          </span>
+                          <span className="mx-2 text-muted">•</span>
+                          <span
+                            className="text-muted"
+                            style={{ fontSize: "14px" }}
+                          >
+                            {item.work_type}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex-grow-1">
-                        <div className="d-flex justify-content-between align-items-center mb-1">
-                          <div className="d-flex align-items-center">
-                            <span
-                              className="fw-medium"
-                              style={{ fontSize: "15px", color: "#333" }}
-                            >
-                              {item.name}
-                            </span>
-                            <span className="mx-2 text-muted">•</span>
-                            <span
-                              className="text-muted"
-                              style={{ fontSize: "14px" }}
-                            >
-                              {item.work_type}
-                            </span>
-                          </div>
-                          {/* <span className="text-muted" style={{ fontSize: "14px" }}>
-                      {new Date(item.date).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </span> */}
-                        </div>
-
-                        {/* Display tags dynamically from upazila, unionName, and unit */}
-                        <div className="d-flex gap-2 mt-2">
-                          {item.upazila && (
-                            <span
-                              className="px-3 py-1"
-                              style={{
-                                backgroundColor: "#e6e1ff", // You can customize this color
-                                color: "#6f42c1", // You can customize this text color
-                                borderRadius: "20px",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                              }}
-                            >
-                              {item.upazila}
-                            </span>
-                          )}
-                          {item.unionName && (
-                            <span
-                              className="px-3 py-1"
-                              style={{
-                                backgroundColor: "#d7f8e8", // You can customize this color
-                                color: "#20c997", // You can customize this text color
-                                borderRadius: "20px",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                              }}
-                            >
-                              {item.unionName}
-                            </span>
-                          )}
-                          {item.unit && (
-                            <span
-                              className="px-3 py-1"
-                              style={{
-                                backgroundColor: "#ffe9d9", // You can customize this color
-                                color: "#fd7e14", // You can customize this text color
-                                borderRadius: "20px",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                              }}
-                            >
-                              {item.unit}
-                            </span>
-                          )}
-                        </div>
+              
+                      {/* Display tags dynamically from upazila, unionName, and unit */}
+                      <div className="d-flex gap-2 mt-2">
+                        {item.upazila && (
+                          <span
+                            className="px-3 py-1"
+                            style={{
+                              backgroundColor: "#e6e1ff", // You can customize this color
+                              color: "#6f42c1", // You can customize this text color
+                              borderRadius: "20px",
+                              fontSize: "13px",
+                              fontWeight: "500",
+                            }}
+                          >
+                            {item.upazila}
+                          </span>
+                        )}
+                        {item.unionName && (
+                          <span
+                            className="px-3 py-1"
+                            style={{
+                              backgroundColor: "#d7f8e8", // You can customize this color
+                              color: "#20c997", // You can customize this text color
+                              borderRadius: "20px",
+                              fontSize: "13px",
+                              fontWeight: "500",
+                            }}
+                          >
+                            {item.unionName}
+                          </span>
+                        )}
+                        {item.unit && (
+                          <span
+                            className="px-3 py-1"
+                            style={{
+                              backgroundColor: "#ffe9d9", // You can customize this color
+                              color: "#fd7e14", // You can customize this text color
+                              borderRadius: "20px",
+                              fontSize: "13px",
+                              fontWeight: "500",
+                            }}
+                          >
+                            {item.unit}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
+              
               ))}
             </div>
           </div>

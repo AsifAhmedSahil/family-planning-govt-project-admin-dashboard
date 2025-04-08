@@ -25,12 +25,16 @@ const Header = ({ title }) => {
     setDropdownOpen(false); 
   };
 
+  const handleProfileSection = () =>{
+    navigate("/profile")
+  }
+
   
 
   return (
-    <div className="header d-flex justify-content-between align-items-center p-3 bg-light position-relative">
-      <div>
-        <h1 className="h3 mb-2">{title}</h1>
+    <div className="header d-flex justify-content-between align-items-center bg-light position-relative">
+      <div className="mb-2">
+        <h1 className="h3 ">{title}</h1>
         <span style={{ color: "#565656" }}>
           পরিবার পরিকল্পনা স্মার্ট মনিটরিং সিস্টেম
         </span>
@@ -38,8 +42,8 @@ const Header = ({ title }) => {
 
       <div className="user-info d-flex align-items-center gap-2 position-relative">
         <div>
-          <p className="mb-0">{user?.name}</p>
-          <p className="mb-0">{user?.designation}</p>
+          <p className="mb-0 " style={{fontWeight:"bold",fontSize:"18px"}}>{user?.name}</p>
+          <p className="mb-0" style={{textAlign:"right"}}>{user?.designation}</p>
         </div>
         <div>
           <img
@@ -78,6 +82,20 @@ const Header = ({ title }) => {
                 onClick={handleLogout}
               >
                 Logout
+              </button>
+              <button
+                className="dropdown-item"
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: "8px",
+                  textAlign: "center",
+                  width: "100%",
+                  cursor: "pointer",
+                }}
+                onClick={handleProfileSection}
+              >
+                My Profile
               </button>
             </div>
           )}

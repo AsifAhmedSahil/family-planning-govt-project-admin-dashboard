@@ -24,14 +24,14 @@ const Dashboard = () => {
           {/* Sidebar */}
           <Col
             xs={3}
-            className="bg-[#FFFFFF] p-3"
+            className="bg-[#FFFFFF] p-2"
             style={{
               height: "100vh",
               width: "17%",
               backgroundColor: "#FFFFFF",
             }}
           >
-            <div className="container-fluid d-flex  align-items-center justify-content-center py-3 ">
+            <div className="container-fluid d-flex  align-items-center justify-content-center  mt-2 mb-2">
               <div className="logo w">
                 <img
                   src={logo}
@@ -223,7 +223,7 @@ const Dashboard = () => {
           </Col>
 
           {/* Main Content */}
-          <Col xs={9} className="p-4" style={{ width: "83%" }}>
+          <Col xs={9} className="p-4 pt-2" style={{ width: "83%" }}>
             <Outlet />
           </Col>
         </Row>
