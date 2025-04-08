@@ -7,6 +7,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const Designation = () => {
   const [attendancePeriods, setAttendancePeriods] = useState([]);
@@ -218,6 +219,9 @@ const Designation = () => {
     const attendanceResult = await attendanceResponse.json();
     console.log("Attendance Period updated successfully:", attendanceResult);
     await fetchAttendancePeriods();
+    const closeButton = document.querySelector('[data-bs-dismiss="modal"]');
+        closeButton.click(); // Simulate a click to close the modal
+        toast.success("Attendance Period updated successfully")
 
     // Optionally, reset the form or handle success feedback
     setEmployeeToUpdate({

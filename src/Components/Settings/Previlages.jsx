@@ -3,6 +3,7 @@ import Header from "../Header";
 
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 const Previleges = () => {
   // State hooks for storing the values of the form inputs
@@ -53,6 +54,7 @@ const Previleges = () => {
           pageRoute: "",
         });
         await fetchAllPages();
+        toast.success("page route added successfully")
       } else {
         const errorResult = await response.json();
         console.error("Error:", errorResult);

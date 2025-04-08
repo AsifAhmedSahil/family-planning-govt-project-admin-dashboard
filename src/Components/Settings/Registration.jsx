@@ -4,6 +4,7 @@ import Header from "../Header";
 
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -70,6 +71,7 @@ const Registration = () => {
         const result = await response.json();
         console.log("Success:", result);
         await fetchAllUsers();
+        toast.success("User Added Successfully")
       } else {
         const errorResult = await response.json();
         console.error("Error:", errorResult);

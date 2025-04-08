@@ -66,6 +66,7 @@ const Role = () => {
       if (response.ok) {
         console.log(result);
         console.log("role added successfully");
+        toast.success("role added successfully")
         fetchAllRole();
         setRole("");
       } else {

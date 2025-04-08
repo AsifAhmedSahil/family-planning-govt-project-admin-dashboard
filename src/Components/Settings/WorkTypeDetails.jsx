@@ -4,6 +4,7 @@ import Select from "react-select";
 import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
+import toast from "react-hot-toast";
 
 const WorkTypeDetails = () => {
   const [allWorkType, setAllWorkType] = useState([]);
@@ -261,6 +262,7 @@ const WorkTypeDetails = () => {
 
       if (response.ok) {
         setShowUpdateModal(false);
+        toast.success(" updated successfully")
         fetchWorkField();
       } else {
         alert(result.message || "Error updating work field");
