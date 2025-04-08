@@ -3,7 +3,7 @@ import Header from "../Components/Header";
 import Select from "react-select";
 import { useEffect, useState } from "react";
 
-import "react-datepicker/dist/react-datepicker.css"; // Importing DatePicker styles
+import "react-datepicker/dist/react-datepicker.css";
 
 import { CDateRangePicker } from "@coreui/react-pro";
 import "@coreui/coreui/dist/css/coreui.min.css";
@@ -19,10 +19,8 @@ const WorkTypeShow = () => {
   const [workTypeData, setWorkTypeData] = useState([]);
   const [workLists, setWorkLists] = useState(null);
   const [employeeName, setEmployeeName] = useState(null);
-  
 
   const [modalItem, setModalItem] = useState([]);
- 
 
   const [formData, setFormData] = useState({
     designation_name: "",
@@ -30,8 +28,8 @@ const WorkTypeShow = () => {
     upazila_name: "",
     union_name: "",
     unit_name: "",
-    startDate: null, // Store start date
-    endDate: null, // Store end date
+    startDate: null,
+    endDate: null,
   });
 
   const fetchDesignation = async () => {
@@ -212,7 +210,6 @@ const WorkTypeShow = () => {
       unit_name,
     } = formData;
 
-    // Ensure both startDate and endDate are selected
     if (!startDate || !endDate) {
       console.error("Start date and end date are mandatory!");
       return;
@@ -225,8 +222,8 @@ const WorkTypeShow = () => {
       union: union_name,
       unit: unit_name,
       search: "",
-      startDate: startDate.toISOString(), // Send startDate as ISO string
-      endDate: endDate.toISOString(), // Send endDate as ISO string
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
     };
 
     try {
@@ -245,7 +242,7 @@ const WorkTypeShow = () => {
       console.log(response);
       if (response.ok) {
         const result = await response.json();
-        console.log(result); // Handle the response data here
+        console.log(result);
         setWorkTypeData(result);
       } else {
         const errorResult = await response.json();
@@ -256,19 +253,16 @@ const WorkTypeShow = () => {
     }
   };
 
-  // Trigger API call when filter is changed
   useEffect(() => {
     if (formData.startDate && formData.endDate) {
-      fetchAttendance(); // Call the API when the formData is updated and both dates are set
+      fetchAttendance();
     }
   }, [formData]);
 
   console.log(workTypeData);
 
-  //   import { useState } from 'react';
   const handleWorkClick = async (workId) => {
     console.log("handleWorkClick called with workId:", workId);
-    // console.log("Item:", item);
 
     const token = localStorage.getItem("authToken");
     try {
@@ -295,7 +289,6 @@ const WorkTypeShow = () => {
         const extractedData = result.map((item) => ({
           work_field: item.work_field,
           value: item.value,
-          
         }));
 
         setModalItem(extractedData);
@@ -310,11 +303,9 @@ const WorkTypeShow = () => {
 
   console.log(modalItem);
 
-  // Function to handle the row click event
   const handleRowClick = (workList, name) => {
-    // Parse the attendanceDetails from JSON if it's a string
     setWorkLists(JSON.parse(workList));
-    
+
     setEmployeeName(name);
   };
 
@@ -336,13 +327,12 @@ const WorkTypeShow = () => {
       .join("");
   };
 
-  // Function to extract time from the createDate field in 12-hour format with AM/PM
   const getTimeFromCreateDate = (createDate) => {
     const date = new Date(createDate);
     return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
-      hour12: true, // This ensures the time is in 12-hour format with AM/PM
+      hour12: true,
     });
   };
 
@@ -353,20 +343,17 @@ const WorkTypeShow = () => {
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <div className="row g-6">
             <div className="col-md-2 d-flex flex-column mb-3">
-              {/* <label className="mb-2 text-[16px]">তারিখ</label> */}
               <div>
                 <CDateRangePicker
                   label="তারিখ"
                   locale="en-US"
                   onStartDateChange={(date) => {
-                    // Updating formData with the selected start date
                     setFormData((prevData) => ({
                       ...prevData,
                       startDate: date,
                     }));
                   }}
                   onEndDateChange={(date) => {
-                    // Updating formData with the selected end date
                     setFormData((prevData) => ({ ...prevData, endDate: date }));
                   }}
                 />
@@ -460,7 +447,7 @@ const WorkTypeShow = () => {
             backgroundColor: "#FFFFFF",
             display: "flex",
             flex: 1,
-            borderRadius:"12px"
+            borderRadius: "12px",
           }}
         >
           {/* left side */}
@@ -535,7 +522,6 @@ const WorkTypeShow = () => {
                           <td style={{ color: "#6C6C6C" }}>
                             {convertToBangla(item.totalworks)}
                           </td>
-                          {/* <td style={{ color: "#6C6C6C" }}>{item.role}</td> */}
 
                           <td>
                             <FaLongArrowAltRight
@@ -599,21 +585,23 @@ const WorkTypeShow = () => {
                           style={{
                             borderRadius: "16px",
                             backgroundColor: "#fff",
-                            border: "1px solid #ddd", // Adjust border color for a lighter appearance
-                            marginBottom: "15px", // Add margin between cards for better separation
-                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", // Soft shadow for better emphasis
+                            border: "1px solid #ddd",
+                            marginBottom: "15px",
+                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                           }}
                         >
-                          <div className="card-body p-3" style={{borderRadius:"14px",}}> 
+                          <div
+                            className="card-body p-3"
+                            style={{ borderRadius: "14px" }}
+                          >
                             <div className="d-flex align-items-center">
-                              {/* Profile Icon Section */}
                               <div
                                 className="d-flex justify-content-center align-items-center me-3"
                                 style={{
                                   width: "36px",
                                   height: "36px",
                                   borderRadius: "50%",
-                                  
+
                                   backgroundColor: "#f0f1ff",
                                 }}
                               >
@@ -628,7 +616,6 @@ const WorkTypeShow = () => {
                                 </svg>
                               </div>
 
-                              {/* Work Type and Time Section */}
                               <div className="flex-grow-1">
                                 <div
                                   className="fw-medium"
@@ -661,7 +648,7 @@ const WorkTypeShow = () => {
                       ))}
                     </tbody>
                   </table>
-                ) : ( 
+                ) : (
                   <div
                     style={{
                       textAlign: "center",
@@ -672,7 +659,7 @@ const WorkTypeShow = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    Choose which person work you want to view 
+                    Choose which person work you want to view
                   </div>
                 )}
               </div>
@@ -691,19 +678,18 @@ const WorkTypeShow = () => {
         <div
           className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
           style={{
-            width: "70%", // Set the width of the modal to 70%
-            height: "70%", // Set the height of the modal to 70%
-            maxHeight: "90vh", // Ensure the modal's height doesn't exceed 90% of the viewport
-            maxWidth: "60vw", // Ensure the modal's height doesn't exceed 90% of the viewport
-            marginLeft: "auto", // Center the modal horizontally
-            marginRight: "auto", // Center the modal horizontally
+            width: "70%",
+            height: "70%",
+            maxHeight: "90vh",
+            maxWidth: "60vw",
+            marginLeft: "auto",
+            marginRight: "auto",
           }}
         >
           <div className="modal-content" style={{ padding: "30px" }}>
             <div className="modal-header">
               <h5 className="modal-title" id="officerModalLabel">
                 {/* Modal Title */}
-                
               </h5>
               <button
                 type="button"
@@ -724,19 +710,17 @@ const WorkTypeShow = () => {
                       {item.work_field}
                     </label>
 
-                    {/* Check if the work_field is 'ছবি' and render image accordingly */}
                     {item.work_field === "ছবি" ? (
                       <img
-                        src={`${import.meta.env.REACT_APP_BASE_URL}/uploads/${
-                          item.value.split("/").pop()
-                        }`}
-                        // src={item.value}
+                        src={`${
+                          import.meta.env.REACT_APP_BASE_URL
+                        }/uploads/${item.value.split("/").pop()}`}
                         alt={item.work_field}
                         style={{
                           width: "150px",
                           height: "150px",
                           objectFit: "cover",
-                        }} // Adjust image size
+                        }}
                       />
                     ) : (
                       <p>{item.value}</p>

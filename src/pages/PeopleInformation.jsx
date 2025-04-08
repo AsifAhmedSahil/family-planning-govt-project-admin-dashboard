@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import Header from "../Components/Header";
-import { 
-  // FaRegEye, 
-  FaEdit } from "react-icons/fa";
+import {
+  // FaRegEye,
+  FaEdit,
+} from "react-icons/fa";
 // import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Swal from "sweetalert2";
@@ -13,8 +14,8 @@ import Papa from "papaparse"; // Library for CSV parsing
 import * as XLSX from "xlsx"; // Library for Excel file parsing
 import toast from "react-hot-toast";
 
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import 'bootstrap'; // Import Bootstrap JS (includes Popper.js)
+import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
+import "bootstrap"; // Import Bootstrap JS (includes Popper.js)
 
 const PeopleInformation = () => {
   // const navigate = useNavigate();
@@ -51,7 +52,7 @@ const PeopleInformation = () => {
     unit: null, // ID filter
     search: "",
   });
-  console.log(employeeToUpdate)
+  console.log(employeeToUpdate);
 
   const [uploadedData, setUploadedData] = useState([]);
   const [tab, setTab] = useState("individual");
@@ -468,7 +469,6 @@ const PeopleInformation = () => {
           if (imageResponse.ok) {
             const imageResult = await imageResponse.json();
             console.log("Employee image updated successfully:", imageResult);
-            
           } else {
             const errorResult = await imageResponse.json();
             console.error("Error updating image:", errorResult);
@@ -487,20 +487,17 @@ const PeopleInformation = () => {
           nid: "",
           address: "",
           image: null,
-        })
-        // Optionally, refresh employee list or update UI
-        fetchEmployees(); // Refresh employee list or UI
+        });
+
+        fetchEmployees();
         const closeButton = document.querySelector('[data-bs-dismiss="modal"]');
-        closeButton.click(); // Simulate a click to close the modal
-        
+        closeButton.click();
       } else {
         const errorResult = await employeeDetailsResponse.json();
         console.error("Error updating employee details:", errorResult);
-        // Handle the error result (e.g., show an error message to the user)
       }
     } catch (error) {
       console.error("Error:", error);
-      // Handle the error (e.g., show a message to the user)
     }
   };
 
@@ -534,7 +531,7 @@ const PeopleInformation = () => {
   const handleDeleteConfirmation = (id) => {
     Swal.fire({
       title: "আপনি কি নিশ্চিত?",
-      // text: "You won't be able to revert this!",
+
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -580,14 +577,13 @@ const PeopleInformation = () => {
 
     console.log(files);
 
-    // Check if a file is selected
     if (files && files[0]) {
       setEmployeeToUpdate({
         ...employeeToUpdate,
-        [id]: files[0], // Add the file to the state
+        [id]: files[0],
       });
       console.log("Selected image:", files[0]);
-      console.log(employeeToUpdate); // Log the selected file to ensure it's being picked up
+      console.log(employeeToUpdate);
     } else {
       console.log("No file selected");
     }
@@ -596,20 +592,18 @@ const PeopleInformation = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setLoading(true); // Show loading spinner
-      setError(null); // Reset error
+      setLoading(true);
+      setError(null);
       if (file.type === "text/csv") {
-        // Handle CSV file
         parseCsvFile(file);
       } else if (
         file.type === "application/vnd.ms-excel" ||
         file.type ===
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       ) {
-        // Handle Excel file
         parseExcelFile(file);
       } else {
-        setLoading(false); // Hide loading spinner
+        setLoading(false);
         setError("Please upload a valid CSV or Excel file.");
       }
     }
@@ -620,11 +614,11 @@ const PeopleInformation = () => {
       complete: (result) => {
         console.log("CSV data:", result);
         if (result.data.length === 0) {
-          setLoading(false); // Hide loading spinner
+          setLoading(false);
           setError("No data found in the CSV file.");
         } else {
-          setUploadedData(result.data); // Set the uploaded data to state
-          setLoading(false); // Hide loading spinner
+          setUploadedData(result.data);
+          setLoading(false);
         }
       },
       header: true,
@@ -636,27 +630,25 @@ const PeopleInformation = () => {
     reader.onload = (e) => {
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0]; // Get the first sheet
+      const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(sheet); // Convert sheet to JSON
+      const jsonData = XLSX.utils.sheet_to_json(sheet);
       console.log("Excel data:", jsonData);
       if (jsonData.length === 0) {
-        setLoading(false); // Hide loading spinner
+        setLoading(false);
         setError("No data found in the Excel file.");
       } else {
-        setUploadedData(jsonData); // Set the uploaded data to state
-        setLoading(false); // Hide loading spinner
+        setUploadedData(jsonData);
+        setLoading(false);
       }
     };
-    reader.readAsArrayBuffer(file); // Read the file as an array buffer
+    reader.readAsArrayBuffer(file);
   };
 
   const handleBulkSubmit = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem("authToken");
-    // const formDataToSend = new FormData();
-    // formDataToSend.append("employees", JSON.stringify(uploadedData));
 
     try {
       const response = await fetch(
@@ -678,15 +670,13 @@ const PeopleInformation = () => {
         setUploadedData([]);
         toast.success("All Employee registered successfully");
         const closeButton = document.querySelector('[data-bs-dismiss="modal"]');
-        closeButton.click(); // Simulate a click to close the modal
+        closeButton.click();
       } else {
         const errorResult = await response.json();
         console.error("Error:", errorResult);
-        // Optionally, display an error message to the user
       }
     } catch (error) {
       console.error("Error:", error);
-      // Optionally, display an error message to the user
     }
   };
 
@@ -1125,14 +1115,7 @@ const PeopleInformation = () => {
                             >
                               জেলা
                             </label>
-                            {/* <input
-                              type="text"
-                              id="district"
-                              value={formData.district}
-                              onChange={handleInputChange}
-                              className="form-control"
-                              placeholder="Enter District"
-                            /> */}
+
                             <select
                               name="district"
                               className="form-select"
@@ -1256,7 +1239,7 @@ const PeopleInformation = () => {
                           className="form-control"
                           id="fileUpload"
                           accept=".csv, .xlsx, .xls"
-                          onChange={handleFileChange} // Handle the file change event
+                          onChange={handleFileChange}
                         />
                       </div>
                       {loading && <div>Loading...</div>}
@@ -1314,7 +1297,7 @@ const PeopleInformation = () => {
                           style={{ backgroundColor: "#13007D" }}
                           onClick={handleBulkSubmit}
                         >
-                           কর্মকর্তা যোগ করুন
+                          কর্মকর্তা যোগ করুন
                         </button>
                       </div>
                     </form>

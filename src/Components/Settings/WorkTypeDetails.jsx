@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import Header from "../Header";
 import Select from "react-select";
@@ -18,7 +19,7 @@ const WorkTypeDetails = () => {
     DropdownMenu: "",
   });
 
-  console.log(formData.work_type_id)
+  console.log(formData.work_type_id);
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -106,9 +107,9 @@ const WorkTypeDetails = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body:JSON.stringify({
-            work_type_id:formData.work_type_id
-          })
+          body: JSON.stringify({
+            work_type_id: formData.work_type_id,
+          }),
         }
       );
 
@@ -124,13 +125,12 @@ const WorkTypeDetails = () => {
     }
   };
 
-  console.log(allWorkField)
+  console.log(allWorkField);
 
   useEffect(() => {
     fetchWorkType();
     fetchWorkField();
   }, [formData.work_type_id]);
-
 
   console.log(allWorkField);
 
@@ -235,7 +235,6 @@ const WorkTypeDetails = () => {
   const handleUpdate = async () => {
     const { field_id, work_type_id, field, field_type } = workTypeToUpdate;
     console.log(workTypeToUpdate);
-   
 
     const requestBody = {
       field_id,
@@ -257,12 +256,12 @@ const WorkTypeDetails = () => {
           body: JSON.stringify(requestBody),
         }
       );
-      
+
       const result = await response.json();
 
       if (response.ok) {
         setShowUpdateModal(false);
-        toast.success(" updated successfully")
+        toast.success(" updated successfully");
         fetchWorkField();
       } else {
         alert(result.message || "Error updating work field");
@@ -335,7 +334,7 @@ const WorkTypeDetails = () => {
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <form onSubmit={handleSubmit}>
             <div className="row">
-            <div className="col-md-3 d-flex flex-column mb-3">
+              <div className="col-md-3 d-flex flex-column mb-3">
                 <label
                   className="mb-2 text-[16px]"
                   style={{ color: "#323232" }}
@@ -374,14 +373,14 @@ const WorkTypeDetails = () => {
                   onChange={handleWorkTypeDetailsChange}
                 />
               </div>
-              
+
               <div className="col-md-3 d-flex flex-column mb-3">
                 <label>Select a Type</label>
                 <select
                   value={formData.field_type}
                   onChange={handleTypeChange}
                   className="form-control"
-                  style={{  marginTop: "10px" }}
+                  style={{ marginTop: "10px" }}
                 >
                   {typeOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -389,9 +388,8 @@ const WorkTypeDetails = () => {
                     </option>
                   ))}
                 </select>
-                
               </div>
-              
+
               <div className="col-md-3 d-flex flex-column mb-3">
                 <label className="mb-2 text-[16px]"></label>
                 <button
@@ -404,43 +402,43 @@ const WorkTypeDetails = () => {
                 </button>
               </div>
               {formData.field_type === "dropdown" && (
-                  <div className="row">
-                    <div className="col-md-8">
-                      <label htmlFor="multiInput" className="form-label">
-                        Add Multiple Values
-                      </label>
-                      <div className="input-group mb-3">
-                        <input
-                          type="text"
-                          id="multiInput"
-                          className="form-control"
-                          placeholder="Type and press Enter to add"
-                          value={inputValue}
-                          onChange={handleInputChange}
-                          onKeyPress={handleKeyPress}
-                        />
-                      </div>
+                <div className="row">
+                  <div className="col-md-8">
+                    <label htmlFor="multiInput" className="form-label">
+                      Add Multiple Values
+                    </label>
+                    <div className="input-group mb-3">
+                      <input
+                        type="text"
+                        id="multiInput"
+                        className="form-control"
+                        placeholder="Type and press Enter to add"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyPress={handleKeyPress}
+                      />
+                    </div>
 
-                      <div className="selected-values mt-2">
-                        {selectedValues.map((value, index) => (
-                          <span
-                            key={index}
-                            className="badge bg-primary me-2 mb-2 p-2"
-                          >
-                            {value}
-                            <button
-                              type="button"
-                              className="btn-close btn-close-white ms-2"
-                              style={{ fontSize: "0.5rem" }}
-                              onClick={() => removeValue(value)}
-                              aria-label="Remove"
-                            ></button>
-                          </span>
-                        ))}
-                      </div>
+                    <div className="selected-values mt-2">
+                      {selectedValues.map((value, index) => (
+                        <span
+                          key={index}
+                          className="badge bg-primary me-2 mb-2 p-2"
+                        >
+                          {value}
+                          <button
+                            type="button"
+                            className="btn-close btn-close-white ms-2"
+                            style={{ fontSize: "0.5rem" }}
+                            onClick={() => removeValue(value)}
+                            aria-label="Remove"
+                          ></button>
+                        </span>
+                      ))}
                     </div>
                   </div>
-                )}
+                </div>
+              )}
             </div>
           </form>
           {error && <div className="alert alert-danger mt-3">{error}</div>}

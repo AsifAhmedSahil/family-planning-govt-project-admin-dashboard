@@ -15,25 +15,22 @@ const Profile = () => {
 
   const [attendenceData, setAttendenceData] = useState([]);
 
-  // State for controlling active tab
   const [activeTab, setActiveTab] = useState("personal");
 
-  // State for password fields
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
   function getDateFromISOString(dateString) {
-    const date = new Date(dateString); // Parse the ISO string into a Date object
-    const year = date.getFullYear(); // Get the full year
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Get the month (0-based index, so add 1)
-    const day = String(date.getDate()).padStart(2, "0"); // Get the day
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
 
-    return `${year}-${month}-${day}`; // Format as "YYYY-MM-DD"
+    return `${year}-${month}-${day}`;
   }
 
-  
   const handleChangePassword = async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
     console.log("Old Password:", oldPassword);
     console.log("New Password:", newPassword);
     const token = localStorage.getItem("authToken");
@@ -82,8 +79,8 @@ const Profile = () => {
     const requestBody = {
       emp_id: user?.emp_id,
 
-      startDate: getDateFromISOString(startDate), // Send startDate as ISO string
-      endDate: getDateFromISOString(endDate), // Send endDate as ISO string
+      startDate: getDateFromISOString(startDate),
+      endDate: getDateFromISOString(endDate),
     };
 
     try {
@@ -112,10 +109,9 @@ const Profile = () => {
     }
   };
 
-  // Trigger API call when filter is changed
   useEffect(() => {
     if (formData.startDate && formData.endDate) {
-      fetchAttendance(); // Call the API when the formData is updated and both dates are set
+      fetchAttendance();
     }
   }, [formData]);
 
@@ -197,14 +193,12 @@ const Profile = () => {
                         label="তারিখ"
                         locale="en-US"
                         onStartDateChange={(date) => {
-                          // Updating formData with the selected start date
                           setFormData((prevData) => ({
                             ...prevData,
                             startDate: date,
                           }));
                         }}
                         onEndDateChange={(date) => {
-                          // Updating formData with the selected end date
                           setFormData((prevData) => ({
                             ...prevData,
                             endDate: date,
@@ -289,13 +283,7 @@ const Profile = () => {
                               </thead>
                               <tbody>
                                 {attendenceData?.map((item, index) => (
-                                  <tr
-                                    key={index}
-                                    //   onClick={() =>
-                                    //     handleRowClick(item.attendanceDetails, item.name)
-                                    //   }
-                                    style={{ cursor: "pointer" }}
-                                  >
+                                  <tr key={index} style={{ cursor: "pointer" }}>
                                     <td style={{ color: "#6C6C6C" }}>
                                       {getDateFromISOString(item.date)}
                                     </td>
@@ -382,15 +370,15 @@ const styles = {
     padding: "20px",
     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
     textAlign: "center",
-    border: "1px solid #ddd", // Subtle border for a cleaner look
+    border: "1px solid #ddd",
   },
   profileImg: {
     width: "150px",
     height: "150px",
     objectFit: "cover",
     borderRadius: "50%",
-    border: "5px solid #333", // Black border around profile image
-    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)", // Slight shadow to pop the image
+    border: "5px solid #333",
+    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
     marginTop: "20px",
     marginBottom: "20px",
   },
@@ -400,12 +388,12 @@ const styles = {
   cardTitle: {
     fontSize: "2rem",
     fontWeight: "bold",
-    color: "#333", // Dark text for contrast
+    color: "#333",
     marginBottom: "10px",
   },
   cardText: {
     fontSize: "1.2rem",
-    color: "#555", // Lighter gray for the role to differentiate from the name
+    color: "#555",
     marginBottom: "20px",
   },
   tabList: {
@@ -455,12 +443,12 @@ const styles = {
     width: "50%",
     padding: "10px",
     borderRadius: "5px",
-    border: "1px solid #d3d3d3", // Light gray border
+    border: "1px solid #d3d3d3",
     marginBottom: "15px",
-    outline: "none", // Remove the outline when the input is focused
+    outline: "none",
     fontSize: "1rem",
-    backgroundColor: "#f4f4f4", // Light background for input fields
-    transition: "border-color 0.3s ease", // Smooth transition for border color change
+    backgroundColor: "#f4f4f4",
+    transition: "border-color 0.3s ease",
   },
 
   button: {

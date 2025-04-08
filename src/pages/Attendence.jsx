@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Header from "../Components/Header";
 
 import Select from "react-select";
 import { useEffect, useState } from "react";
 
-import "react-datepicker/dist/react-datepicker.css"; // Importing DatePicker styles
+import "react-datepicker/dist/react-datepicker.css";
 
 import { CDateRangePicker } from "@coreui/react-pro";
 import "@coreui/coreui/dist/css/coreui.min.css";
@@ -25,8 +26,8 @@ const Attendence = () => {
     upazila_name: "",
     union_name: "",
     unit_name: "",
-    startDate: null, // Store start date
-    endDate: null, // Store end date
+    startDate: null,
+    endDate: null,
   });
 
   const fetchDesignation = async () => {
@@ -207,7 +208,6 @@ const Attendence = () => {
       unit_name,
     } = formData;
 
-    // Ensure both startDate and endDate are selected
     if (!startDate || !endDate) {
       console.error("Start date and end date are mandatory!");
       return;
@@ -220,8 +220,8 @@ const Attendence = () => {
       union: union_name,
       unit: unit_name,
       search: "",
-      startDate: startDate.toISOString(), // Send startDate as ISO string
-      endDate: endDate.toISOString(), // Send endDate as ISO string
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
     };
 
     try {
@@ -241,7 +241,7 @@ const Attendence = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log(result); // Handle the response data here
+        console.log(result);
         setAttendenceData(result);
       } else {
         const errorResult = await response.json();
@@ -252,16 +252,13 @@ const Attendence = () => {
     }
   };
 
-  // Trigger API call when filter is changed
   useEffect(() => {
     if (formData.startDate && formData.endDate) {
-      fetchAttendance(); // Call the API when the formData is updated and both dates are set
+      fetchAttendance();
     }
   }, [formData]);
 
-  // Function to handle the row click event
   const handleRowClick = (attendanceDetails, name) => {
-    // Parse the attendanceDetails from JSON if it's a string
     setAttendanceDetails(JSON.parse(attendanceDetails));
     setEmployeeName(name);
   };
@@ -293,20 +290,17 @@ const Attendence = () => {
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <div className="row g-6">
             <div className="col-md-2 d-flex flex-column mb-3">
-              {/* <label className="mb-2 text-[16px]">তারিখ</label> */}
               <div>
                 <CDateRangePicker
                   label="তারিখ"
                   locale="en-US"
                   onStartDateChange={(date) => {
-                    // Updating formData with the selected start date
                     setFormData((prevData) => ({
                       ...prevData,
                       startDate: date,
                     }));
                   }}
                   onEndDateChange={(date) => {
-                    // Updating formData with the selected end date
                     setFormData((prevData) => ({ ...prevData, endDate: date }));
                   }}
                 />
@@ -400,7 +394,7 @@ const Attendence = () => {
             backgroundColor: "#FFFFFF",
             display: "flex",
             flex: 1,
-            borderRadius:"12px"
+            borderRadius: "12px",
           }}
         >
           {/* left side */}
@@ -475,7 +469,6 @@ const Attendence = () => {
                           <td style={{ color: "#6C6C6C" }}>
                             {convertToBangla(item.totalPresentDays)}
                           </td>
-                          {/* <td style={{ color: "#6C6C6C" }}>{item.role}</td> */}
 
                           <td>
                             <FaLongArrowAltRight
@@ -602,14 +595,6 @@ const Attendence = () => {
                           <td style={{ color: "#6C6C6C" }}>{item.in_time}</td>
                           <td style={{ color: "#6C6C6C" }}>{item.out_time}</td>
                           <td style={{ color: "#6C6C6C" }}>{item.location}</td>
-
-                          {/* <td >
-                                    <RiDeleteBin6Line
-                                      onClick={() => handleDeleteConfirmation(item.userId)}
-                                      size={20}
-                                      style={{ color: "red", cursor: "pointer" }}
-                                    />
-                                  </td> */}
                         </tr>
                       ))}
                     </tbody>

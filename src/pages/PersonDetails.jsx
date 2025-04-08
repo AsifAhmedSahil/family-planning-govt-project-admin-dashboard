@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Header from "../Components/Header";
-import DatePicker from "react-datepicker"; // Import DatePicker component
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { SlLocationPin } from "react-icons/sl";
 import { FaRegTrashAlt } from "react-icons/fa";

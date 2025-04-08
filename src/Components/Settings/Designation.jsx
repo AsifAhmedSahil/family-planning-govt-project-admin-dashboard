@@ -220,8 +220,8 @@ const Designation = () => {
     console.log("Attendance Period updated successfully:", attendanceResult);
     await fetchAttendancePeriods();
     const closeButton = document.querySelector('[data-bs-dismiss="modal"]');
-        closeButton.click(); // Simulate a click to close the modal
-        toast.success("Attendance Period updated successfully")
+    closeButton.click(); // Simulate a click to close the modal
+    toast.success("Attendance Period updated successfully");
 
     // Optionally, reset the form or handle success feedback
     setEmployeeToUpdate({
@@ -262,6 +262,7 @@ const Designation = () => {
       setError(error.message); // Set error state if fetch fails
     }
   };
+  console.log(error);
 
   // Call fetchAttendancePeriods when the component mounts
   useEffect(() => {
@@ -538,7 +539,7 @@ const Designation = () => {
           <div className="modal-content" style={{ padding: "30px" }}>
             <div className="modal-header">
               <h5 className="modal-title" id="updateModalLabel">
-              পদবীর তথ্য আপডেট করুন
+                পদবীর তথ্য আপডেট করুন
               </h5>
               <button
                 type="button"
@@ -575,7 +576,9 @@ const Designation = () => {
                       উপস্থিতির সময়
                     </label>
                     <TimePicker
-                      onChange={(value) => handleTimeChangeUpdate("inTime", value)}
+                      onChange={(value) =>
+                        handleTimeChangeUpdate("inTime", value)
+                      }
                       value={employeeToUpdate.inTime}
                       className="form-control"
                     />
@@ -585,7 +588,9 @@ const Designation = () => {
                       প্রস্থানের সময়
                     </label>
                     <TimePicker
-                      onChange={(value) => handleTimeChangeUpdate("outTime", value)}
+                      onChange={(value) =>
+                        handleTimeChangeUpdate("outTime", value)
+                      }
                       value={employeeToUpdate.outTime}
                       className="form-control"
                     />
