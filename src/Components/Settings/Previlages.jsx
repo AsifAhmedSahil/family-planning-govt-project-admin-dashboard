@@ -153,6 +153,7 @@ const Previleges = () => {
           backgroundColor: "#FFFFFF",
           display: "flex",
           flex: 1,
+          marginTop:"15px"
         }}
       >
         <form

@@ -214,7 +214,9 @@ const Registration = () => {
         style={{
           backgroundColor: "#FFFFFF",
           display: "flex",
-          flex: 1,
+          flex: 1
+          ,marginTop:"15px",
+          borderRadius:"12px"
         }}
       >
         <form

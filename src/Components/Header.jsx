@@ -1,38 +1,32 @@
 /* eslint-disable react/prop-types */
-import {  useState } from "react";
+import { useState } from "react";
 
-import "bootstrap/dist/css/bootstrap.min.css"; 
+import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
-import {  useUser } from "../context/UserProvider";
+import { useUser } from "../context/UserProvider";
 
 const Header = ({ title }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const navigate = useNavigate()
-  const {user} = useUser()
-
-  
-
+  const navigate = useNavigate();
+  const { user } = useUser();
 
   const handleImageClick = () => {
-    setDropdownOpen(!dropdownOpen); 
+    setDropdownOpen(!dropdownOpen);
   };
 
-  
   const handleLogout = () => {
-    console.log("Logged out"); 
-    localStorage.removeItem("authToken")
-    navigate("/login")
-    setDropdownOpen(false); 
+    console.log("Logged out");
+    localStorage.removeItem("authToken");
+    navigate("/login");
+    setDropdownOpen(false);
   };
 
-  const handleProfileSection = () =>{
-    navigate("/profile")
-  }
-
-  
+  const handleProfileSection = () => {
+    navigate("/profile");
+  };
 
   return (
-    <div className="header d-flex justify-content-between align-items-center bg-light position-relative">
+    <div className="header d-flex justify-content-between align-items-center bg-light position-relative ">
       <div className="mb-2">
         <h1 className="h3 ">{title}</h1>
         <span style={{ color: "#565656" }}>
@@ -42,8 +36,12 @@ const Header = ({ title }) => {
 
       <div className="user-info d-flex align-items-center gap-2 position-relative">
         <div>
-          <p className="mb-0 " style={{fontWeight:"bold",fontSize:"18px"}}>{user?.name}</p>
-          <p className="mb-0" style={{textAlign:"right"}}>{user?.designation}</p>
+          <p className="mb-0 " style={{ fontWeight: "bold", fontSize: "18px" }}>
+            {user?.name}
+          </p>
+          <p className="mb-0" style={{ textAlign: "right" }}>
+            {user?.designation}
+          </p>
         </div>
         <div>
           <img

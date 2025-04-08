@@ -329,7 +329,7 @@ const WorkTypeDetails = () => {
       <Header title={"কাজের ক্ষেত্রের বিবরনী"} />
       <div
         className="dashboard p-3"
-        style={{ backgroundColor: "#FFFFFF", borderRadius: "15px" }}
+        style={{ backgroundColor: "#FFFFFF", borderRadius: "15px" ,marginTop:"15px"}}
       >
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <form onSubmit={handleSubmit}>
