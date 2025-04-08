@@ -203,7 +203,7 @@ const Notice = () => {
   return (
     <div>
       <Header title={"নোটিশ"} />
-      <div style={{ display: "flex", marginTop: "50px" }}>
+      <div style={{ display: "flex", marginTop: "30px" }}>
         {/* Left Section */}
         <form
           onSubmit={handleSubmit}

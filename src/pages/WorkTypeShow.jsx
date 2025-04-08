@@ -460,6 +460,7 @@ const WorkTypeShow = () => {
             backgroundColor: "#FFFFFF",
             display: "flex",
             flex: 1,
+            borderRadius:"12px"
           }}
         >
           {/* left side */}
@@ -603,7 +604,7 @@ const WorkTypeShow = () => {
                             boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", // Soft shadow for better emphasis
                           }}
                         >
-                          <div className="card-body p-3">
+                          <div className="card-body p-3" style={{borderRadius:"14px",}}> 
                             <div className="d-flex align-items-center">
                               {/* Profile Icon Section */}
                               <div
@@ -612,6 +613,7 @@ const WorkTypeShow = () => {
                                   width: "36px",
                                   height: "36px",
                                   borderRadius: "50%",
+                                  
                                   backgroundColor: "#f0f1ff",
                                 }}
                               >
@@ -659,7 +661,7 @@ const WorkTypeShow = () => {
                       ))}
                     </tbody>
                   </table>
-                ) : (
+                ) : ( 
                   <div
                     style={{
                       textAlign: "center",
@@ -670,7 +672,7 @@ const WorkTypeShow = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    Choose which person attendence you want to view
+                    Choose which person work you want to view 
                   </div>
                 )}
               </div>

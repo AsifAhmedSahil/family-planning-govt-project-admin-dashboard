@@ -400,6 +400,7 @@ const Attendence = () => {
             backgroundColor: "#FFFFFF",
             display: "flex",
             flex: 1,
+            borderRadius:"12px"
           }}
         >
           {/* left side */}

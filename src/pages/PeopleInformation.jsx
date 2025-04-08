@@ -1008,7 +1008,7 @@ const PeopleInformation = () => {
 
                         <div className="row g-5">
                           {/* Employee ID */}
-                          <div className="col-md-2 d-flex flex-column mb-3">
+                          <div className="col-md-3 d-flex flex-column mb-3">
                             <label
                               className="mb-2 text-[16px]"
                               style={{ color: "#323232" }}
@@ -1060,7 +1060,7 @@ const PeopleInformation = () => {
                           </div>
 
                           {/* National ID */}
-                          <div className="col-md-2 d-flex flex-column mb-3">
+                          <div className="col-md-3 d-flex flex-column mb-3">
                             <label
                               className="mb-2 text-[16px]"
                               style={{ color: "#323232" }}
@@ -1248,7 +1248,7 @@ const PeopleInformation = () => {
                     <form>
                       {/* File Upload Input */}
                       <div className="mb-3">
-                        <label htmlFor="fileUpload" className="form-label">
+                        <label htmlFor="fileUpload" className="form-label mt-3">
                           Upload CSV/Excel File
                         </label>
                         <input
@@ -1266,7 +1266,7 @@ const PeopleInformation = () => {
 
                       {/* Display Uploaded Data */}
                       <div className="mt-4">
-                        <h5>Uploaded Data:</h5>
+                        <h6>Uploaded Data:</h6>
                         <table className="table table-bordered">
                           <thead>
                             <tr>
@@ -1314,7 +1314,7 @@ const PeopleInformation = () => {
                           style={{ backgroundColor: "#13007D" }}
                           onClick={handleBulkSubmit}
                         >
-                          Add All Officers
+                           কর্মকর্তা যোগ করুন
                         </button>
                       </div>
                     </form>
