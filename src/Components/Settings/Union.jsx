@@ -381,13 +381,13 @@ const Union = () => {
                     <td>
                       <RiDeleteBin6Line
                         onClick={() => handleDeleteConfirmation(item.id)}
-                        size={30}
+                        size={20}
                         style={{ color: "red", cursor: "pointer" }}
                       />
                     </td>
                     <td>
                       <RiEdit2Line
-                        size={30}
+                        size={20}
                         style={{ color: "blue", cursor: "pointer" }}
                         onClick={() =>
                           handleUpdateConfirmation(
