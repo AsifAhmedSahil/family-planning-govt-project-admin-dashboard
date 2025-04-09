@@ -42,8 +42,10 @@ const PeopleInformation = () => {
     mobile: "",
     nid: "",
     address: "",
-    image: null,
+    // image: null
+    
   });
+  console.log(employeeToUpdate)
   const [filterData, setFilterData] = useState({
     designation: "", // String filter
     district: null, // ID filter
@@ -56,6 +58,8 @@ const PeopleInformation = () => {
 
   const [uploadedData, setUploadedData] = useState([]);
   const [tab, setTab] = useState("individual");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const convertToBangla = (number) => {
     const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -407,99 +411,106 @@ const PeopleInformation = () => {
     }
   };
 
-  const handleUpdateFormSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Update Form Data:", employeeToUpdate.image);
+ const handleUpdateFormSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    const token = localStorage.getItem("authToken");
-    console.log(token);
+  const token = localStorage.getItem("authToken");
+  console.log(token);
 
-    try {
-      // First, update employee details (excluding image)
-      const employeeDetailsResponse = await fetch(
-        `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-employee`, // Ensure this URL is correct
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            emp_id: employeeToUpdate.emp_id,
-            designation_id: employeeToUpdate.designation_id,
-            name: employeeToUpdate.name,
-            mobile: employeeToUpdate.mobile,
-            nid: employeeToUpdate.nid,
-            address: employeeToUpdate.address,
-          }),
-        }
-      );
-
-      console.log(employeeDetailsResponse);
-
-      if (employeeDetailsResponse.ok) {
-        const result = await employeeDetailsResponse.json();
-        console.log(result);
-        console.log("Employee details updated successfully:", result);
-
-        if (employeeToUpdate.image) {
-          const formData = new FormData();
-          formData.append("image", employeeToUpdate.image);
-
-          // Ensure this is a File object (e.g., from a file input)
-          for (let [key, value] of formData.entries()) {
-            console.log(key, value);
-          }
-
-          const imageResponse = await fetch(
-            `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-image/${
-              employeeToUpdate.emp_id
-            }`,
-            {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              body: formData,
-            }
-          );
-
-          console.log(imageResponse, "****");
-
-          if (imageResponse.ok) {
-            const imageResult = await imageResponse.json();
-            console.log("Employee image updated successfully:", imageResult);
-          } else {
-            const errorResult = await imageResponse.json();
-            console.error("Error updating image:", errorResult);
-          }
-        }
-
-        setEmployeeToUpdate({
-          emp_id: "",
-          designation_id: "",
-          district: "চট্টগ্রাম",
-          upazila_id: "",
-          union_id: "",
-          unit_id: "",
-          name: "",
-          mobile: "",
-          nid: "",
-          address: "",
-          image: null,
-        });
-
-        fetchEmployees();
-        const closeButton = document.querySelector('[data-bs-dismiss="modal"]');
-        closeButton.click();
-      } else {
-        const errorResult = await employeeDetailsResponse.json();
-        console.error("Error updating employee details:", errorResult);
+  try {
+    // First, update the employee details without considering the image
+    const employeeDetailsResponse = await fetch(
+      `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-employee`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emp_id: employeeToUpdate.emp_id,
+          designation_id: employeeToUpdate.designation_id,
+          name: employeeToUpdate.name,
+          mobile: employeeToUpdate.mobile,
+          nid: employeeToUpdate.nid,
+          address: employeeToUpdate.address,
+        }),
       }
-    } catch (error) {
-      console.error("Error:", error);
+    );
+
+    console.log(employeeDetailsResponse);
+
+    if (employeeDetailsResponse.ok) {
+      const result = await employeeDetailsResponse.json();
+      console.log(result);
+      console.log("Employee details updated successfully:", result);
+
+      // Check if there's an image provided for update
+      // if (employeeToUpdate.image && employeeToUpdate.image !== null) {
+      //   const formData = new FormData();
+      //   formData.append("image", employeeToUpdate.image);
+
+      //   // Ensure the image is a valid File object (e.g., from a file input)
+      //   for (let [key, value] of formData.entries()) {
+      //     console.log(key, value);
+      //   }
+
+      //   const imageResponse = await fetch(
+      //     `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-image/${employeeToUpdate.emp_id}`,
+      //     {
+      //       method: "POST",
+      //       headers: {
+      //         Authorization: `Bearer ${token}`,
+      //       },
+      //       body: formData,
+      //     }
+      //   );
+
+      //   console.log(imageResponse, "****");
+
+      //   if (imageResponse.ok) {
+      //     const imageResult = await imageResponse.json();
+      //     console.log("Employee image updated successfully:", imageResult);
+      //   } else {
+      //     const errorResult = await imageResponse.json();
+      //     console.error("Error updating image:", errorResult);
+      //   }
+      // }
+
+      // Clear the employee update form state (reset the image too)
+      setEmployeeToUpdate({
+        emp_id: "",
+        designation_id: "",
+        district: "চট্টগ্রাম",
+        upazila_id: "",
+        union_id: "",
+        unit_id: "",
+        name: "",
+        mobile: "",
+        nid: "",
+        address: "",
+        // image: null, // Reset the image
+      });
+
+      // Fetch the updated list of employees and show success toast
+      fetchEmployees();
+      toast.success("Update successfully");
+
+      // Close the modal and stop loading
+      setLoading(false);
+      setIsModalOpen(false);
+    } else {
+      const errorResult = await employeeDetailsResponse.json();
+      console.error("Error updating employee details:", errorResult);
+      setLoading(false);
     }
-  };
+  } catch (error) {
+    console.error("Error:", error);
+    setLoading(false);
+  }
+};
+
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem("authToken");
@@ -572,22 +583,60 @@ const PeopleInformation = () => {
       [id]: files[0],
     });
   };
-  const handleImageUpdateChange = (e) => {
-    const { id, files } = e.target;
+  const [employeeImage, setEmployeeImage] = useState(null);
 
-    console.log(files);
+  // const [loading, setLoading] = useState(false);
 
-    if (files && files[0]) {
-      setEmployeeToUpdate({
-        ...employeeToUpdate,
-        [id]: files[0],
-      });
-      console.log("Selected image:", files[0]);
-      console.log(employeeToUpdate);
-    } else {
-      console.log("No file selected");
+  // This effect will run when employeeImage changes
+  useEffect(() => {
+    if (employeeImage) {
+      // Call the function to handle the image update when the image is updated
+      handleImageUpdate();
+    }
+  }, [employeeImage]); // Runs when employeeImage state changes
+
+  // Function to handle image update
+  const handleImageUpdate = async () => {
+    if (!employeeImage) return; // If no image is set, don't attempt to update
+
+    const token = localStorage.getItem("authToken");
+
+    const formData = new FormData();
+    formData.append("image", employeeImage);
+
+    try {
+      const imageResponse = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-image/${employeeToUpdate.emp_id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (imageResponse.ok) {
+        const imageResult = await imageResponse.json();
+        console.log("Employee image updated successfully:", imageResult);
+        fetchEmployees()
+      } else {
+        const errorResult = await imageResponse.json();
+        console.error("Error updating image:", errorResult);
+      }
+    } catch (error) {
+      console.error("Error while updating image:", error);
     }
   };
+
+  // Function to handle file input change (image change)
+  const handleImageUpdateChange = (e) => {
+    const { files } = e.target;
+
+    if (files && files[0]) {
+      setEmployeeImage(files[0]); // Update the employeeImage state with the selected file
+    }
+  }; 
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -684,7 +733,7 @@ const PeopleInformation = () => {
   return (
     <div>
       <Header title={"কর্মকর্তার তথ্য"} />
-      <div className="dashboard p-3 " style={{ backgroundColor: "#FFFFFF" }}>
+      <div className="dashboard p-3 " style={{ backgroundColor: "#FFFFFF",marginTop:"15px",borderRadius:"12px" }}>
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <div className="row g-6 ">
             <div className="col-md-2 d-flex flex-column mb-3">
@@ -908,6 +957,7 @@ const PeopleInformation = () => {
                       <FaEdit
                         onClick={() => {
                           setEmployeeToUpdate(item);
+                          setIsModalOpen(true);
                         }}
                         data-bs-toggle="modal"
                         data-bs-target="#updateModal"
@@ -1310,239 +1360,252 @@ const PeopleInformation = () => {
       </div>
 
       {/* update modal */}
-      <div
-        className="modal fade"
+      {isModalOpen && (
+        <div
+        className="modal fade show"
         id="updateModal"
         tabIndex="-1"
         aria-labelledby="updateModalLabel"
         aria-hidden="true"
+        style={{ display: "block" }} // Ensures the modal is shown
       >
-        <div
-          className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
-          style={{
-            width: "90%",
-            height: "70%",
-            maxHeight: "90vh",
-            maxWidth: "70vw",
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
+        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+        style={{
+          width: "90%",
+          height: "70%",
+          maxHeight: "90vh",
+          maxWidth: "70vw",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
         >
           <div className="modal-content" style={{ padding: "30px" }}>
-            <div className="modal-header">
-              <h5 className="modal-title" id="updateModalLabel">
-                কর্মকর্তা তথ্য আপডেট করুন
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
+              <div className="modal-header">
+                <h5 className="modal-title" id="updateModalLabel">
+                  কর্মকর্তা তথ্য আপডেট করুন
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  onClick={() => setIsModalOpen(false)}
+                  aria-label="Close"
+                ></button>
+              </div>
 
-            <div className="filter mb-4" style={{ margin: "26px" }}>
-              <div className="row g-5 ">
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px] "
-                    style={{ color: "#323232" }}
-                  >
-                    আইডি
-                  </label>
-                  <input
-                    type="text"
-                    value={employeeToUpdate.emp_id}
-                    onChange={handleIdUpdateChange}
-                    className="form-control"
-                    // disabled
-                  />
-                </div>
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px] "
-                    style={{ color: "#323232" }}
-                  >
-                    পদবী
-                  </label>
-                  <Select
-                    options={designationOptions}
-                    value={designationOptions.find(
-                      (option) => option.id === employeeToUpdate.designation_id
-                    )}
-                    onChange={handleDesignationUpdateChange}
-                    isClearable
-                    placeholder="Select"
-                    getOptionValue={(option) => option.id}
-                    getOptionLabel={(option) => option.label}
-                  />
-                </div>
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px] "
-                    style={{ color: "#323232" }}
-                  >
-                    জেলা
-                  </label>
-                  <select
-                    name="district"
-                    className="form-select"
-                    value={employeeToUpdate.district}
-                    onChange={handleInputUpdateChange}
-                  >
-                    <option value="চট্টগ্রাম">চট্টগ্রাম</option>
-                  </select>
-                </div>
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px] "
-                    style={{ color: "#323232" }}
-                  >
-                    উপজেলা
-                  </label>
-                  <Select
-                    options={upazilaOptions}
-                    value={upazilaOptions.find(
-                      (option) => option.id === employeeToUpdate.upazila_id
-                    )}
-                    onChange={handleUpazilaUpdateChange}
-                    isClearable
-                    placeholder="Select upazila"
-                    getOptionValue={(option) => option.id}
-                    getOptionLabel={(option) => option.label}
-                  />
-                </div>
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px] "
-                    style={{ color: "#323232" }}
-                  >
-                    ইউনিয়ন
-                  </label>
-                  <Select
-                    options={unionOptions}
-                    value={unionOptions.find(
-                      (option) => option.id === employeeToUpdate.union_id
-                    )}
-                    onChange={handleUnionUpdateChange}
-                    isClearable
-                    placeholder="Select Union"
-                    getOptionValue={(option) => option.id}
-                    getOptionLabel={(option) => option.label}
-                  />
-                </div>
-                <div className="col-md-2 d-flex flex-column mb-3">
-                  <label
-                    className="mb-2 text-[16px]"
-                    style={{ color: "#323232" }}
-                  >
-                    ইউনিট
-                  </label>
-                  <Select
-                    options={unitOptions}
-                    value={unitOptions.find(
-                      (option) => option.id === employeeToUpdate.unit_id
-                    )}
-                    onChange={handleUnitUpdateChange}
-                    isClearable
-                    placeholder="Select unit"
-                    getOptionValue={(option) => option.id}
-                    getOptionLabel={(option) => option.label}
-                  />
+              <div className="filter mb-4" style={{ margin: "26px" }}>
+                <div className="row g-5 ">
+                  <div className="col-md-2 d-flex flex-column mb-3">
+                    <label
+                      className="mb-2 text-[16px] "
+                      style={{ color: "#323232" }}
+                    >
+                      আইডি
+                    </label>
+                    <input
+                      type="text"
+                      value={employeeToUpdate.emp_id}
+                      onChange={handleIdUpdateChange}
+                      className="form-control"
+                      // disabled
+                    />
+                  </div>
+                  <div className="col-md-2 d-flex flex-column mb-3">
+                    <label
+                      className="mb-2 text-[16px] "
+                      style={{ color: "#323232" }}
+                    >
+                      পদবী
+                    </label>
+                    <Select
+                      options={designationOptions}
+                      value={designationOptions.find(
+                        (option) =>
+                          option.id === employeeToUpdate.designation_id
+                      )}
+                      onChange={handleDesignationUpdateChange}
+                      isClearable
+                      placeholder="Select"
+                      getOptionValue={(option) => option.id}
+                      getOptionLabel={(option) => option.label}
+                    />
+                  </div>
+                  <div className="col-md-2 d-flex flex-column mb-3">
+                    <label
+                      className="mb-2 text-[16px] "
+                      style={{ color: "#323232" }}
+                    >
+                      জেলা
+                    </label>
+                    <select
+                      name="district"
+                      className="form-select"
+                      value={employeeToUpdate.district}
+                      onChange={handleInputUpdateChange}
+                    >
+                      <option value="চট্টগ্রাম">চট্টগ্রাম</option>
+                    </select>
+                  </div>
+                  <div className="col-md-2 d-flex flex-column mb-3">
+                    <label
+                      className="mb-2 text-[16px] "
+                      style={{ color: "#323232" }}
+                    >
+                      উপজেলা
+                    </label>
+                    <Select
+                      options={upazilaOptions}
+                      value={upazilaOptions.find(
+                        (option) => option.id === employeeToUpdate.upazila_id
+                      )}
+                      onChange={handleUpazilaUpdateChange}
+                      isClearable
+                      placeholder="Select upazila"
+                      getOptionValue={(option) => option.id}
+                      getOptionLabel={(option) => option.label}
+                    />
+                  </div>
+                  <div className="col-md-2 d-flex flex-column mb-3">
+                    <label
+                      className="mb-2 text-[16px] "
+                      style={{ color: "#323232" }}
+                    >
+                      ইউনিয়ন
+                    </label>
+                    <Select
+                      options={unionOptions}
+                      value={unionOptions.find(
+                        (option) => option.id === employeeToUpdate.union_id
+                      )}
+                      onChange={handleUnionUpdateChange}
+                      isClearable
+                      placeholder="Select Union"
+                      getOptionValue={(option) => option.id}
+                      getOptionLabel={(option) => option.label}
+                    />
+                  </div>
+                  <div className="col-md-2 d-flex flex-column mb-3">
+                    <label
+                      className="mb-2 text-[16px]"
+                      style={{ color: "#323232" }}
+                    >
+                      ইউনিট
+                    </label>
+                    <Select
+                      options={unitOptions}
+                      value={unitOptions.find(
+                        (option) => option.id === employeeToUpdate.unit_id
+                      )}
+                      onChange={handleUnitUpdateChange}
+                      isClearable
+                      placeholder="Select unit"
+                      getOptionValue={(option) => option.id}
+                      getOptionLabel={(option) => option.label}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div
-              className="modal-body"
-              style={{
-                maxHeight: "60vh",
-                overflowY: "auto",
-              }}
-            >
-              <form onSubmit={handleUpdateFormSubmit}>
-                <div className="row mb-3">
-                  <div className="col-md-4">
-                    <label htmlFor="name" className="form-label">
-                      কর্মকর্তা নাম
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="name"
-                      placeholder="কর্মকর্তার নাম লিখুন"
-                      value={employeeToUpdate.name}
-                      onChange={handleInputUpdateChange}
-                    />
+              <div
+                className="modal-body"
+                style={{
+                  maxHeight: "60vh",
+                  overflowY: "auto",
+                }}
+              >
+                <form onSubmit={handleUpdateFormSubmit}>
+                  <div className="row mb-3">
+                    <div className="col-md-4">
+                      <label htmlFor="name" className="form-label">
+                        কর্মকর্তা নাম
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="name"
+                        placeholder="কর্মকর্তার নাম লিখুন"
+                        value={employeeToUpdate.name}
+                        onChange={handleInputUpdateChange}
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <label htmlFor="mobile" className="form-label">
+                        মোবাইল
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="mobile"
+                        placeholder="কর্মকর্তার মোবাইল"
+                        value={employeeToUpdate.mobile}
+                        onChange={handleInputUpdateChange}
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <label htmlFor="nid" className="form-label">
+                        জাতীয় পরিচয়পত্র
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="nid"
+                        placeholder="কর্মকর্তার জাতীয় পরিচয়পত্র"
+                        value={employeeToUpdate.nid}
+                        onChange={handleInputUpdateChange}
+                      />
+                    </div>
                   </div>
-                  <div className="col-md-4">
-                    <label htmlFor="mobile" className="form-label">
-                      মোবাইল
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="mobile"
-                      placeholder="কর্মকর্তার মোবাইল"
-                      value={employeeToUpdate.mobile}
-                      onChange={handleInputUpdateChange}
-                    />
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <label htmlFor="address" className="form-label">
+                        ঠিকানা
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="address"
+                        placeholder="ঠিকানা লিখুন"
+                        value={employeeToUpdate.address}
+                        onChange={handleInputUpdateChange}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label htmlFor="image" className="form-label">
+                        ছবি
+                      </label>
+                      <input
+                        type="file"
+                        className="form-control"
+                        placeholder="সংযুক্ত করুন"
+                        // value={employeeToUpdate.image}
+                        id="image"
+                        onChange={handleImageUpdateChange}
+                      />
+                    </div>
                   </div>
-                  <div className="col-md-4">
-                    <label htmlFor="nid" className="form-label">
-                      জাতীয় পরিচয়পত্র
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="nid"
-                      placeholder="কর্মকর্তার জাতীয় পরিচয়পত্র"
-                      value={employeeToUpdate.nid}
-                      onChange={handleInputUpdateChange}
-                    />
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <div className="col-md-6">
-                    <label htmlFor="address" className="form-label">
-                      ঠিকানা
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="address"
-                      placeholder="ঠিকানা লিখুন"
-                      value={employeeToUpdate.address}
-                      onChange={handleInputUpdateChange}
-                    />
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="image" className="form-label">
-                      ছবি
-                    </label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      placeholder="সংযুক্ত করুন"
-                      id="image"
-                      onChange={handleImageUpdateChange}
-                    />
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="submit"
+                  <div className="modal-footer">
+                  {loading ? (
+                   <div className="spinner-border text-primary" role="status">
+                   <span className="visually-hidden">Loading...</span>
+                 </div>
+                  ) : (
+                    <button
+                    // type="button"
                     className="btn btn-primary text-white mt-4"
                     style={{ backgroundColor: "#13007D" }}
+                    // onClick={handleBulkSubmit}
                   >
-                    কর্মকর্তা আপডেট করুন
+                    কর্মকর্তা যোগ করুন
                   </button>
-                </div>
-              </form>
+                  )}
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
         </div>
       </div>
+      
+      )}
     </div>
   );
 };
