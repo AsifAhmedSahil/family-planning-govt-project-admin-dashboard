@@ -31,7 +31,7 @@ const Dashboard = () => {
               backgroundColor: "#FFFFFF",
             }}
           >
-            <Link to={"/"}></Link>
+            
             <div className="container-fluid d-flex  align-items-center justify-content-center  mt-2 mb-2">
               <div className="logo w">
                 <Link to={"/"}>
