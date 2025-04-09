@@ -11,10 +11,13 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { GrAnnounce } from "react-icons/gr";
 import { Dropdown } from "react-bootstrap"; // Import the Dropdown component from react-bootstrap
 import { MdOutlineAddHomeWork } from "react-icons/md";
+import { useState } from "react";
 
 const Dashboard = () => {
-  const handleMenuItemClick = (event) => {
+  const [selectedItem, setSelectedItem] = useState(null);
+  const handleMenuItemClick = (event,item) => {
     event.stopPropagation(); // Stop the event from propagating
+    setSelectedItem(item)
   };
   return (
     <div>
@@ -184,14 +187,22 @@ const Dashboard = () => {
                   <Dropdown.Item
                     as={Link}
                     to="/setting/overview"
-                    onClick={handleMenuItemClick}
+                    onClick={(e) => handleMenuItemClick(e,'action-1')}
+                    style={{
+                      backgroundColor: selectedItem === 'action-1' ? '#D5D1E8' : 'transparent', // Dark background if selected
+                      color: selectedItem === 'action-1' ? 'black' : 'inherit', // White text if selected
+                    }}
                   >
                     ওভারভিউ
                   </Dropdown.Item>
                   <Dropdown.Item
                     as={Link}
                     to="/setting/subunion"
-                    onClick={handleMenuItemClick}
+                    onClick={(e) => handleMenuItemClick(e,'action-2')}
+                    style={{
+                      backgroundColor: selectedItem === 'action-2' ? '#D5D1E8' : 'transparent', // Dark background if selected
+                      color: selectedItem === 'action-2' ? 'black' : 'inherit', // White text if selected
+                    }}
                     className="mt-2"
                   >
                     উপজেলা
@@ -199,7 +210,11 @@ const Dashboard = () => {
                   <Dropdown.Item
                     as={Link}
                     to="/setting/union"
-                    onClick={handleMenuItemClick}
+                    onClick={(e) => handleMenuItemClick(e,'action-3')}
+                    style={{
+                      backgroundColor: selectedItem === 'action-3' ? '#D5D1E8' : 'transparent', // Dark background if selected
+                      color: selectedItem === 'action-3' ? 'black' : 'inherit', // White text if selected
+                    }}
                     className="mt-2"
                   >
                     ইউনিয়ন
@@ -207,7 +222,11 @@ const Dashboard = () => {
                   <Dropdown.Item
                     as={Link}
                     to="/setting/unit"
-                    onClick={handleMenuItemClick}
+                    onClick={(e) => handleMenuItemClick(e,'action-4')}
+                    style={{
+                      backgroundColor: selectedItem === 'action-4' ? '#D5D1E8' : 'transparent', // Dark background if selected
+                      color: selectedItem === 'action-4' ? 'black' : 'inherit', // White text if selected
+                    }}
                     className="mt-2"
                   >
                     ইউনিট
@@ -215,7 +234,11 @@ const Dashboard = () => {
                   <Dropdown.Item
                     as={Link}
                     to="/setting/designation"
-                    onClick={handleMenuItemClick}
+                    onClick={(e) => handleMenuItemClick(e,'action-5')}
+                    style={{
+                      backgroundColor: selectedItem === 'action-5' ? '#D5D1E8' : 'transparent', // Dark background if selected
+                      color: selectedItem === 'action-5' ? 'black' : 'inherit', // White text if selected
+                    }}
                     className="mt-2"
                   >
                     পদবী
@@ -223,7 +246,11 @@ const Dashboard = () => {
                   <Dropdown.Item
                     as={Link}
                     to="/setting/worktype"
-                    onClick={handleMenuItemClick}
+                    onClick={(e) => handleMenuItemClick(e,'action-6')}
+                    style={{
+                      backgroundColor: selectedItem === 'action-6' ? '#D5D1E8' : 'transparent', // Dark background if selected
+                      color: selectedItem === 'action-6' ? 'black' : 'inherit', // White text if selected
+                    }}
                     className="mt-2"
                   >
                     কাজের ক্ষেত্র
@@ -231,7 +258,11 @@ const Dashboard = () => {
                   <Dropdown.Item
                     as={Link}
                     to="/setting/worktypedetails"
-                    onClick={handleMenuItemClick}
+                    onClick={(e) => handleMenuItemClick(e,'action-7')}
+                    style={{
+                      backgroundColor: selectedItem === 'action-7' ? '#D5D1E8' : 'transparent', // Dark background if selected
+                      color: selectedItem === 'action-7' ? 'black' : 'inherit', // White text if selected
+                    }}
                     className="mt-2"
                   >
                     কাজের ক্ষেত্রের বিবরনী
@@ -239,7 +270,11 @@ const Dashboard = () => {
                   <Dropdown.Item
                     as={Link}
                     to="/setting/previlage"
-                    onClick={handleMenuItemClick}
+                    onClick={(e) => handleMenuItemClick(e,'action-8')}
+                    style={{
+                      backgroundColor: selectedItem === 'action-8' ? '#D5D1E8' : 'transparent', // Dark background if selected
+                      color: selectedItem === 'action-8' ? 'black' : 'inherit', // White text if selected
+                    }}
                     className="mt-2"
                   >
                     প্রিভিলেজ
@@ -247,15 +282,24 @@ const Dashboard = () => {
                   <Dropdown.Item
                     as={Link}
                     to="/setting/role"
-                    onClick={handleMenuItemClick}
+                    onClick={(e) => handleMenuItemClick(e,'action-9')}
+                    style={{
+                      backgroundColor: selectedItem === 'action-9' ? '#D5D1E8' : 'transparent', // Dark background if selected
+                      color: selectedItem === 'action-9' ? 'black' : 'inherit', // White text if selected
+                    }}
                     className="mt-2"
+                    
                   >
                     রোল
                   </Dropdown.Item>
                   <Dropdown.Item
                     as={Link}
                     to="/setting/registration"
-                    onClick={handleMenuItemClick}
+                    onClick={(e) => handleMenuItemClick(e,'action-10')}
+                    style={{
+                      backgroundColor: selectedItem === 'action-10' ? '#D5D1E8' : 'transparent', // Dark background if selected
+                      color: selectedItem === 'action-10' ? 'black' : 'inherit', // White text if selected
+                    }}
                     className="mt-2"
                   >
                     নিবন্ধন
