@@ -329,7 +329,7 @@ const Role = () => {
                     <td>
                       <RiDeleteBin6Line
                         onClick={() => handleDeleteConfirmation(item.role_id)}
-                        size={30}
+                        size={20}
                         style={{
                           color: "red",
                           cursor: "pointer",
@@ -340,7 +340,7 @@ const Role = () => {
                     </td>
                     <td>
                       <RiEdit2Line
-                        size={30}
+                        size={20}
                         style={{
                           color: "blue",
                           cursor: "pointer",

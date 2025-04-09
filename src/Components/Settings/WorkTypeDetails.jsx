@@ -508,7 +508,7 @@ const WorkTypeDetails = () => {
                     <td>
                       <RiDeleteBin6Line
                         onClick={() => handleDeleteConfirmation(item.field_id)}
-                        size={30}
+                        size={20}
                         style={{
                           color: "red",
                           cursor: "pointer",
@@ -519,7 +519,7 @@ const WorkTypeDetails = () => {
                     </td>
                     <td>
                       <RiEdit2Line
-                        size={30}
+                        size={20}
                         style={{
                           color: "blue",
                           cursor: "pointer",

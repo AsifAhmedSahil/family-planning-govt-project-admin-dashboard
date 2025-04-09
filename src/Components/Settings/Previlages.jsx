@@ -312,7 +312,7 @@ const Previleges = () => {
                       <td>
                         <RiDeleteBin6Line
                           onClick={() => handleDeleteConfirmation(item.id)}
-                          size={30}
+                          size={20}
                           style={{ color: "red", cursor: "pointer" }}
                         />
                       </td>

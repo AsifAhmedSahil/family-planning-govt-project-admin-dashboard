@@ -442,14 +442,14 @@ const Unit = () => {
                     <td style={{ color: "#6C6C6C" }}>{item.employee}</td>
                     <td>
                       <RiDeleteBin6Line
-                        size={30}
+                        size={20}
                         style={{ color: "red", cursor: "pointer" }}
                         onClick={() => handleDeleteConfirmation(item.id)}
                       />
                     </td>
                     <td>
                       <RiEdit2Line
-                        size={30}
+                        size={20}
                         style={{ color: "blue", cursor: "pointer" }}
                         onClick={() =>
                           handleUpdateConfirmation(

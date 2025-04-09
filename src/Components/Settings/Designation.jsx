@@ -488,7 +488,7 @@ const Designation = () => {
                         onClick={() =>
                           handleDeleteConfirmation(item.id, item.designation_id)
                         }
-                        size={30}
+                        size={20}
                         style={{ color: "red", cursor: "pointer" }}
                       />
                     </td>
