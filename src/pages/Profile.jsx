@@ -120,7 +120,7 @@ const Profile = () => {
   return (
     <div style={styles.container}>
       <Header title={"প্রোফাইল"} />
-      <div className=" mt-5">
+      <div className=" mt-3">
         <div className="row justify-content-center">
           <div className="col-md-12">
             <div style={styles.profileCard}>
@@ -180,6 +180,15 @@ const Profile = () => {
                       </p>
                       <p>
                         <strong>Address:</strong> {user?.address}
+                      </p>
+                      <p>
+                        <strong>Upazila:</strong> {user?.upazila}
+                      </p>
+                      <p>
+                        <strong>Union:</strong> {user?.unionName}
+                      </p>
+                      <p>
+                        <strong>Unit:</strong> {user?.unitName}
                       </p>
                     </div>
                   </div>
@@ -361,7 +370,7 @@ const styles = {
   container: {
     backgroundColor: "#f4f4f4",
     minHeight: "90vh",
-    padding: "20px",
+    // padding: "20px",
   },
   profileCard: {
     borderRadius: "15px",

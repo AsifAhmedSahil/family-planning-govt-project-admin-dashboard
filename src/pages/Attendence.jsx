@@ -256,6 +256,11 @@ const Attendence = () => {
     if (formData.startDate && formData.endDate) {
       fetchAttendance();
     }
+    else{
+      setAttendenceData([])
+      setAttendanceDetails(null)
+      setEmployeeName(null)
+    }
   }, [formData]);
 
   const handleRowClick = (attendanceDetails, name) => {

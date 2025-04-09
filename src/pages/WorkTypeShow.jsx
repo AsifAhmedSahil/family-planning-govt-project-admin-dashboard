@@ -25,12 +25,14 @@ const WorkTypeShow = () => {
   const [formData, setFormData] = useState({
     designation_name: "",
     district: "",
-    upazila_name: "",
-    union_name: "",
-    unit_name: "",
+    upazila_name: null,
+    union_name: null,
+    unit_name: null,
     startDate: null,
     endDate: null,
   });
+
+  console.log(formData.startDate,formData.endDate) 
 
   const fetchDesignation = async () => {
     const token = localStorage.getItem("authToken");
@@ -166,7 +168,7 @@ const WorkTypeShow = () => {
   const handleUpazilaChange = (selectedOption) => {
     setFormData({
       ...formData,
-      upazila_name: selectedOption ? selectedOption.label : null,
+      upazila_name: selectedOption ? selectedOption.id : null,
     });
   };
   const upazilaOptions = upazilas.map((upazila) => ({
@@ -187,14 +189,14 @@ const WorkTypeShow = () => {
   const handleUnionChange = (selectedOption) => {
     setFormData({
       ...formData,
-      union_name: selectedOption ? selectedOption.label : null,
+      union_name: selectedOption ? selectedOption.id : null,
     });
   };
 
   const handleUnitChange = (selectedOption) => {
     setFormData({
       ...formData,
-      unit_name: selectedOption ? selectedOption.label : null,
+      unit_name: selectedOption ? selectedOption.id : null,
     });
   };
 
@@ -212,6 +214,8 @@ const WorkTypeShow = () => {
 
     if (!startDate || !endDate) {
       console.error("Start date and end date are mandatory!");
+      setWorkTypeData([])
+      
       return;
     }
 
@@ -256,6 +260,11 @@ const WorkTypeShow = () => {
   useEffect(() => {
     if (formData.startDate && formData.endDate) {
       fetchAttendance();
+    }
+    else{
+      setWorkTypeData([])
+      setWorkLists(null)
+      setEmployeeName(null)
     }
   }, [formData]);
 

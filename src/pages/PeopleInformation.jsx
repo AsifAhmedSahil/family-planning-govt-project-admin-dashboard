@@ -54,7 +54,7 @@ const PeopleInformation = () => {
     unit: null, // ID filter
     search: "",
   });
-  console.log(employeeToUpdate);
+  console.log(filterData);
 
   const [uploadedData, setUploadedData] = useState([]);
   const [tab, setTab] = useState("individual");
@@ -187,6 +187,9 @@ const PeopleInformation = () => {
           },
           body: JSON.stringify({
             designation: filterData?.designation,
+            upazila:filterData?.upazila,
+            union:filterData?.union,
+            unit:filterData?.unit,
             search: search,
           }),
         }
@@ -210,7 +213,7 @@ const PeopleInformation = () => {
     fetchUnions();
     fetchUnits();
     fetchEmployees();
-  }, [filterData?.designation]);
+  }, [filterData]);
 
   console.log(filterData);
 
@@ -921,52 +924,61 @@ const PeopleInformation = () => {
                 </tr>
               </thead>
               <tbody>
-                {employees.map((item, index) => (
-                  <tr key={index}>
-                    <td style={{ color: "#6C6C6C" }}>
-                      {convertToBangla(item.emp_id)}
-                    </td>
-                    <td style={{ color: "#6C6C6C" }}>{item.name}</td>
-                    <td style={{ color: "#6C6C6C" }}>{item.mobile}</td>
-                    <td style={{ color: "#6C6C6C" }}>{item.nid}</td>
-                    <td style={{ color: "#6C6C6C" }}>{item.address}</td>
-                    <td>
-                      <img
-                        src={`${import.meta.env.REACT_APP_BASE_URL}/uploads/${
-                          item.image
-                        }`}
-                        alt="officer"
-                        style={{ width: "50px", height: "50px" }}
-                      />
-                    </td>
-                    {/* <td>
-                      <FaRegEye
-                        size={20}
-                        onClick={() => handleRowClick(item.emp_id)}
-                        style={{ color: "gray", cursor: "pointer" }}
-                      />
-                    </td> */}
-                    <td>
-                      <RiDeleteBin6Line
-                        onClick={() => handleDeleteConfirmation(item.emp_id)}
-                        size={20}
-                        style={{ color: "gray", cursor: "pointer" }}
-                      />
-                    </td>
-                    <td>
-                      <FaEdit
-                        onClick={() => {
-                          setEmployeeToUpdate(item);
-                          setIsModalOpen(true);
-                        }}
-                        data-bs-toggle="modal"
-                        data-bs-target="#updateModal"
-                        size={20}
-                        style={{ color: "gray", cursor: "pointer" }}
-                      />
-                    </td>
-                  </tr>
-                ))}
+              {
+  employees.length === 0 ? (
+    <tr>
+      <td colSpan="7" style={{ textAlign: "center", color: "#6C6C6C",fontSize:"30px" }}>
+        No data found
+      </td>
+    </tr>
+  ) : (
+    employees.map((item, index) => (
+      <tr key={index}>
+        <td style={{ color: "#6C6C6C" }}>
+          {convertToBangla(item.emp_id)}
+        </td>
+        <td style={{ color: "#6C6C6C" }}>{item.name}</td>
+        <td style={{ color: "#6C6C6C" }}>{item.mobile}</td>
+        <td style={{ color: "#6C6C6C" }}>{item.nid}</td>
+        <td style={{ color: "#6C6C6C" }}>{item.address}</td>
+        <td>
+          <img
+            src={`${import.meta.env.REACT_APP_BASE_URL}/uploads/${item.image}`}
+            alt="officer"
+            style={{ width: "50px", height: "50px" }}
+          />
+        </td>
+        {/* <td>
+          <FaRegEye
+            size={20}
+            onClick={() => handleRowClick(item.emp_id)}
+            style={{ color: "gray", cursor: "pointer" }}
+          />
+        </td> */}
+        <td>
+          <RiDeleteBin6Line
+            onClick={() => handleDeleteConfirmation(item.emp_id)}
+            size={20}
+            style={{ color: "gray", cursor: "pointer" }}
+          />
+        </td>
+        <td>
+          <FaEdit
+            onClick={() => {
+              setEmployeeToUpdate(item);
+              setIsModalOpen(true);
+            }}
+            data-bs-toggle="modal"
+            data-bs-target="#updateModal"
+            size={20}
+            style={{ color: "gray", cursor: "pointer" }}
+          />
+        </td>
+      </tr>
+    ))
+  )
+}
+
               </tbody>
             </table>
           </div>
