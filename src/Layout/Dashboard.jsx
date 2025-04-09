@@ -31,13 +31,16 @@ const Dashboard = () => {
               backgroundColor: "#FFFFFF",
             }}
           >
+            <Link to={"/"}></Link>
             <div className="container-fluid d-flex  align-items-center justify-content-center  mt-2 mb-2">
               <div className="logo w">
-                <img
-                  src={logo}
-                  alt="logo"
-                  style={{ width: "65px", height: "65px" }}
-                />
+                <Link to={"/"}>
+                  <img
+                    src={logo}
+                    alt="logo"
+                    style={{ width: "65px", height: "65px" }}
+                  />
+                </Link>
               </div>
               <div className="">
                 <h4 style={{ fontSize: "15px" }}>পরিবার পরিকল্পনা স্মার্ট</h4>
@@ -52,8 +55,8 @@ const Dashboard = () => {
                 to="/"
                 className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 rounded-lg  text-center p-2 transition-transform transform  text-black ps-5 ms-1 gap-3"
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? '#D5D1E8' : 'transparent',
-                  color: isActive ? "#13007D" : "inherit"
+                  backgroundColor: isActive ? "#D5D1E8" : "transparent",
+                  color: isActive ? "#13007D" : "inherit",
                 })}
               >
                 <div>
@@ -73,8 +76,8 @@ const Dashboard = () => {
                 to="/attendence"
                 className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg  text-center p-2 transition-transform transform  text-black ps-5 gap-3"
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? '#D5D1E8' : 'transparent',
-                  color: isActive ? "#13007D" : "inherit"
+                  backgroundColor: isActive ? "#D5D1E8" : "transparent",
+                  color: isActive ? "#13007D" : "inherit",
                 })}
               >
                 <div>
@@ -94,8 +97,8 @@ const Dashboard = () => {
                 to="/worktypeshow"
                 className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg  text-center p-2 transition-transform transform  text-black ps-5 gap-3"
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? '#D5D1E8' : 'transparent',
-                  color: isActive ? "#13007D" : "inherit"
+                  backgroundColor: isActive ? "#D5D1E8" : "transparent",
+                  color: isActive ? "#13007D" : "inherit",
                 })}
               >
                 <div>
@@ -166,7 +169,6 @@ const Dashboard = () => {
                   variant="link"
                   id="dropdownMenuButton"
                   className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 rounded-lg text-center p-2 transition-transform transform text-black mb-3 border-0 " // Added `border-0` class
-                  
                 >
                   {/* Icon for dropdown */}
                   <div>
@@ -178,7 +180,6 @@ const Dashboard = () => {
                   <span
                     className="d-none d-lg-block text-xs lg:text-lg font-weight-semibold bg-transparent"
                     style={{ fontSize: "18px" }}
-                    
                   >
                     সেটিংস
                   </span>
@@ -187,35 +188,84 @@ const Dashboard = () => {
                 <Dropdown.Menu className="border-0  ms-5">
                   {" "}
                   {/* Added `border-0` class */}
-                  <Dropdown.Item as={Link} to="/setting/overview" onClick={handleMenuItemClick}>
+                  <Dropdown.Item
+                    as={Link}
+                    to="/setting/overview"
+                    onClick={handleMenuItemClick}
+                  >
                     ওভারভিউ
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/setting/subunion" onClick={handleMenuItemClick} className="mt-2">
+                  <Dropdown.Item
+                    as={Link}
+                    to="/setting/subunion"
+                    onClick={handleMenuItemClick}
+                    className="mt-2"
+                  >
                     উপজেলা
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/setting/union" onClick={handleMenuItemClick} className="mt-2">
+                  <Dropdown.Item
+                    as={Link}
+                    to="/setting/union"
+                    onClick={handleMenuItemClick}
+                    className="mt-2"
+                  >
                     ইউনিয়ন
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/setting/unit" onClick={handleMenuItemClick} className="mt-2">
+                  <Dropdown.Item
+                    as={Link}
+                    to="/setting/unit"
+                    onClick={handleMenuItemClick}
+                    className="mt-2"
+                  >
                     ইউনিট
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/setting/designation" onClick={handleMenuItemClick} className="mt-2">
+                  <Dropdown.Item
+                    as={Link}
+                    to="/setting/designation"
+                    onClick={handleMenuItemClick}
+                    className="mt-2"
+                  >
                     পদবী
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/setting/worktype" onClick={handleMenuItemClick} className="mt-2">
-                  কাজের ক্ষেত্র
+                  <Dropdown.Item
+                    as={Link}
+                    to="/setting/worktype"
+                    onClick={handleMenuItemClick}
+                    className="mt-2"
+                  >
+                    কাজের ক্ষেত্র
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/setting/worktypedetails" onClick={handleMenuItemClick} className="mt-2">
-                  কাজের ক্ষেত্রের বিবরনী
+                  <Dropdown.Item
+                    as={Link}
+                    to="/setting/worktypedetails"
+                    onClick={handleMenuItemClick}
+                    className="mt-2"
+                  >
+                    কাজের ক্ষেত্রের বিবরনী
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/setting/previlage" onClick={handleMenuItemClick} className="mt-2">
-                  প্রিভিলেজ
+                  <Dropdown.Item
+                    as={Link}
+                    to="/setting/previlage"
+                    onClick={handleMenuItemClick}
+                    className="mt-2"
+                  >
+                    প্রিভিলেজ
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/setting/role" onClick={handleMenuItemClick} className="mt-2">
-                  রোল
+                  <Dropdown.Item
+                    as={Link}
+                    to="/setting/role"
+                    onClick={handleMenuItemClick}
+                    className="mt-2"
+                  >
+                    রোল
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/setting/registration" onClick={handleMenuItemClick} className="mt-2">
-                  নিবন্ধন
+                  <Dropdown.Item
+                    as={Link}
+                    to="/setting/registration"
+                    onClick={handleMenuItemClick}
+                    className="mt-2"
+                  >
+                    নিবন্ধন
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>

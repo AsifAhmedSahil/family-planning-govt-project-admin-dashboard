@@ -255,11 +255,10 @@ const Attendence = () => {
   useEffect(() => {
     if (formData.startDate && formData.endDate) {
       fetchAttendance();
-    }
-    else{
-      setAttendenceData([])
-      setAttendanceDetails(null)
-      setEmployeeName(null)
+    } else {
+      setAttendenceData([]);
+      setAttendanceDetails(null);
+      setEmployeeName(null);
     }
   }, [formData]);
 

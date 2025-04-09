@@ -32,7 +32,7 @@ const WorkTypeShow = () => {
     endDate: null,
   });
 
-  console.log(formData.startDate,formData.endDate) 
+  console.log(formData.startDate, formData.endDate);
 
   const fetchDesignation = async () => {
     const token = localStorage.getItem("authToken");
@@ -214,8 +214,8 @@ const WorkTypeShow = () => {
 
     if (!startDate || !endDate) {
       console.error("Start date and end date are mandatory!");
-      setWorkTypeData([])
-      
+      setWorkTypeData([]);
+
       return;
     }
 
@@ -260,11 +260,10 @@ const WorkTypeShow = () => {
   useEffect(() => {
     if (formData.startDate && formData.endDate) {
       fetchAttendance();
-    }
-    else{
-      setWorkTypeData([])
-      setWorkLists(null)
-      setEmployeeName(null)
+    } else {
+      setWorkTypeData([]);
+      setWorkLists(null);
+      setEmployeeName(null);
     }
   }, [formData]);
 
