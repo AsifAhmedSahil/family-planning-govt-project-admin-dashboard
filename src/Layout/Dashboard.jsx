@@ -5,10 +5,10 @@ import logo from "../assets/logo.png";
 // import SettingsPage from "../pages/SettingsPage";
 import { MdOutlineDashboard } from "react-icons/md";
 import { MdOutlineCoPresent } from "react-icons/md";
-import { BsFillPeopleFill } from "react-icons/bs";
+import { BsPeople } from "react-icons/bs";
 
 import { IoSettingsOutline } from "react-icons/io5";
-import { FaClipboard } from "react-icons/fa";
+import { GrAnnounce } from "react-icons/gr";
 import { Dropdown } from "react-bootstrap"; // Import the Dropdown component from react-bootstrap
 import { MdOutlineAddHomeWork } from "react-icons/md";
 
@@ -31,7 +31,6 @@ const Dashboard = () => {
               backgroundColor: "#FFFFFF",
             }}
           >
-            
             <div className="container-fluid d-flex  align-items-center justify-content-center  mt-2 mb-2">
               <div className="logo w">
                 <Link to={"/"}>
@@ -127,10 +126,7 @@ const Dashboard = () => {
                 })}
               >
                 <div>
-                  <BsFillPeopleFill
-                    className="mb-2"
-                    style={{ fontSize: "1.5rem" }}
-                  />
+                  <BsPeople className="mb-2" style={{ fontSize: "1.5rem" }} />
                 </div>
                 <span
                   className="d-none d-lg-block text-xs lg:text-lg font-weight-semibold bg-transparent"
@@ -142,17 +138,14 @@ const Dashboard = () => {
 
               <NavLink
                 to="/notice"
-                className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg  text-center p-2 transition-transform transform  text-black ps-5 gap-3"
+                className="nav-link d-flex flex-row gap-2 align-items-center justify-content-start h-100 w-100 m-2 rounded-lg  text-center p-2 transition-transform transform  text-black ps-5 gap-3 "
                 style={({ isActive }) => ({
                   backgroundColor: isActive ? "#D5D1E8" : "transparent",
                   color: isActive ? "#13007D" : "inherit",
                 })}
               >
                 <div>
-                  <FaClipboard
-                    className="mb-2"
-                    style={{ fontSize: "1.5rem" }}
-                  />
+                  <GrAnnounce className="mb-2" style={{ fontSize: "1.5rem" }} />
                 </div>
                 <span
                   className="d-none d-lg-block text-xs lg:text-lg font-weight-semibold bg-transparent"
