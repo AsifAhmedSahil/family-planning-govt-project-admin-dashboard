@@ -5,10 +5,15 @@ import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
 import Header from "../Components/Header";
 import { format } from "date-fns-tz";
+import toast from "react-hot-toast";
 
 const Notice = () => {
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0]; // Returns 'YYYY-MM-DD'
+  };
   const [formData, setFormData] = useState({
-    date: "",
+    date: getTodayDate(),
     noticeName: "",
     notice: "",
   });
@@ -53,8 +58,9 @@ const Notice = () => {
         const result = await response.json();
         console.log("Success:", result);
         fetchNotices();
+        toast.success("নোটিশ দেওয়া হয়েছে");
         setFormData({
-          date: "",
+          date: getTodayDate(),
           noticeName: "",
           notice: "",
         });
@@ -220,6 +226,7 @@ const Notice = () => {
               type="date"
               className="form-control"
               name="date"
+              disabled
               value={formData.date}
               onChange={handleInputChange}
               aria-label="Select date"
@@ -296,6 +303,8 @@ const Notice = () => {
                 borderRadius: "5px",
                 marginBottom: "10px",
                 backgroundColor: "#fff",
+                padding: "10px",
+                overflow: "hidden", // Prevents overflow inside the card, keeping it clean
               }}
             >
               <div style={{ display: "flex" }}>
@@ -348,15 +357,22 @@ const Notice = () => {
                     </div>
                   </div>
                   <p style={{ fontWeight: "600" }}>{card.notice_name}</p>
-                  <p>{card?.notice_description?.slice(0,350) + "....."} <span
-                  data-bs-toggle="modal"
-                  data-bs-target="#updateModal"
-                  onClick={()=>setNoticeToUpdate(card)}
-                  style={{ cursor: "pointer", color: "blue" }}
-                >
-                  আরো পড়ুন
-
-                </span></p>
+                  <p
+                    style={{
+                      wordWrap: "break-word", // Allows text to wrap to the next line when it overflows
+                      overflowWrap: "break-word", // Additional property for ensuring text wraps when necessary
+                    }}
+                  >
+                    {card?.notice_description?.slice(0, 350) + "....."}{" "}
+                    <span
+                      data-bs-toggle="modal"
+                      data-bs-target="#updateModal"
+                      onClick={() => setNoticeToUpdate(card)}
+                      style={{ cursor: "pointer", color: "blue" }}
+                    >
+                      আরো পড়ুন
+                    </span>
+                  </p>
                 </div>
               </div>
             </div>

@@ -423,7 +423,7 @@ const Attendence = () => {
                         position: "sticky",
                         top: 0,
                         backgroundColor: "#fff",
-                        zIndex: 1,
+                        // zIndex: 1,
                       }}
                     >
                       <tr>

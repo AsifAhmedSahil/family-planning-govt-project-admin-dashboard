@@ -43,9 +43,8 @@ const PeopleInformation = () => {
     nid: "",
     address: "",
     // image: null
-    
   });
-  console.log(employeeToUpdate)
+  console.log(employeeToUpdate);
   const [filterData, setFilterData] = useState({
     designation: "", // String filter
     district: null, // ID filter
@@ -187,9 +186,9 @@ const PeopleInformation = () => {
           },
           body: JSON.stringify({
             designation: filterData?.designation,
-            upazila:filterData?.upazila,
-            union:filterData?.union,
-            unit:filterData?.unit,
+            upazila: filterData?.upazila,
+            union: filterData?.union,
+            unit: filterData?.unit,
             search: search,
           }),
         }
@@ -350,6 +349,7 @@ const PeopleInformation = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     console.log("Form Data: ", formData.image);
 
     const token = localStorage.getItem("authToken");
@@ -402,118 +402,119 @@ const PeopleInformation = () => {
           image: null,
         });
         toast.success("Employee registered successfully");
+        setLoading(false);
         fetchEmployees();
         const closeButton = document.querySelector('[data-bs-dismiss="modal"]');
         closeButton.click(); // Simulate a click to close the modal
       } else {
         const errorResult = await response.json();
         console.error("Error:", errorResult);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
- const handleUpdateFormSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleUpdateFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  const token = localStorage.getItem("authToken");
-  console.log(token);
+    const token = localStorage.getItem("authToken");
+    console.log(token);
 
-  try {
-    // First, update the employee details without considering the image
-    const employeeDetailsResponse = await fetch(
-      `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-employee`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          emp_id: employeeToUpdate.emp_id,
-          designation_id: employeeToUpdate.designation_id,
-          name: employeeToUpdate.name,
-          mobile: employeeToUpdate.mobile,
-          nid: employeeToUpdate.nid,
-          address: employeeToUpdate.address,
-        }),
+    try {
+      // First, update the employee details without considering the image
+      const employeeDetailsResponse = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-employee`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            emp_id: employeeToUpdate.emp_id,
+            designation_id: employeeToUpdate.designation_id,
+            name: employeeToUpdate.name,
+            mobile: employeeToUpdate.mobile,
+            nid: employeeToUpdate.nid,
+            address: employeeToUpdate.address,
+          }),
+        }
+      );
+
+      console.log(employeeDetailsResponse);
+
+      if (employeeDetailsResponse.ok) {
+        const result = await employeeDetailsResponse.json();
+        console.log(result);
+        console.log("Employee details updated successfully:", result);
+
+        // Check if there's an image provided for update
+        // if (employeeToUpdate.image && employeeToUpdate.image !== null) {
+        //   const formData = new FormData();
+        //   formData.append("image", employeeToUpdate.image);
+
+        //   // Ensure the image is a valid File object (e.g., from a file input)
+        //   for (let [key, value] of formData.entries()) {
+        //     console.log(key, value);
+        //   }
+
+        //   const imageResponse = await fetch(
+        //     `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-image/${employeeToUpdate.emp_id}`,
+        //     {
+        //       method: "POST",
+        //       headers: {
+        //         Authorization: `Bearer ${token}`,
+        //       },
+        //       body: formData,
+        //     }
+        //   );
+
+        //   console.log(imageResponse, "****");
+
+        //   if (imageResponse.ok) {
+        //     const imageResult = await imageResponse.json();
+        //     console.log("Employee image updated successfully:", imageResult);
+        //   } else {
+        //     const errorResult = await imageResponse.json();
+        //     console.error("Error updating image:", errorResult);
+        //   }
+        // }
+
+        // Clear the employee update form state (reset the image too)
+        setEmployeeToUpdate({
+          emp_id: "",
+          designation_id: "",
+          district: "চট্টগ্রাম",
+          upazila_id: "",
+          union_id: "",
+          unit_id: "",
+          name: "",
+          mobile: "",
+          nid: "",
+          address: "",
+          // image: null, // Reset the image
+        });
+
+        // Fetch the updated list of employees and show success toast
+        fetchEmployees();
+        toast.success("Update successfully");
+
+        // Close the modal and stop loading
+        setLoading(false);
+        setIsModalOpen(false);
+      } else {
+        const errorResult = await employeeDetailsResponse.json();
+        console.error("Error updating employee details:", errorResult);
+        setLoading(false);
       }
-    );
-
-    console.log(employeeDetailsResponse);
-
-    if (employeeDetailsResponse.ok) {
-      const result = await employeeDetailsResponse.json();
-      console.log(result);
-      console.log("Employee details updated successfully:", result);
-
-      // Check if there's an image provided for update
-      // if (employeeToUpdate.image && employeeToUpdate.image !== null) {
-      //   const formData = new FormData();
-      //   formData.append("image", employeeToUpdate.image);
-
-      //   // Ensure the image is a valid File object (e.g., from a file input)
-      //   for (let [key, value] of formData.entries()) {
-      //     console.log(key, value);
-      //   }
-
-      //   const imageResponse = await fetch(
-      //     `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-image/${employeeToUpdate.emp_id}`,
-      //     {
-      //       method: "POST",
-      //       headers: {
-      //         Authorization: `Bearer ${token}`,
-      //       },
-      //       body: formData,
-      //     }
-      //   );
-
-      //   console.log(imageResponse, "****");
-
-      //   if (imageResponse.ok) {
-      //     const imageResult = await imageResponse.json();
-      //     console.log("Employee image updated successfully:", imageResult);
-      //   } else {
-      //     const errorResult = await imageResponse.json();
-      //     console.error("Error updating image:", errorResult);
-      //   }
-      // }
-
-      // Clear the employee update form state (reset the image too)
-      setEmployeeToUpdate({
-        emp_id: "",
-        designation_id: "",
-        district: "চট্টগ্রাম",
-        upazila_id: "",
-        union_id: "",
-        unit_id: "",
-        name: "",
-        mobile: "",
-        nid: "",
-        address: "",
-        // image: null, // Reset the image
-      });
-
-      // Fetch the updated list of employees and show success toast
-      fetchEmployees();
-      toast.success("Update successfully");
-
-      // Close the modal and stop loading
-      setLoading(false);
-      setIsModalOpen(false);
-    } else {
-      const errorResult = await employeeDetailsResponse.json();
-      console.error("Error updating employee details:", errorResult);
+    } catch (error) {
+      console.error("Error:", error);
       setLoading(false);
     }
-  } catch (error) {
-    console.error("Error:", error);
-    setLoading(false);
-  }
-};
-
+  };
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem("authToken");
@@ -609,7 +610,9 @@ const PeopleInformation = () => {
 
     try {
       const imageResponse = await fetch(
-        `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-image/${employeeToUpdate.emp_id}`,
+        `${import.meta.env.REACT_APP_BASE_URL}/api/employee/update-image/${
+          employeeToUpdate.emp_id
+        }`,
         {
           method: "POST",
           headers: {
@@ -622,7 +625,7 @@ const PeopleInformation = () => {
       if (imageResponse.ok) {
         const imageResult = await imageResponse.json();
         console.log("Employee image updated successfully:", imageResult);
-        fetchEmployees()
+        fetchEmployees();
       } else {
         const errorResult = await imageResponse.json();
         console.error("Error updating image:", errorResult);
@@ -639,7 +642,7 @@ const PeopleInformation = () => {
     if (files && files[0]) {
       setEmployeeImage(files[0]); // Update the employeeImage state with the selected file
     }
-  }; 
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -699,7 +702,7 @@ const PeopleInformation = () => {
 
   const handleBulkSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     const token = localStorage.getItem("authToken");
 
     try {
@@ -721,11 +724,13 @@ const PeopleInformation = () => {
         fetchEmployees();
         setUploadedData([]);
         toast.success("All Employee registered successfully");
+        setLoading(false);
         const closeButton = document.querySelector('[data-bs-dismiss="modal"]');
         closeButton.click();
       } else {
         const errorResult = await response.json();
         console.error("Error:", errorResult);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -736,7 +741,14 @@ const PeopleInformation = () => {
   return (
     <div>
       <Header title={"কর্মকর্তার তথ্য"} />
-      <div className="dashboard p-3 " style={{ backgroundColor: "#FFFFFF",marginTop:"15px",borderRadius:"12px" }}>
+      <div
+        className="dashboard p-3 "
+        style={{
+          backgroundColor: "#FFFFFF",
+          marginTop: "15px",
+          borderRadius: "12px",
+        }}
+      >
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <div className="row g-6 ">
             <div className="col-md-2 d-flex flex-column mb-3">
@@ -924,61 +936,67 @@ const PeopleInformation = () => {
                 </tr>
               </thead>
               <tbody>
-              {
-  employees.length === 0 ? (
-    <tr>
-      <td colSpan="7" style={{ textAlign: "center", color: "#6C6C6C",fontSize:"30px" }}>
-        No data found
-      </td>
-    </tr>
-  ) : (
-    employees.map((item, index) => (
-      <tr key={index}>
-        <td style={{ color: "#6C6C6C" }}>
-          {convertToBangla(item.emp_id)}
-        </td>
-        <td style={{ color: "#6C6C6C" }}>{item.name}</td>
-        <td style={{ color: "#6C6C6C" }}>{item.mobile}</td>
-        <td style={{ color: "#6C6C6C" }}>{item.nid}</td>
-        <td style={{ color: "#6C6C6C" }}>{item.address}</td>
-        <td>
-          <img
-            src={`${import.meta.env.REACT_APP_BASE_URL}/uploads/${item.image}`}
-            alt="officer"
-            style={{ width: "50px", height: "50px" }}
-          />
-        </td>
-        {/* <td>
+                {employees.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan="7"
+                      style={{
+                        textAlign: "center",
+                        color: "#6C6C6C",
+                        fontSize: "20px",
+                      }}
+                    >
+                      No data found
+                    </td>
+                  </tr>
+                ) : (
+                  employees.map((item, index) => (
+                    <tr key={index}>
+                      <td style={{ color: "#6C6C6C" }}>
+                        {convertToBangla(item.emp_id)}
+                      </td>
+                      <td style={{ color: "#6C6C6C" }}>{item.name}</td>
+                      <td style={{ color: "#6C6C6C" }}>{item.mobile}</td>
+                      <td style={{ color: "#6C6C6C" }}>{item.nid}</td>
+                      <td style={{ color: "#6C6C6C" }}>{item.address}</td>
+                      <td>
+                        <img
+                          src={`${import.meta.env.REACT_APP_BASE_URL}/uploads/${
+                            item.image
+                          }`}
+                          alt="officer"
+                          style={{ width: "50px", height: "50px" }}
+                        />
+                      </td>
+                      {/* <td>
           <FaRegEye
             size={20}
             onClick={() => handleRowClick(item.emp_id)}
             style={{ color: "gray", cursor: "pointer" }}
           />
         </td> */}
-        <td>
-          <RiDeleteBin6Line
-            onClick={() => handleDeleteConfirmation(item.emp_id)}
-            size={20}
-            style={{ color: "gray", cursor: "pointer" }}
-          />
-        </td>
-        <td>
-          <FaEdit
-            onClick={() => {
-              setEmployeeToUpdate(item);
-              setIsModalOpen(true);
-            }}
-            data-bs-toggle="modal"
-            data-bs-target="#updateModal"
-            size={20}
-            style={{ color: "gray", cursor: "pointer" }}
-          />
-        </td>
-      </tr>
-    ))
-  )
-}
-
+                      <td>
+                        <RiDeleteBin6Line
+                          onClick={() => handleDeleteConfirmation(item.emp_id)}
+                          size={20}
+                          style={{ color: "gray", cursor: "pointer" }}
+                        />
+                      </td>
+                      <td>
+                        <FaEdit
+                          onClick={() => {
+                            setEmployeeToUpdate(item);
+                            setIsModalOpen(true);
+                          }}
+                          data-bs-toggle="modal"
+                          data-bs-target="#updateModal"
+                          size={20}
+                          style={{ color: "gray", cursor: "pointer" }}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -1018,7 +1036,10 @@ const PeopleInformation = () => {
               ></button>
             </div>
 
-            <div className="modal-body">
+            <div
+              className="modal-body"
+              style={{ height: "70vh", overflowX: "hidden" }}
+            >
               {/* Tabs */}
               <ul className="nav nav-tabs" id="myTab" role="tablist">
                 <li className="nav-item" role="presentation">
@@ -1029,8 +1050,22 @@ const PeopleInformation = () => {
                     id="home-tab"
                     role="tab"
                     onClick={() => setTab("individual")}
+                    style={{
+                      backgroundColor:
+                        tab === "individual" ? "#D5D1E8" : "transparent",
+                      borderBottom:
+                        tab === "individual"
+                          ? "3px solid rgb(63, 133, 207)"
+                          : "3px solid transparent",
+                      color: "#000",
+                      fontWeight: "500",
+                      padding: "10px 20px",
+                      cursor: "pointer",
+                      borderRadius: "5px 5px 0 0",
+                      transition: "all 0.3s ease",
+                    }}
                   >
-                    Add Individual
+                    একক কর্মকর্তা
                   </a>
                 </li>
                 <li className="nav-item" role="presentation">
@@ -1039,8 +1074,22 @@ const PeopleInformation = () => {
                     id="upload-tab"
                     role="tab"
                     onClick={() => setTab("upload")}
+                    style={{
+                      backgroundColor:
+                        tab === "upload" ? "#D5D1E8" : "transparent",
+                      borderBottom:
+                        tab === "upload"
+                          ? "3px solid rgb(63, 133, 207)"
+                          : "3px solid transparent",
+                      color: "#000",
+                      fontWeight: "500",
+                      padding: "10px 20px",
+                      cursor: "pointer",
+                      borderRadius: "5px 5px 0 0",
+                      transition: "all 0.3s ease",
+                    }}
                   >
-                    Upload CSV/Excel
+                    সম্মিলিত কর্মকর্তা
                   </a>
                 </li>
               </ul>
@@ -1072,6 +1121,7 @@ const PeopleInformation = () => {
                               value={formData.emp_id}
                               onChange={handleIdChange}
                               className="form-control"
+                              required
                             />
                           </div>
 
@@ -1090,6 +1140,7 @@ const PeopleInformation = () => {
                               onChange={handleInputChange}
                               className="form-control"
                               placeholder="Enter Name"
+                              required
                             />
                           </div>
 
@@ -1108,6 +1159,7 @@ const PeopleInformation = () => {
                               onChange={handleInputChange}
                               className="form-control"
                               placeholder="Enter Mobile Number"
+                              required
                             />
                           </div>
 
@@ -1126,6 +1178,7 @@ const PeopleInformation = () => {
                               onChange={handleInputChange}
                               className="form-control"
                               placeholder="Enter NID"
+                              required
                             />
                           </div>
 
@@ -1144,6 +1197,7 @@ const PeopleInformation = () => {
                               onChange={handleInputChange}
                               className="form-control"
                               placeholder="Enter Address"
+                              required
                             />
                           </div>
 
@@ -1166,6 +1220,7 @@ const PeopleInformation = () => {
                               placeholder="Select"
                               getOptionValue={(option) => option.id}
                               getOptionLabel={(option) => option.label}
+                              required
                             />
                           </div>
 
@@ -1183,6 +1238,7 @@ const PeopleInformation = () => {
                               className="form-select"
                               value={formData.district}
                               onChange={handleInputChange}
+                              required
                             >
                               <option value="চট্টগ্রাম">চট্টগ্রাম</option>
                             </select>
@@ -1206,6 +1262,7 @@ const PeopleInformation = () => {
                               placeholder="Select Upazila"
                               getOptionValue={(option) => option.id}
                               getOptionLabel={(option) => option.label}
+                              required
                             />
                           </div>
 
@@ -1227,6 +1284,7 @@ const PeopleInformation = () => {
                               placeholder="Select Union"
                               getOptionValue={(option) => option.id}
                               getOptionLabel={(option) => option.label}
+                              required
                             />
                           </div>
 
@@ -1248,6 +1306,7 @@ const PeopleInformation = () => {
                               placeholder="Select Unit"
                               getOptionValue={(option) => option.id}
                               getOptionLabel={(option) => option.label}
+                              required
                             />
                           </div>
 
@@ -1270,13 +1329,23 @@ const PeopleInformation = () => {
                       </div>
 
                       <div className="modal-footer">
-                        <button
-                          type="submit"
-                          className="btn btn-primary text-white mt-4"
-                          style={{ backgroundColor: "#13007D" }}
-                        >
-                          কর্মকর্তা যোগ করুন
-                        </button>
+                        {loading ? (
+                          <div
+                            className="spinner-border text-primary"
+                            role="status"
+                          >
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                        ) : (
+                          <button
+                            // type="button"
+                            className="btn btn-primary text-white mt-4"
+                            style={{ backgroundColor: "#13007D" }}
+                            // onClick={handleBulkSubmit}
+                          >
+                            কর্মকর্তা যোগ করুন
+                          </button>
+                        )}
                       </div>
                     </form>
                   </div>
@@ -1353,14 +1422,23 @@ const PeopleInformation = () => {
                       </div>
 
                       <div className="modal-footer">
-                        <button
-                          type="button"
-                          className="btn btn-primary text-white mt-4"
-                          style={{ backgroundColor: "#13007D" }}
-                          onClick={handleBulkSubmit}
-                        >
-                          কর্মকর্তা যোগ করুন
-                        </button>
+                        {loading ? (
+                          <div
+                            className="spinner-border text-primary"
+                            role="status"
+                          >
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                        ) : (
+                          <button
+                            // type="button"
+                            className="btn btn-primary text-white mt-4"
+                            style={{ backgroundColor: "#13007D" }}
+                            onClick={handleBulkSubmit}
+                          >
+                            কর্মকর্তা যোগ করুন
+                          </button>
+                        )}
                       </div>
                     </form>
                   </div>
@@ -1374,24 +1452,25 @@ const PeopleInformation = () => {
       {/* update modal */}
       {isModalOpen && (
         <div
-        className="modal fade show"
-        id="updateModal"
-        tabIndex="-1"
-        aria-labelledby="updateModalLabel"
-        aria-hidden="true"
-        style={{ display: "block" }} // Ensures the modal is shown
-      >
-        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
-        style={{
-          width: "90%",
-          height: "70%",
-          maxHeight: "90vh",
-          maxWidth: "70vw",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
+          className="modal fade show"
+          id="updateModal"
+          tabIndex="-1"
+          aria-labelledby="updateModalLabel"
+          aria-hidden="true"
+          style={{ display: "block" }} // Ensures the modal is shown
         >
-          <div className="modal-content" style={{ padding: "30px" }}>
+          <div
+            className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+            style={{
+              width: "90%",
+              height: "70%",
+              maxHeight: "90vh",
+              maxWidth: "70vw",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <div className="modal-content" style={{ padding: "30px" }}>
               <div className="modal-header">
                 <h5 className="modal-title" id="updateModalLabel">
                   কর্মকর্তা তথ্য আপডেট করুন
@@ -1596,27 +1675,29 @@ const PeopleInformation = () => {
                     </div>
                   </div>
                   <div className="modal-footer">
-                  {loading ? (
-                   <div className="spinner-border text-primary" role="status">
-                   <span className="visually-hidden">Loading...</span>
-                 </div>
-                  ) : (
-                    <button
-                    // type="button"
-                    className="btn btn-primary text-white mt-4"
-                    style={{ backgroundColor: "#13007D" }}
-                    // onClick={handleBulkSubmit}
-                  >
-                    কর্মকর্তা যোগ করুন
-                  </button>
-                  )}
+                    {loading ? (
+                      <div
+                        className="spinner-border text-primary"
+                        role="status"
+                      >
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                    ) : (
+                      <button
+                        // type="button"
+                        className="btn btn-primary text-white mt-4"
+                        style={{ backgroundColor: "#13007D" }}
+                        // onClick={handleBulkSubmit}
+                      >
+                        কর্মকর্তা যোগ করুন
+                      </button>
+                    )}
                   </div>
                 </form>
               </div>
             </div>
+          </div>
         </div>
-      </div>
-      
       )}
     </div>
   );

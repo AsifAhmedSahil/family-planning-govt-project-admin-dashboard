@@ -3,6 +3,7 @@ import Header from "../Components/Header";
 import { useUser } from "../context/UserProvider";
 import toast from "react-hot-toast";
 import { CDateRangePicker } from "@coreui/react-pro";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Profile = () => {
   const { user } = useUser();
@@ -19,6 +20,8 @@ const Profile = () => {
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showOldPassword, setShowOldPassword] = useState(false); // State to toggle old password visibility
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   function getDateFromISOString(dateString) {
     const date = new Date(dateString);
@@ -55,12 +58,15 @@ const Profile = () => {
       if (response.ok) {
         const result = await response.json();
         console.log(result);
-        console.log("Employee registered successfully:", result);
+        console.log("Password Changed successfully:", result);
 
         toast.success("Password Changed successfully");
+        setOldPassword("");
+        setNewPassword("");
       } else {
         const errorResult = await response.json();
         console.error("Error:", errorResult);
+        toast.error("Password Change Issue: Incorrect");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -112,6 +118,8 @@ const Profile = () => {
   useEffect(() => {
     if (formData.startDate && formData.endDate) {
       fetchAttendance();
+    } else {
+      setAttendenceData([]);
     }
   }, [formData]);
 
@@ -142,7 +150,7 @@ const Profile = () => {
                       }
                       onClick={() => setActiveTab("personal")}
                     >
-                      Personal Info
+                      ব্যক্তিগত তথ্য
                     </li>
                     <li
                       style={
@@ -152,7 +160,7 @@ const Profile = () => {
                       }
                       onClick={() => setActiveTab("attendance")}
                     >
-                      Attendance
+                      উপস্থিতি
                     </li>
                     <li
                       style={
@@ -160,7 +168,7 @@ const Profile = () => {
                       }
                       onClick={() => setActiveTab("security")}
                     >
-                      Security
+                      পাসওয়ার্ড পরিবর্তন
                     </li>
                   </ul>
                 </div>
@@ -197,7 +205,7 @@ const Profile = () => {
                 {/* Attendance Tab */}
                 {activeTab === "attendance" && (
                   <div style={styles.tabContent}>
-                    <div className="col-md-4">
+                    <div className="col-md-3 mt-2">
                       <CDateRangePicker
                         label="তারিখ"
                         locale="en-US"
@@ -227,7 +235,7 @@ const Profile = () => {
                     >
                       <div
                         className="table-container"
-                        style={{ margin: "26px" }}
+                        style={{ marginLeft: "26px" }}
                       >
                         <div
                           className="table-responsive"
@@ -331,26 +339,50 @@ const Profile = () => {
                     {/* Form for Password Change */}
                     <form onSubmit={handleChangePassword}>
                       <div>
-                        <label style={styles.label}>Old Password</label>
-                        <input
-                          type="password"
-                          value={oldPassword}
-                          onChange={(e) => setOldPassword(e.target.value)}
-                          style={styles.input}
-                        />
+                        <label style={styles.label}>পুরানো পাসওয়ার্ড</label>
+                        <div style={styles.passwordWrapper}>
+                          <input
+                            type={showOldPassword ? "text" : "password"}
+                            className="form-control"
+                            id="oldPassword"
+                            placeholder="********"
+                            value={formData.oldPassword}
+                            onChange={(e) => setOldPassword(e.target.value)}
+                          />
+                          <span
+                            onClick={() => setShowOldPassword(!showOldPassword)}
+                            style={styles.eyeIcon}
+                          >
+                            {showOldPassword ? <FaEyeSlash /> : <FaEye />}
+                          </span>
+                        </div>
                       </div>
                       <div style={styles.mt}>
-                        <label style={styles.label}>New Password</label>
-                        <input
-                          type="password"
-                          value={newPassword}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          style={styles.input}
-                        />
+                        <label style={styles.label}>নতুন পাসওয়ার্ড</label>
+                        <div style={styles.passwordWrapper}>
+                          <input
+                            type={showNewPassword ? "text" : "password"}
+                            className="form-control"
+                            id="newPassword"
+                            placeholder="********"
+                            value={formData.newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                          />
+                          <span
+                            onClick={() => setShowNewPassword(!showNewPassword)}
+                            style={styles.eyeIcon}
+                          >
+                            {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                          </span>
+                        </div>
                       </div>
                       <div style={styles.mt}>
-                        <button type="submit" style={styles.button}>
-                          Change Password
+                        <button
+                          type="submit"
+                          className="btn btn-primary text-white "
+                          style={{ backgroundColor: "#13007D" }}
+                        >
+                          পাসওয়ার্ড পরিবর্তন করুন
                         </button>
                       </div>
                     </form>
@@ -372,6 +404,19 @@ const styles = {
     minHeight: "90vh",
     // padding: "20px",
   },
+  passwordWrapper: {
+    position: "relative",
+    width: "50%",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: "10px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    cursor: "pointer",
+    fontSize: "20px",
+    color: "#333",
+  },
   profileCard: {
     borderRadius: "15px",
     overflow: "hidden",
@@ -380,13 +425,14 @@ const styles = {
     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
     textAlign: "center",
     border: "1px solid #ddd",
+    height: "80vh",
   },
   profileImg: {
     width: "150px",
     height: "150px",
     objectFit: "cover",
     borderRadius: "50%",
-    border: "5px solid #333",
+    border: "5px solid #D5D1E8",
     boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
     marginTop: "20px",
     marginBottom: "20px",
@@ -424,10 +470,12 @@ const styles = {
     padding: "10px 20px",
     cursor: "pointer",
     fontWeight: "bold",
-    color: "#fff",
-    backgroundColor: "#333",
-    borderBottom: "2px solid #333",
+    color: "#333",
+    backgroundColor: "#D5D1E8", // changed from #333 to skyblue
+    borderBottom: "3px solid rgb(63, 133, 207)", // underline effect
+    borderRadius: "5px 5px 0 0", // optional: slightly rounded top edges
   },
+
   tabContent: {
     marginTop: "20px",
     textAlign: "left",

@@ -53,49 +53,52 @@ const Header = ({ title }) => {
           />
           {dropdownOpen && (
             <div
-              className="dropdown-menu show"
+            className="dropdown-menu show"
+            style={{
+              position: "absolute",
+              top: "55px",
+              right: "0",
+              minWidth: "140px", // slightly increased for uniformity
+              backgroundColor: "white",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+              zIndex: 1000,
+            }}
+          >
+            <button
+              className="dropdown-item"
               style={{
-                position: "absolute",
-                top: "55px", // Adjust dropdown position
-                right: "0",
-                minWidth: "120px",
-                backgroundColor: "white",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-                zIndex: 1000,
-                width: "max-content", // Dropdown width depends on the content
+                background: "none",
+                border: "none",
+                padding: "10px 12px",
+                textAlign: "start",
+                width: "100%",
+                cursor: "pointer",
+                fontSize: "16px",
               }}
+              onClick={handleLogout}
             >
-              <button
-                className="dropdown-item"
-                style={{
-                  background: "none",
-                  border: "none",
-                  padding: "8px",
-                  textAlign: "center",
-                  width: "100%",
-                  cursor: "pointer",
-                }}
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-              <button
-                className="dropdown-item"
-                style={{
-                  background: "none",
-                  border: "none",
-                  padding: "8px",
-                  textAlign: "center",
-                  width: "100%",
-                  cursor: "pointer",
-                }}
-                onClick={handleProfileSection}
-              >
-                My Profile
-              </button>
-            </div>
+              লগআউট
+            </button>
+            
+            <button
+              className="dropdown-item"
+              style={{
+                background: "none",
+                border: "none",
+                padding: "10px 12px",
+                textAlign: "start",
+                width: "100%",
+                cursor: "pointer",
+                fontSize: "16px",
+              }}
+              onClick={handleProfileSection}
+            >
+              আমার প্রোফাইল
+            </button>
+          </div>
+          
           )}
         </div>
       </div>

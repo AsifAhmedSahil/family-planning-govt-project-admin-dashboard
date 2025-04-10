@@ -480,7 +480,7 @@ const WorkTypeShow = () => {
                         position: "sticky",
                         top: 0,
                         backgroundColor: "#fff",
-                        zIndex: 1,
+                        // zIndex: 1,
                       }}
                     >
                       <tr>
@@ -564,7 +564,7 @@ const WorkTypeShow = () => {
               width: "70%",
               height: "500px",
               // padding: "20px",
-              overflowY: "auto",
+              // overflowY: "auto",
             }}
           >
             <div className="table-container" style={{ margin: "26px" }}>
