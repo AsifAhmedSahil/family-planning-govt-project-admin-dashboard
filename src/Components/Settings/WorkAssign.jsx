@@ -255,7 +255,7 @@ const WorkAssign = () => {
   };
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ height: "90vh", display: "flex", flexDirection: "column" }}>
       <Header title={"Work Assign"} />
       <div
         className="dashboard p-3"
@@ -347,7 +347,7 @@ const WorkAssign = () => {
           <div className="table-container" style={{ margin: "26px" }}>
             <div
               className="table-responsive"
-              style={{ maxHeight: "500px", overflowY: "auto" }}
+              style={{ maxHeight: "700px", overflowY: "auto" }}
             >
               <table className="table" style={{ width: "100%" }}>
                 <thead

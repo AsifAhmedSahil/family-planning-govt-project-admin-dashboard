@@ -18,7 +18,7 @@ const WorkTypeDetails = () => {
     field_type: "",
     DropdownMenu: "",
   });
-
+console.log(allWorkField)
   console.log(formData.work_type_id);
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -310,6 +310,7 @@ const WorkTypeDetails = () => {
       if (response.ok) {
         console.log("Success:", result);
         fetchWorkField();
+        
 
         setLoading(false);
       } else {
