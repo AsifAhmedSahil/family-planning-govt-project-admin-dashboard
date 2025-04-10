@@ -1689,7 +1689,7 @@ const PeopleInformation = () => {
                         style={{ backgroundColor: "#13007D" }}
                         // onClick={handleBulkSubmit}
                       >
-                        কর্মকর্তা যোগ করুন
+                        কর্মকর্তা আপডেট করুন
                       </button>
                     )}
                   </div>
