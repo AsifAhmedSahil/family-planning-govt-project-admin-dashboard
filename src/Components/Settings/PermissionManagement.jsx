@@ -3,11 +3,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "../Header";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useUser } from "../../context/UserProvider";
 
 const PermissionManagement = () => {
   const [loading, setLoading] = useState(true);
   const { role_id } = useParams();
   console.log(role_id);
+  const {setUser} = useUser()
 
   const [roleData, setRoleData] = useState({
     roleId: 2,
@@ -153,9 +155,30 @@ const PermissionManagement = () => {
         }
       );
       const result = await response.json();
+      console.log(result,"role update************")
 
       if (response.ok) {
         console.log("update role successfully");
+          // 🔁 Re-fetch user data using the same token
+      const userResponse = await fetch(
+        `${import.meta.env.REACT_APP_BASE_URL}/api/auth/get-user-from-token`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ token }),
+        }
+      );
+
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        setUser(userData.user); // 🔄 Update user context/state with new privileges
+        console.log("User updated after role change", userData.user);
+      } else {
+        console.error("Failed to re-fetch user after role update");
+      }
         Swal.fire({
           title: "Route Assign Successfully",
           icon: "success",
@@ -180,7 +203,7 @@ const PermissionManagement = () => {
       <Header title={"রোল"} />
       <div
         className="dashboard p-3"
-        style={{ backgroundColor: "#FFFFFF", borderRadius: "15px" }}
+        style={{ backgroundColor: "#FFFFFF", borderRadius: "15px",marginTop:"15px" }}
       >
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <table className="table table-bordered">

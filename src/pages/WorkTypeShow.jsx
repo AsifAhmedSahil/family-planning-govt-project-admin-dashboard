@@ -21,6 +21,7 @@ const WorkTypeShow = () => {
   const [employeeName, setEmployeeName] = useState(null);
 
   const [modalItem, setModalItem] = useState([]);
+  console.log(workLists);
 
   const [formData, setFormData] = useState({
     designation_name: "",
@@ -624,18 +625,48 @@ const WorkTypeShow = () => {
                                 </svg>
                               </div>
 
-                              <div className="flex-grow-1">
-                                <div
-                                  className="fw-medium"
-                                  style={{ fontSize: "15px", color: "#333" }}
-                                >
-                                  {item.work_type}
+                              <div
+                                className="flex-grow-1"
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <div>
+                                  <div
+                                    className="fw-medium"
+                                    style={{ fontSize: "15px", color: "#333" }}
+                                  >
+                                    {item.work_type}
+                                  </div>
+                                  <div
+                                    className="text-muted"
+                                    style={{ fontSize: "14px" }}
+                                  >
+                                    সময়:{" "}
+                                    {getTimeFromCreateDate(item.createDate)}
+                                  </div>
                                 </div>
                                 <div
-                                  className="text-muted"
-                                  style={{ fontSize: "14px" }}
+                                  style={{
+                                    marginTop: "10px",
+                                    marginRight: "60px",
+                                    padding: "4px 10px",
+                                    borderRadius: "8px",
+                                    fontSize: "15px",
+                                    fontWeight: "500",
+                                    display: "inline-block",
+                                    backgroundColor:
+                                      item.status === "pending"
+                                        ? "#fff3cd"
+                                        : "#d4edda",
+                                    color:
+                                      item.status === "pending"
+                                        ? "#856404"
+                                        : "#155724",
+                                  }}
                                 >
-                                  সময়: {getTimeFromCreateDate(item.createDate)}
+                                  {item.status}
                                 </div>
                               </div>
 

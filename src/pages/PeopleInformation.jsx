@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
 import "bootstrap"; // Import Bootstrap JS (includes Popper.js)
+import { CanAccess } from "../Components/CanAccess";
 
 const PeopleInformation = () => {
   // const navigate = useNavigate();
@@ -829,15 +830,17 @@ const PeopleInformation = () => {
             </div>
             <div className="col-md-2 d-flex flex-column mb-3">
               <label className="mb-2 text-[16px] "></label>
-              <button
-                type="button"
-                className="btn w-100 text-white mt-4"
-                style={{ backgroundColor: "#13007D" }}
-                data-bs-toggle="modal"
-                data-bs-target="#officerModal"
-              >
-                কর্মকর্তা যোগ করুন
-              </button>
+              <CanAccess type="create" route={"peopleInformation"}>
+                <button
+                  type="button"
+                  className="btn w-100 text-white mt-4"
+                  style={{ backgroundColor: "#13007D" }}
+                  data-bs-toggle="modal"
+                  data-bs-target="#officerModal"
+                >
+                  কর্মকর্তা যোগ করুন
+                </button>
+              </CanAccess>
             </div>
           </div>
         </div>
@@ -976,23 +979,29 @@ const PeopleInformation = () => {
           />
         </td> */}
                       <td>
-                        <RiDeleteBin6Line
-                          onClick={() => handleDeleteConfirmation(item.emp_id)}
-                          size={20}
-                          style={{ color: "gray", cursor: "pointer" }}
-                        />
+                        <CanAccess type="delete" route={"peopleInformation"}>
+                          <RiDeleteBin6Line
+                            onClick={() =>
+                              handleDeleteConfirmation(item.emp_id)
+                            }
+                            size={20}
+                            style={{ color: "gray", cursor: "pointer" }}
+                          />
+                        </CanAccess>
                       </td>
                       <td>
-                        <FaEdit
-                          onClick={() => {
-                            setEmployeeToUpdate(item);
-                            setIsModalOpen(true);
-                          }}
-                          data-bs-toggle="modal"
-                          data-bs-target="#updateModal"
-                          size={20}
-                          style={{ color: "gray", cursor: "pointer" }}
-                        />
+                        <CanAccess type="edit" route={"peopleInformation"}>
+                          <FaEdit
+                            onClick={() => {
+                              setEmployeeToUpdate(item);
+                              setIsModalOpen(true);
+                            }}
+                            data-bs-toggle="modal"
+                            data-bs-target="#updateModal"
+                            size={20}
+                            style={{ color: "gray", cursor: "pointer" }}
+                          />
+                        </CanAccess>
                       </td>
                     </tr>
                   ))

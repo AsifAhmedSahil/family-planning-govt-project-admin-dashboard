@@ -6,8 +6,19 @@ import { Modal, Button } from "react-bootstrap";
 import Header from "../Components/Header";
 import { format } from "date-fns-tz";
 import toast from "react-hot-toast";
+import { useUser } from "../context/UserProvider";
+import { CanAccess } from "../Components/CanAccess";
 
 const Notice = () => {
+  const { user } = useUser();
+  console.log(user);
+  const createPrivileges = user?.create_privilege
+    ? user.create_privilege.split(",").map((p) => p.trim())
+    : [];
+  console.log(createPrivileges);
+
+  const canCreateNotice = createPrivileges.includes("notice");
+  console.log(canCreateNotice);
   const getTodayDate = () => {
     const today = new Date();
     return today.toISOString().split("T")[0]; // Returns 'YYYY-MM-DD'
@@ -268,20 +279,23 @@ const Notice = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            style={{
-              width: "100%",
-              padding: "10px",
-              backgroundColor: "#13007D",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            নোটিশ দিন
-          </button>
+          <CanAccess type="create" route="notice">
+            <button
+              type="submit"
+              style={{
+                width: "100%",
+                padding: "10px",
+                backgroundColor: "#13007D",
+                color: "#fff",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+              // disabled={!canCreateNotice}
+            >
+              নোটিশ দিন
+            </button>
+          </CanAccess>
         </form>
 
         {/* Right Section */}
@@ -341,18 +355,22 @@ const Notice = () => {
                     </p>
                     <div>
                       <span style={{ cursor: "pointer", marginRight: "10px" }}>
-                        <MdDelete
-                          size={20}
-                          onClick={() => handleDeleteConfirmation(card.id)}
-                        />
+                        <CanAccess type="delete" route={"notice"}>
+                          <MdDelete
+                            size={20}
+                            onClick={() => handleDeleteConfirmation(card.id)}
+                          />
+                        </CanAccess>
                       </span>
                       <span style={{ cursor: "pointer" }}>
-                        <FaEdit
-                          size={20}
-                          onClick={() => {
-                            handleEdit(card);
-                          }}
-                        />
+                        <CanAccess type="edit" route={"notice"}>
+                          <FaEdit
+                            size={20}
+                            onClick={() => {
+                              handleEdit(card);
+                            }}
+                          />
+                        </CanAccess>
                       </span>
                     </div>
                   </div>

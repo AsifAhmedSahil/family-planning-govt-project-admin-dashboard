@@ -6,6 +6,7 @@ import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
 import toast from "react-hot-toast";
+import { CanAccess } from "../CanAccess";
 
 const SubUnion = () => {
   const [data, setData] = useState([]);
@@ -47,7 +48,6 @@ const SubUnion = () => {
       console.error("Error fetching upazilas:", error);
     }
   };
-  
 
   // Fetch upazilas when the component mounts
   useEffect(() => {
@@ -74,7 +74,7 @@ const SubUnion = () => {
       if (response.ok) {
         const result = await response.json();
         console.log("Success:", result);
-        toast.success("Upazila added successfully")
+        toast.success("Upazila added successfully");
         await fetchUpazilas();
         setFormData({ upazila: "" });
       } else {
@@ -115,28 +115,28 @@ const SubUnion = () => {
 
   const handleDeleteConfirmation = (id) => {
     Swal.fire({
-        title: "আপনি কি নিশ্চিত?",
-              // text: "You won't be able to revert this!",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "হ্যাঁ, নিশ্চিত",
-              cancelButtonText: "না",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                handleDelete(id);
-                Swal.fire({
-                  title: "ডিলিট করা হয়েছে",
-                  text: "উপজেলা ডিলিট সম্পন্ন",
-                  icon: "success",
-                });
-              }
+      title: "আপনি কি নিশ্চিত?",
+      // text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "হ্যাঁ, নিশ্চিত",
+      cancelButtonText: "না",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(id);
+        Swal.fire({
+          title: "ডিলিট করা হয়েছে",
+          text: "উপজেলা ডিলিট সম্পন্ন",
+          icon: "success",
+        });
+      }
     });
   };
 
   const handleUpdateConfirmation = (id, name) => {
-    console.log(name)
+    console.log(name);
     setUpazilaToUpdate({ id, name });
     setShowUpdateModal(true);
   };
@@ -165,7 +165,7 @@ const SubUnion = () => {
 
       if (response.ok) {
         console.log("Upazila updated successfully");
-        toast.success("Upazila updated successfully")
+        toast.success("Upazila updated successfully");
         await fetchUpazilas(); // Fetch the updated list of upazilas
         setShowUpdateModal(false); // Close the modal
       } else {
@@ -194,7 +194,10 @@ const SubUnion = () => {
   return (
     <div>
       <Header title={"উপজেলার তথ্য"} />
-      <div className="dashboard p-3 " style={{ backgroundColor: "#FFFFFF" ,marginTop:"15px"}}>
+      <div
+        className="dashboard p-3 "
+        style={{ backgroundColor: "#FFFFFF", marginTop: "15px" }}
+      >
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <form onSubmit={handleSubmit}>
             <div className="row g-6">
@@ -230,13 +233,15 @@ const SubUnion = () => {
               </div>
               <div className="col-md-2 d-flex flex-column mb-3">
                 <label className="mb-2 text-[16px]"></label>
-                <button
-                  type="submit"
-                  className="btn w-100 text-white mt-4"
-                  style={{ backgroundColor: "#13007D" }}
-                >
-                  যোগ করুন
-                </button>
+                <CanAccess type="create" route={"setting/subunion"}>
+                  <button
+                    type="submit"
+                    className="btn w-100 text-white mt-4"
+                    style={{ backgroundColor: "#13007D" }}
+                  >
+                    যোগ করুন
+                  </button>
+                </CanAccess>
               </div>
             </div>
           </form>
@@ -255,6 +260,7 @@ const SubUnion = () => {
                   position: "sticky",
                   top: 0,
                   backgroundColor: "#D9D9D9",
+
                   zIndex: 1,
                 }}
               >
@@ -289,23 +295,31 @@ const SubUnion = () => {
                   >
                     কর্মকর্তা
                   </th>
+                  <CanAccess type="delete" route={"setting/subunion"}>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#D9D9D9",
+                      }}
+                    >
+                      ডিলিট
+                    </th>
+                  </CanAccess>
 
-                  <th
-                    style={{
-                      color: "#323232",
-                      position: "sticky",
-                      top: 0,
-                      backgroundColor: "#D9D9D9",
-                    }}
-                  >ডিলিট</th>
-                  <th
-                    style={{
-                      color: "#323232",
-                      position: "sticky",
-                      top: 0,
-                      backgroundColor: "#D9D9D9",
-                    }}
-                  >আপডেট</th>
+                  <CanAccess type="edit" route={"setting/subunion"}>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#D9D9D9",
+                      }}
+                    >
+                      আপডেট
+                    </th>
+                  </CanAccess>
                 </tr>
               </thead>
               <tbody>
@@ -318,20 +332,24 @@ const SubUnion = () => {
                     <td style={{ color: "#6C6C6C" }}>{item.employee}</td>
 
                     <td>
-                      <RiDeleteBin6Line
-                        onClick={() => handleDeleteConfirmation(item.id)}
-                        size={20}
-                        style={{ color: "red", cursor: "pointer" }}
-                      />
+                      <CanAccess type="delete" route={"setting/subunion"}>
+                        <RiDeleteBin6Line
+                          onClick={() => handleDeleteConfirmation(item.id)}
+                          size={20}
+                          style={{ color: "red", cursor: "pointer" }}
+                        />
+                      </CanAccess>
                     </td>
                     <td>
-                      <RiEdit2Line
-                        size={20}
-                        style={{ color: "blue", cursor: "pointer" }}
-                        onClick={() =>
-                          handleUpdateConfirmation(item.id, item.name)
-                        }
-                      />
+                      <CanAccess type="edit" route={"setting/subunion"}>
+                        <RiEdit2Line
+                          size={20}
+                          style={{ color: "blue", cursor: "pointer" }}
+                          onClick={() =>
+                            handleUpdateConfirmation(item.id, item.name)
+                          }
+                        />
+                      </CanAccess>
                     </td>
                   </tr>
                 ))}

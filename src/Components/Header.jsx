@@ -9,6 +9,7 @@ const Header = ({ title }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useUser();
+  console.log(user)
 
   const handleImageClick = () => {
     setDropdownOpen(!dropdownOpen);
