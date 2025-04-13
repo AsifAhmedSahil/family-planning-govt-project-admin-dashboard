@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
 import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import toast from "react-hot-toast";
+import { CanAccess } from "../CanAccess";
 // import 'react-select/dist/styles.css';
 
 const Union = () => {
@@ -104,7 +105,7 @@ const Union = () => {
       if (response.ok) {
         const result = await response.json();
         console.log("Success:", result);
-        toast.success("Union added successfully")
+        toast.success("Union added successfully");
         await fetchUnions();
         setFormData({ upazila: null, union: "" });
       } else {
@@ -172,8 +173,6 @@ const Union = () => {
     });
   };
 
-  
-
   const handleUnionChange = (e) => {
     setFormData({
       ...formData,
@@ -207,7 +206,7 @@ const Union = () => {
 
       if (response.ok) {
         console.log("Union updated successfully");
-        toast.success("Union updated successfully")
+        toast.success("Union updated successfully");
         await fetchUnions(); // Fetch the updated list of unions
         setShowUpdateModal(false); // Close the modal
       } else {
@@ -241,7 +240,10 @@ const Union = () => {
   return (
     <div>
       <Header title={"ইউনিয়নের তথ্য"} />
-      <div className="dashboard p-3" style={{ backgroundColor: "#FFFFFF" ,marginTop:"15px"}}>
+      <div
+        className="dashboard p-3"
+        style={{ backgroundColor: "#FFFFFF", marginTop: "15px" }}
+      >
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <form onSubmit={handleSubmit}>
             <div className="row g-6">
@@ -292,13 +294,15 @@ const Union = () => {
               </div>
               <div className="col-md-2 d-flex flex-column mb-3">
                 <label className="mb-2 text-[16px]"></label>
-                <button
-                  type="submit"
-                  className="btn w-100 text-white mt-4"
-                  style={{ backgroundColor: "#13007D" }}
-                >
-                  যোগ করুন
-                </button>
+                <CanAccess type="create" route={"setting/union"}>
+                  <button
+                    type="submit"
+                    className="btn w-100 text-white mt-4"
+                    style={{ backgroundColor: "#13007D" }}
+                  >
+                    যোগ করুন
+                  </button>
+                </CanAccess>
               </div>
             </div>
           </form>
@@ -348,26 +352,31 @@ const Union = () => {
                   >
                     কর্মকর্তা
                   </th>
-                  <th
-                    style={{
-                      color: "#323232",
-                      position: "sticky",
-                      top: 0,
-                      backgroundColor: "#D9D9D9",
-                    }}
-                  >
-                    ডিলিট
-                  </th>
-                  <th
-                    style={{
-                      color: "#323232",
-                      position: "sticky",
-                      top: 0,
-                      backgroundColor: "#D9D9D9",
-                    }}
-                  >
-                    আপডেট
-                  </th>
+                  <CanAccess type="delete" route={"setting/union"}>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#D9D9D9",
+                      }}
+                    >
+                      ডিলিট
+                    </th>
+                  </CanAccess>
+
+                  <CanAccess type="edit" route={"setting/union"}>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#D9D9D9",
+                      }}
+                    >
+                      আপডেট
+                    </th>
+                  </CanAccess>
                 </tr>
               </thead>
               <tbody>
@@ -378,26 +387,31 @@ const Union = () => {
                     </td>
                     <td style={{ color: "#6C6C6C" }}>{item.name}</td>
                     <td style={{ color: "#6C6C6C" }}>{item.employee}</td>
-                    <td>
-                      <RiDeleteBin6Line
-                        onClick={() => handleDeleteConfirmation(item.id)}
-                        size={20}
-                        style={{ color: "red", cursor: "pointer" }}
-                      />
-                    </td>
-                    <td>
-                      <RiEdit2Line
-                        size={20}
-                        style={{ color: "blue", cursor: "pointer" }}
-                        onClick={() =>
-                          handleUpdateConfirmation(
-                            item.id,
-                            item.name,
-                            item.upazila_id
-                          )
-                        }
-                      />
-                    </td>
+                    <CanAccess type="delete" route={"setting/union"}>
+                      <td>
+                        <RiDeleteBin6Line
+                          onClick={() => handleDeleteConfirmation(item.id)}
+                          size={20}
+                          style={{ color: "red", cursor: "pointer" }}
+                        />
+                      </td>
+                    </CanAccess>
+
+                    <CanAccess type="edit" route={"setting/union"}>
+                      <td>
+                        <RiEdit2Line
+                          size={20}
+                          style={{ color: "blue", cursor: "pointer" }}
+                          onClick={() =>
+                            handleUpdateConfirmation(
+                              item.id,
+                              item.name,
+                              item.upazila_id
+                            )
+                          }
+                        />
+                      </td>
+                    </CanAccess>
                   </tr>
                 ))}
               </tbody>
@@ -407,8 +421,7 @@ const Union = () => {
       </div>
       <Modal show={showUpdateModal} onHide={() => setShowUpdateModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>ইউনিয়ন আপডেট 
-          </Modal.Title>
+          <Modal.Title>ইউনিয়ন আপডেট</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <input

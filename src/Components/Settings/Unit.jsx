@@ -5,6 +5,7 @@ import Header from "../Header";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
 import toast from "react-hot-toast";
+import { CanAccess } from "../CanAccess";
 
 const Unit = () => {
   
@@ -354,6 +355,7 @@ const Unit = () => {
               {/* Submit button */}
               <div className="col-md-2 d-flex flex-column mb-3">
                 <label className="mb-2 text-[16px]"></label>
+                <CanAccess type="create" route={"setting/unit"}>
                 <button
                   type="submit"
                   className="btn w-100 text-white mt-4"
@@ -361,6 +363,8 @@ const Unit = () => {
                 >
                   যোগ করুন
                 </button>
+                </CanAccess>
+                
               </div>
             </div>
           </form>
@@ -412,6 +416,7 @@ const Unit = () => {
                     কর্মকর্তা
                   </th>
 
+                  <CanAccess type="delete" route={"setting/unit"}>
                   <th
                     style={{
                       color: "#323232",
@@ -422,6 +427,9 @@ const Unit = () => {
                   >
                     ডিলিট
                   </th>
+                  </CanAccess>
+
+                  <CanAccess type="edit" route={"setting/unit"}>
                   <th
                     style={{
                       color: "#323232",
@@ -432,6 +440,9 @@ const Unit = () => {
                   >
                     আপডেট
                   </th>
+                  </CanAccess>
+                  
+                 
                 </tr>
               </thead>
               <tbody>
@@ -440,6 +451,7 @@ const Unit = () => {
                     <td style={{ color: "#6C6C6C" }}>{index + 1}</td>
                     <td style={{ color: "#6C6C6C" }}>{item.name}</td>
                     <td style={{ color: "#6C6C6C" }}>{item.employee}</td>
+                    <CanAccess type="delete" route={"setting/unit"}>
                     <td>
                       <RiDeleteBin6Line
                         size={20}
@@ -447,7 +459,10 @@ const Unit = () => {
                         onClick={() => handleDeleteConfirmation(item.id)}
                       />
                     </td>
-                    <td>
+                      </CanAccess>
+                    
+                      <CanAccess type="edit" route={"setting/unit"}>
+                      <td>
                       <RiEdit2Line
                         size={20}
                         style={{ color: "blue", cursor: "pointer" }}
@@ -461,6 +476,8 @@ const Unit = () => {
                         }
                       />
                     </td>
+                      </CanAccess>
+                    
                   </tr>
                 ))}
               </tbody>
