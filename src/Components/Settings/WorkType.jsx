@@ -4,6 +4,7 @@ import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
 import toast from "react-hot-toast";
+import { CanAccess } from "../CanAccess";
 
 const WorkType = () => {
   const [workType, setWorkType] = useState("");
@@ -12,12 +13,11 @@ const WorkType = () => {
   const [allWorkType, setAllWorkType] = useState([]);
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  
+
   const [workTypeToUpdate, setWorkTypeToUpdate] = useState({
     type_id: null,
     name: "",
   });
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,7 +50,7 @@ const WorkType = () => {
         console.log(result);
         fetchWorkType();
         setWorkType("");
-        toast.success("work type added successfully")
+        toast.success("work type added successfully");
       } else {
         console.error(result);
         setError(result.message);
@@ -143,7 +143,6 @@ const WorkType = () => {
   };
 
   const handleUpdateConfirmation = (type_id, name) => {
-  
     setWorkTypeToUpdate({ type_id, name });
     setShowUpdateModal(true);
   };
@@ -169,8 +168,7 @@ const WorkType = () => {
       );
 
       if (response.ok) {
-        
-        toast.success("work type updated successfully")
+        toast.success("work type updated successfully");
         await fetchWorkType(); // Fetch the updated list of upazilas
         setShowUpdateModal(false); // Close the modal
       } else {
@@ -185,10 +183,18 @@ const WorkType = () => {
   return (
     <div>
       <Header title={"কাজের ক্ষেত্র"} />
-      <div className="dashboard p-3" style={{ backgroundColor: "#FFFFFF",borderRadius:"15px",marginTop:"15px" }}>
+      <div
+        className="dashboard p-3"
+        style={{
+          backgroundColor: "#FFFFFF",
+          borderRadius: "15px",
+          marginTop: "15px",
+        }}
+      >
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <form onSubmit={handleSubmit}>
             <div className="row">
+            <CanAccess type="create" route={"setting/worktype"}>
               <div className="col-md-6 d-flex flex-column mb-3">
                 <label
                   className="mb-2 text-[16px]"
@@ -206,15 +212,18 @@ const WorkType = () => {
               </div>
               <div className="col-md-2 d-flex flex-column mb-3">
                 <label className="mb-2 text-[16px]"></label>
-                <button
-                  type="submit"
-                  className="btn w-100 text-white mt-4"
-                  style={{ backgroundColor: "#13007D" }}
-                  disabled={loading} // Disable the button while loading
-                >
-                  {loading ? "Adding..." : "কাজের ক্ষেত্র যোগ করুন"}
-                </button>
+                
+                  <button
+                    type="submit"
+                    className="btn w-100 text-white mt-4"
+                    style={{ backgroundColor: "#13007D" }}
+                    disabled={loading} // Disable the button while loading
+                  >
+                    {loading ? "Adding..." : "কাজের ক্ষেত্র যোগ করুন"}
+                  </button>
+                
               </div>
+              </CanAccess>
             </div>
           </form>
 
@@ -249,31 +258,35 @@ const WorkType = () => {
                     কাজের ক্ষেত্র
                   </th>
 
-                  <th
-                    style={{
-                      color: "#323232",
-                      position: "sticky",
-                      top: 0,
-                      backgroundColor: "#D9D9D9",
-                      textAlign: "center",
-                      width: "10%", // Adjust width as needed
-                    }}
-                  >
-                    ডিলিট
-                  </th>
+                  <CanAccess type="delete" route={"setting/worktype"}>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#D9D9D9",
+                        textAlign: "center",
+                        width: "10%", // Adjust width as needed
+                      }}
+                    >
+                      ডিলিট
+                    </th>
+                  </CanAccess>
 
-                  <th
-                    style={{
-                      color: "#323232",
-                      position: "sticky",
-                      top: 0,
-                      backgroundColor: "#D9D9D9",
-                      textAlign: "center",
-                      width: "10%", // Adjust width as needed
-                    }}
-                  >
-                    আপডেট
-                  </th>
+                  <CanAccess type="edit" route={"setting/worktype"}>
+                    <th
+                      style={{
+                        color: "#323232",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#D9D9D9",
+                        textAlign: "center",
+                        width: "10%", // Adjust width as needed
+                      }}
+                    >
+                      আপডেট
+                    </th>
+                  </CanAccess>
                 </tr>
               </thead>
               <tbody>
@@ -281,6 +294,7 @@ const WorkType = () => {
                   <tr key={index}>
                     <td style={{ color: "#6C6C6C" }}>{item.name}</td>
 
+                    <CanAccess type="delete" route={"setting/worktype"}>
                     <td>
                       <RiDeleteBin6Line
                         onClick={() => handleDeleteConfirmation(item.type_id)}
@@ -293,6 +307,9 @@ const WorkType = () => {
                         }}
                       />
                     </td>
+                    </CanAccess>
+
+                    <CanAccess type="delete" route={"setting/worktype"}>
                     <td>
                       <RiEdit2Line
                         size={20}
@@ -307,6 +324,8 @@ const WorkType = () => {
                         }
                       />
                     </td>
+                    </CanAccess>
+                    
                   </tr>
                 ))}
               </tbody>
@@ -318,7 +337,7 @@ const WorkType = () => {
         <Modal.Header closeButton>
           <Modal.Title>কাজের ক্ষেত্র আপডেট করুন</Modal.Title>
         </Modal.Header>
-          
+
         <Modal.Body>
           <input
             type="text"
