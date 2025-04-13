@@ -194,7 +194,7 @@ const WorkType = () => {
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <form onSubmit={handleSubmit}>
             <div className="row">
-            <CanAccess type="create" route={"setting/worktype"}>
+           
               <div className="col-md-6 d-flex flex-column mb-3">
                 <label
                   className="mb-2 text-[16px]"
@@ -210,6 +210,7 @@ const WorkType = () => {
                   onChange={(e) => setWorkType(e.target.value)} // Handle unit input change
                 />
               </div>
+              <CanAccess type="create" route={"setting/worktype"}>
               <div className="col-md-2 d-flex flex-column mb-3">
                 <label className="mb-2 text-[16px]"></label>
                 

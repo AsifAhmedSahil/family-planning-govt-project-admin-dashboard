@@ -6,6 +6,7 @@ import { FaRoute } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { CanAccess } from "../CanAccess";
 
 const Role = () => {
   const [role, setRole] = useState("");
@@ -227,6 +228,7 @@ const Role = () => {
               </div>
               <div className="col-md-2 d-flex flex-column mb-3">
                 <label className="mb-2 text-[16px]"></label>
+                <CanAccess type="create" route={"setting/role"}>
                 <button
                   type="submit"
                   className="btn w-100 text-white mt-4"
@@ -235,6 +237,8 @@ const Role = () => {
                 >
                   {loading ? "Adding..." : "রোল যোগ করুন"}
                 </button>
+                </CanAccess>
+                
               </div>
             </div>
           </form>
@@ -270,6 +274,9 @@ const Role = () => {
                     রোল সমূহ
                   </th>
 
+                  <CanAccess type="create" route={"setting/role"}>
+                  
+                  
                   <th
                     style={{
                       color: "#323232",
@@ -282,6 +289,9 @@ const Role = () => {
                   >
                     রাউট
                   </th>
+                  </CanAccess>
+
+                  <CanAccess type="delete" route={"setting/role"}>
                   <th
                     style={{
                       color: "#323232",
@@ -294,6 +304,9 @@ const Role = () => {
                   >
                     ডিলিট
                   </th>
+                  </CanAccess>
+
+                  <CanAccess type="edit" route={"setting/role"}>
 
                   <th
                     style={{
@@ -307,12 +320,16 @@ const Role = () => {
                   >
                     আপডেট
                   </th>
+                  </CanAccess>
+                  
                 </tr>
               </thead>
               <tbody>
                 {allRole.map((item, index) => (
                   <tr key={index}>
                     <td style={{ color: "#6C6C6C" }}>{item.role}</td>
+
+                    <CanAccess type="create" route={"setting/role"}>
 
                     <td>
                       <FaRoute
@@ -326,6 +343,9 @@ const Role = () => {
                         }}
                       />
                     </td>
+                    </CanAccess>
+
+                    <CanAccess type="delete" route={"setting/role"}>
                     <td>
                       <RiDeleteBin6Line
                         onClick={() => handleDeleteConfirmation(item.role_id)}
@@ -338,6 +358,9 @@ const Role = () => {
                         }}
                       />
                     </td>
+                    </CanAccess>
+
+                    <CanAccess type="edit" route={"setting/role"}>
                     <td>
                       <RiEdit2Line
                         size={20}
@@ -352,6 +375,7 @@ const Role = () => {
                         }
                       />
                     </td>
+                    </CanAccess>
                   </tr>
                 ))}
               </tbody>

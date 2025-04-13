@@ -5,6 +5,7 @@ import Header from "../Header";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
+import { CanAccess } from "../CanAccess";
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -316,6 +317,7 @@ const Registration = () => {
           </div>
 
           {/* Submit Button */}
+          <CanAccess type="create" route={"setting/registration"}>
           <button
             type="submit"
             style={{
@@ -331,6 +333,7 @@ const Registration = () => {
           >
             যোগ করুন
           </button>
+          </CanAccess>
         </form>
 
         {/* Right Section */}
@@ -396,7 +399,7 @@ const Registration = () => {
                     >
                       রোল
                     </th>
-
+                    <CanAccess type="delete" route={"setting/registration"}>
                     <th
                       style={{
                         color: "#323232",
@@ -404,7 +407,9 @@ const Registration = () => {
                         top: 0,
                         backgroundColor: "#fff",
                       }}
-                    ></th>
+                    >ডিলিট</th>
+                    </CanAccess>
+                    
                     
                     
                   </tr>
@@ -419,6 +424,8 @@ const Registration = () => {
                       <td style={{ color: "#6C6C6C" }}>{item.user_type}</td>
                       <td style={{ color: "#6C6C6C" }}>{item.role}</td>
 
+                      <CanAccess type="delete" route={"setting/registration"}>
+
                       <td >
                         <RiDeleteBin6Line
                           onClick={() => handleDeleteConfirmation(item.userId)}
@@ -426,6 +433,7 @@ const Registration = () => {
                           style={{ color: "red", cursor: "pointer" }}
                         />
                       </td>
+                      </CanAccess>
                     </tr>
                   ))}
                 </tbody>

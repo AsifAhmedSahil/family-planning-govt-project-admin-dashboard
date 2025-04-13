@@ -6,6 +6,7 @@ import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
 import toast from "react-hot-toast";
+import { CanAccess } from "../CanAccess";
 
 const WorkTypeDetails = () => {
   const [allWorkType, setAllWorkType] = useState([]);
@@ -18,7 +19,7 @@ const WorkTypeDetails = () => {
     field_type: "",
     DropdownMenu: "",
   });
-console.log(allWorkField)
+  console.log(allWorkField);
   console.log(formData.work_type_id);
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -310,7 +311,6 @@ console.log(allWorkField)
       if (response.ok) {
         console.log("Success:", result);
         fetchWorkField();
-        
 
         setLoading(false);
       } else {
@@ -330,7 +330,11 @@ console.log(allWorkField)
       <Header title={"কাজের ক্ষেত্রের বিবরনী"} />
       <div
         className="dashboard p-3"
-        style={{ backgroundColor: "#FFFFFF", borderRadius: "15px" ,marginTop:"15px"}}
+        style={{
+          backgroundColor: "#FFFFFF",
+          borderRadius: "15px",
+          marginTop: "15px",
+        }}
       >
         <div className="filter mb-4" style={{ margin: "26px" }}>
           <form onSubmit={handleSubmit}>
@@ -393,14 +397,16 @@ console.log(allWorkField)
 
               <div className="col-md-3 d-flex flex-column mb-3">
                 <label className="mb-2 text-[16px]"></label>
-                <button
-                  type="submit"
-                  className="btn w-100 text-white mt-4"
-                  style={{ backgroundColor: "#13007D" }}
-                  disabled={loading}
-                >
-                  {loading ? "Adding..." : "কাজের ক্ষেত্র যোগ করুন"}
-                </button>
+                <CanAccess type="create" route={"setting/worktypedetails"}>
+                  <button
+                    type="submit"
+                    className="btn w-100 text-white mt-4"
+                    style={{ backgroundColor: "#13007D" }}
+                    disabled={loading}
+                  >
+                    {loading ? "Adding..." : "কাজের ক্ষেত্র যোগ করুন"}
+                  </button>
+                </CanAccess>
               </div>
               {formData.field_type === "dropdown" && (
                 <div className="row">
@@ -479,26 +485,32 @@ console.log(allWorkField)
                   >
                     টাইপ
                   </th>
-                  <th
-                    style={{
-                      color: "#323232",
-                      textAlign: "center",
-                      width: "10%",
-                      backgroundColor: "#D9D9D9",
-                    }}
-                  >
-                    ডিলিট
-                  </th>
-                  <th
-                    style={{
-                      color: "#323232",
-                      textAlign: "center",
-                      width: "10%",
-                      backgroundColor: "#D9D9D9",
-                    }}
-                  >
-                    আপডেট
-                  </th>
+                  <CanAccess type="delete" route={"setting/worktypedetails"}>
+                    
+                    <th
+                      style={{
+                        color: "#323232",
+                        textAlign: "center",
+                        width: "10%",
+                        backgroundColor: "#D9D9D9",
+                      }}
+                    >
+                      ডিলিট
+                    </th>
+                  </CanAccess>
+
+                  <CanAccess type="edit" route={"setting/worktypedetails"}>
+                    <th
+                      style={{
+                        color: "#323232",
+                        textAlign: "center",
+                        width: "10%",
+                        backgroundColor: "#D9D9D9",
+                      }}
+                    >
+                      আপডেট
+                    </th>
+                  </CanAccess>
                 </tr>
               </thead>
               <tbody>
@@ -506,37 +518,44 @@ console.log(allWorkField)
                   <tr key={index}>
                     <td style={{ color: "#6C6C6C" }}>{item.field}</td>
                     <td style={{ color: "#6C6C6C" }}>{item.field_type}</td>
-                    <td>
-                      <RiDeleteBin6Line
-                        onClick={() => handleDeleteConfirmation(item.field_id)}
-                        size={20}
-                        style={{
-                          color: "red",
-                          cursor: "pointer",
-                          textAlign: "center",
-                          width: "100%",
-                        }}
-                      />
-                    </td>
-                    <td>
-                      <RiEdit2Line
-                        size={20}
-                        style={{
-                          color: "blue",
-                          cursor: "pointer",
-                          textAlign: "center",
-                          width: "100%",
-                        }}
-                        onClick={() =>
-                          handleUpdateConfirmation(
-                            item.field_id,
-                            item.work_type_id,
-                            item.field,
-                            item.field_type
-                          )
-                        }
-                      />
-                    </td>
+                    <CanAccess type="delete" route={"setting/worktypedetails"}>
+                      <td>
+                        <RiDeleteBin6Line
+                          onClick={() =>
+                            handleDeleteConfirmation(item.field_id)
+                          }
+                          size={20}
+                          style={{
+                            color: "red",
+                            cursor: "pointer",
+                            textAlign: "center",
+                            width: "100%",
+                          }}
+                        />
+                      </td>
+                    </CanAccess>
+
+                    <CanAccess type="edit" route={"setting/worktypedetails"}>
+                      <td>
+                        <RiEdit2Line
+                          size={20}
+                          style={{
+                            color: "blue",
+                            cursor: "pointer",
+                            textAlign: "center",
+                            width: "100%",
+                          }}
+                          onClick={() =>
+                            handleUpdateConfirmation(
+                              item.field_id,
+                              item.work_type_id,
+                              item.field,
+                              item.field_type
+                            )
+                          }
+                        />
+                      </td>
+                    </CanAccess>
                   </tr>
                 ))}
               </tbody>
